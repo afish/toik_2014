@@ -17,7 +17,7 @@ public abstract class AbstractPresenter<VIEW extends ComponentView<? extends Pre
 	}
 
 	@Override
-	public ComponentView<? extends Presenter> getComponentView() {
+	public VIEW getComponentView() {
 		return view;
 	}
 

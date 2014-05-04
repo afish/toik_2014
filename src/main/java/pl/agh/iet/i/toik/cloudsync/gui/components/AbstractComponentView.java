@@ -25,6 +25,7 @@ public abstract class AbstractComponentView<COMPONENT extends Component, PRESENT
 	@Override
 	public void setPresenter(PRESENTER presenter) {
 		this.presenter = presenter;
+		this.presenter.setComponentView(this);
 
 	}
 

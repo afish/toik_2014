@@ -12,7 +12,7 @@ import com.vaadin.ui.CustomComponent;
 
 @VaadinView(name = "")
 @UIScope
-public class MainView extends CustomComponent implements View {
+public class FileManagerView extends CustomComponent implements View {
 	
 	@Autowired
 	private FileManagerLayout fileManagerLayout;

@@ -15,5 +15,6 @@ Aplication was broken into multiple modules:
 
 
 cloudsync-root aggregates the rest of the dependencies (manually - issue with spring-boot i dont know how to get around).
+Shared deps are groupped in parent pom.xml in root directory of the repo.
 
 In order to start the project, you have to build all the modules first with `mvn install` and then execute `mvn spring-boot:run` in cloudsync-root

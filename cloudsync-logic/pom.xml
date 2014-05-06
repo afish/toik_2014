@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>pl.agh.iet.i.toik.cloudsync</groupId>
-	<artifactId>cloudsync</artifactId>
+	<artifactId>cloudsync-logic</artifactId>
 	<version>0.0.1</version>
 
 	<properties>

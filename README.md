@@ -7,9 +7,13 @@ Deps:
 maven 3.x (won't work with 2)
 java 1.7
 
+Aplication was broken into multiple modules:
+* cloudsync-gui
+* cloudsync-logic
+* cloudync-root
+* ...
 
-How to start:
-mvn spring-boot:run
-or
-mvn package 
-java -jar target/cloudsyncX.jar
+
+cloudsync-root aggregates the rest of the dependencies (manually - issue with spring-boot i dont know how to get around).
+
+In order to start the project, you have to build all the modules first with `mvn install` and then execute `mvn spring-boot:run` in cloudsync-root

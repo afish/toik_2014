@@ -6,12 +6,6 @@
 	<groupId>pl.agh.iet.i.toik.cloudsync</groupId>
 	<artifactId>cloudsync</artifactId>
 	<version>0.0.1</version>
-<packaging>pom</packaging>
-
-  <modules>
-    <module>../cloudsync-gui</module>
-    <module>../cloudsync-logic</module>
-  </modules>
 
 	<properties>
 		<java.version>1.7</java.version>
@@ -54,23 +48,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jetty</artifactId>
 		</dependency>
-		<!-- Spring Vaadin -->
 		<dependency>
-			<groupId>org.vaadin.spring</groupId>
-			<artifactId>spring-boot-vaadin</artifactId>
-			<version>${spring.vaadin.version}</version>
+            <groupId>pl.agh.iet.i.toik.cloudsync</groupId>
+            <artifactId>cloudsync-logic</artifactId>
+            <version>0.0.1</version>
 		</dependency>
-		<!-- Vaadin -->
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-themes</artifactId>
-			<version>${vaadin.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiled</artifactId>
-			<version>${vaadin.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>pl.agh.iet.i.toik.cloudsync</groupId>
+            <artifactId>cloudsync-gui</artifactId>
+            <version>0.0.1</version>
+        </dependency>
 	</dependencies>
 
 	<build>

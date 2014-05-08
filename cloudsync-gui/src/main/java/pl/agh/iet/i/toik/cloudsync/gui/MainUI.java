@@ -11,6 +11,7 @@ import com.vaadin.annotations.Title;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 
 @VaadinUI
 @Theme("reindeer")
@@ -25,10 +26,15 @@ public class MainUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
-		Navigator navigator = new Navigator(this, this);
+		VerticalLayout content = new VerticalLayout();
+		content.setSizeFull();
+		setContent(content);
+		
+		Navigator navigator = new Navigator(this, content);
 		navigator.addProvider(viewProvider);
 		navigator.setErrorView(errorView);
 		setNavigator(navigator);
+		
 	}
 	
 	

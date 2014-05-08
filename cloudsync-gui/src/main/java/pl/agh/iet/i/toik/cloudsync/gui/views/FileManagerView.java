@@ -4,23 +4,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.UIScope;
 import org.vaadin.spring.navigator.VaadinView;
 
-import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.FileManagerMainLayout;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.FileManagerMainPanel;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.VerticalLayout;
 
 @VaadinView(name = "")
 @UIScope
-public class FileManagerView extends CustomComponent implements View {
+public class FileManagerView extends VerticalLayout implements View {
 	
 	@Autowired
-	private FileManagerMainLayout fileManagerLayout;
+	private FileManagerMainPanel fileManagerLayout;
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-		setCompositionRoot(fileManagerLayout);
-
+		fileManagerLayout.setSizeFull();
+		addComponent(fileManagerLayout);
+		setSizeFull();
 	}
 
 }

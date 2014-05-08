@@ -12,13 +12,14 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.themes.Reindeer;
 
 @VaadinComponent
 @UIScope
@@ -48,12 +49,12 @@ public class FileManagerUpperLayout extends
 
 	private VerticalLayout initContent() {
 		VerticalLayout contentLayout = new VerticalLayout();
-		setLayoutCommonProperties(contentLayout);
+		contentLayout.setSpacing(true);
 		contentLayout.addComponent(createUpperLayout());
 		Layout footerLayot;
 		contentLayout.addComponent(footerLayot = createFooterLayout());
 		contentLayout.setComponentAlignment(footerLayot, Alignment.BOTTOM_CENTER);
-		return contentLayout;
+		return  contentLayout;
 	}
 
 	private void setLayoutCommonProperties(AbstractOrderedLayout contentLayout) {
@@ -92,6 +93,7 @@ public class FileManagerUpperLayout extends
 		upperLayout.addComponent(captionLabel = new Label(LABEL_CAPTION));
 		upperLayout.addComponent(helpButton = new Button());
 		
+		captionLabel.addStyleName(Reindeer.LABEL_H1);
 		setComponentsSizeUndefined(upperLayout.iterator());
 
 		upperLayout.setComponentAlignment(accountsButton, Alignment.BOTTOM_LEFT);

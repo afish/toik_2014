@@ -1,5 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.logic.impl;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -69,6 +71,22 @@ public class LogicServiceImpl implements LogicService {
 	public CloudTask<Boolean> delete(CloudSession session, String fileName,
 			Callable<Boolean> callback) {
 		logger.info("Deleting: " + fileName);
+		// TODO(afish): Implement this.
+		return null;
+	}
+
+	@Override
+	public CloudTask<Boolean> download(CloudSession sessionId, String absoluteFileName,
+			OutputStream outputStream, Callable<Boolean> callback) {
+		logger.info("Downloading: " + absoluteFileName);
+		// TODO(afish): Implement this.
+		return null;
+	}
+
+	@Override
+	public CloudTask<Boolean> upload(CloudSession sessionId, String absoluteFileName,
+			InputStream fileInputStream, Callable<Boolean> callback) {
+		logger.info("Uploading: " + absoluteFileName);
 		// TODO(afish): Implement this.
 		return null;
 	}

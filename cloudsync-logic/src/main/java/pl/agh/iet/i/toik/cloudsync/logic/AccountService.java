@@ -9,9 +9,7 @@ public interface AccountService {
 	/** Creates account */
 	public abstract Account createAccount(String name);
 
-	/**
-	 * Gets list of all account in the system.
-	 */
+	/** Gets list of all account in the system. */
 	public abstract List<Account> getAllAccounts();
 
 	/** Saves changes made to the account. Adds to allAccount list if was not present. */

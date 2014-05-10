@@ -11,21 +11,21 @@ public class PersistenceServiceImpl implements PersistenceService {
 	private static Logger logger = LoggerFactory.getLogger(PersistenceServiceImpl.class);
 
 	@Override
-	public <T> void put(String id, T obj) {
-		logger.info("Putting key: " + id + ", value:" + obj);
+	public <T> void put(String prefix, String id, T obj) {
+		logger.info("Putting key: " + id + ", value:" + obj + ", prefix:" + prefix);
 		// TODO(kubicz): Implement this.
 	}
 
 	@Override
-	public <T> T get(String id) {
-		logger.info("Getting key: " + id);
+	public <T> T get(String prefix, String id) {
+		logger.info("Getting key: " + id + ", prefix:" + prefix);
 		return null;
 		// TODO(kubicz): Implement this.
 	}
 
 	@Override
-	public void remove(String id) {
-		logger.info("Removing key: " + id);
+	public void remove(String prefix, String id) {
+		logger.info("Removing key: " + id + ", prefix:" + prefix);
 		// TODO(kubicz): Implement this.
 	}
 }

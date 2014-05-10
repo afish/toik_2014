@@ -1,30 +1,18 @@
 package pl.agh.iet.i.toik.cloudsync.logic;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
 /**
  * Service using for obtaining cloud service providers.
  */
-@Service
-public class CloudService {
-	private static Logger logger = LoggerFactory.getLogger(CloudService.class);
+public interface CloudService {
 
-	public void getAllClouds() {
-		logger.info("Getting all clouds");
-		// TODO(afish): Implement this.
-	}
+	public abstract List<Cloud> getAllClouds();
 
 	/** Adds the given cloud to this repository. */
-	public void registerCloud(Cloud cloud) {
-		logger.info("Registering cloud: " + cloud.getId() + ", name: " + cloud.getName());
-		// TODO(afish): Implement this.
-	}
+	public abstract void registerCloud(Cloud cloud);
 
 	/** Removes the given cloud to this repository. */
-	public void deregisterCloud(Cloud cloud) {
-		logger.info("Deregistering cloud: " + cloud.getId() + ", name: " + cloud.getName());
-		// TODO(afish): Implement this.
-	}
+	public abstract void deregisterCloud(Cloud cloud);
+
 }

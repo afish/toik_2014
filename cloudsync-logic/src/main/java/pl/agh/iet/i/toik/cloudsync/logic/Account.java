@@ -13,11 +13,6 @@ public class Account {
 	/** Property list. Feel free to insert anything here. */
 	private final Map<String, Object> propList;
 
-	public static Account create(String name) {
-		return null;
-		// TODO(afish): Implement this.
-	}
-
 	public String getId() {
 		return this.id;
 	}

@@ -1,5 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.logic;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -44,6 +46,22 @@ public interface LogicService {
 	 * Lists all files in the given directory. Directory name is absolute path. Callback is called
 	 * with the list of files.
 	 */
-	public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, String directory,
+	public CloudTask<List<CloudFile>> listFiles(CloudSession session, String directory,
 			Callable<List<CloudFile>> callback);
+
+	/**
+	 * Downloads file with the given name. CloudTask is called with boolean stating whether
+	 * operation succeeded.
+	 * 
+	 * File contents is written to the outputStream;
+	 */
+	CloudTask<Boolean> download(CloudSession sessionId, String absoluteFileName,
+			OutputStream outputStream, Callable<Boolean> callback);
+
+	/**
+	 * Uploads file with the given name. Gets data from the {@link InputStream}. CloudTask is called
+	 * with boolean stating whether operation succeeded.
+	 */
+	CloudTask<Boolean> upload(CloudSession sessionId, String absoluteFileName,
+			InputStream fileInputStream, Callable<Boolean> callback);
 }

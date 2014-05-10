@@ -27,15 +27,15 @@ public interface Cloud {
 	CloudTask<List<CloudFile>> listAllFiles(String sessionId, Callable<List<CloudFile>> callback);
 
 	/** Downloads file with the given name. CloudTask is called with the file name. */
-	CloudTask<String> download(String sessionId, String absolutFileName, Callable<String> callback);
+	CloudTask<String> download(String sessionId, String absoluteFileName, Callable<String> callback);
 
 	/**
 	 * Uploads file with the given name. Gets data from the {@link InputStream}. CloudTask is called
 	 * with the file name.
 	 */
-	CloudTask<String> upload(String sessionId, String absolutFileName, InputStream fileInputStream,
+	CloudTask<String> upload(String sessionId, String absoluteFileName, InputStream fileInputStream,
 			Callable<String> callback);
 
 	/** Removes file with the given name. CloudTask is called with the file name. */
-	CloudTask<String> remove(String sessionId, String absolutFileName, Callable<String> callback);
+	CloudTask<String> remove(String sessionId, String absoluteFileName, Callable<String> callback);
 }

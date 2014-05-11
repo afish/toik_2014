@@ -28,4 +28,18 @@ public class PersistenceServiceImpl implements PersistenceService {
 		logger.info("Removing key: " + id + ", prefix:" + prefix);
 		// TODO(kubicz): Implement this.
 	}
+
+    @Override
+    public boolean has(String prefix, String id) {
+        logger.info("Checking existence of key: " + id + ", prefix:" + prefix);
+        return false;
+        // TODO(kubicz): Implement this.
+    }
+
+    @Override
+    public int getNextFromSequence(String prefix, String sequenceName) {
+        logger.info("Getting sequence: " + prefix + "," + sequenceName);
+        return -1;
+        // TODO(kubicz): Implement this.
+    }
 }

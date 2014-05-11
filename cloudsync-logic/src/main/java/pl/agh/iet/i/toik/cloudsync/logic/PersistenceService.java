@@ -12,4 +12,10 @@ public interface PersistenceService {
 
 	/** Each component should use unique prefix, e.g. logic can use "logic", GUI can use "gui". */
 	public abstract void remove(String prefix, String id);
+
+    /** Each component should use unique prefix, e.g. logic can use "logic", GUI can use "gui". */
+    public abstract boolean has(String prefix, String id);
+
+    /** Each component should use unique prefix, e.g. logic can use "logic", GUI can use "gui". */
+    public abstract int getNextFromSequence(String prefix, String sequenceName);
 }

@@ -20,25 +20,24 @@ public class CloudServiceImpl implements CloudService {
 
     @Autowired
     private PersistenceService persistenceService;
-    private List<String> cloudsList;
 
-    public CloudServiceImpl(){
-        cloudsList = persistenceService.get("logic", "clouds_list");
-        if(cloudsList == null){
-            cloudsList = new ArrayList<>();
+    private List<CloudInformation> loadCloudsList(){
+        if(persistenceService.has("logic", "clouds_list")){
+            return persistenceService.get("logic", "clouds_list");
+        }else{
+            return new ArrayList<>();
         }
+    }
+
+    private void saveCloudsList(List<CloudInformation> cloudsList){
+        persistenceService.put("logic", "clouds_list", cloudsList);
     }
 
     @Override
     public List<CloudInformation> getAllClouds() {
         logger.info("Getting all clouds");
 
-        List<CloudInformation> result = new ArrayList<>();
-        for(String cloudName : cloudsList){
-            result.add((CloudInformation)persistenceService.get("logic_cloud", cloudName));
-        }
-
-        return result;
+        return loadCloudsList();
     }
 
 	@Override
@@ -50,14 +49,12 @@ public class CloudServiceImpl implements CloudService {
             throw new IllegalArgumentException("Cloud cannot be null");
         }
 
-        String id = cloud.getCloudInformation().getId();
-        if(cloudsList.contains(id)){
-            throw new IllegalArgumentException("Cloud with the same name id already exists. Cloud id: " + id);
+        List<CloudInformation> cloudsList = loadCloudsList();
+        if(cloudsList.contains(cloud.getCloudInformation())){
+            throw new IllegalArgumentException("Cloud with the same name id already exists. Cloud id: " + cloud.getCloudInformation().getId());
         }
-
-        cloudsList.add(id);
-        persistenceService.put("logic", "clouds_list", cloudsList);
-        persistenceService.put("logic_cloud", cloud.getCloudInformation().getId(), cloud.getCloudInformation());
+        cloudsList.add(cloud.getCloudInformation());
+        saveCloudsList(cloudsList);
 	}
 
 	@Override
@@ -69,9 +66,8 @@ public class CloudServiceImpl implements CloudService {
             throw new IllegalArgumentException("Cloud cannot be null");
         }
 
-        String id = cloud.getCloudInformation().getId();
-        cloudsList.remove(id);
-        persistenceService.put("logic", "clouds_list", cloudsList);
-        persistenceService.put("logic_cloud", id, null);
+        List<CloudInformation> cloudsList = loadCloudsList();
+        cloudsList.remove(cloud.getCloudInformation());
+        saveCloudsList(cloudsList);
 	}
 }

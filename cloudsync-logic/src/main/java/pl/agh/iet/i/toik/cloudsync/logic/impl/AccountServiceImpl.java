@@ -18,19 +18,18 @@ public class AccountServiceImpl implements AccountService {
 	private static Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
     @Autowired
     private PersistenceService persistenceService;
-    private List<String> accountsList;
-    private Integer lastAccountId;
 
-    public AccountServiceImpl(){
-        accountsList = persistenceService.get("logic", "accounts_list");
+    private List<String> loadAccountsList(){
+        List<String> accountsList = persistenceService.get("logic", "accounts_list");
         if(accountsList == null){
             accountsList = new ArrayList<>();
         }
 
-        lastAccountId = persistenceService.get("logic", "last_account_id");
-        if(lastAccountId == null){
-            lastAccountId = 0;
-        }
+        return accountsList;
+    }
+
+    private void saveAccountsList(List<String> accountsList){
+        persistenceService.put("logic", "accounts_list", accountsList);
     }
 
 	@Override
@@ -41,14 +40,17 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("Account name cannot be null");
         }
 
+        List<String> accountsList = loadAccountsList();
         if(accountsList.contains(name)){
             throw new IllegalArgumentException("Account with the same name name already exists. Account name: " + name);
         }
 
-        Account account = new Account(Integer.toString(++lastAccountId), name, new HashMap<String, Object>());
-        persistenceService.put("logic", "last_account_id", lastAccountId);
+        Integer accountId = persistenceService.getNextFromSequence("logic", "account_id");
+        Account account = new Account(Integer.toString(accountId), name, new HashMap<String, Object>());
+        persistenceService.put("logic", "account_" + name, account);
+
         accountsList.add(account.getName());
-        persistenceService.put("logic", "accounts_list", accountsList);
+        saveAccountsList(accountsList);
 
         logger.info("Account created: " + account);
 
@@ -60,8 +62,9 @@ public class AccountServiceImpl implements AccountService {
 		logger.info("Getting all accounts");
 
         List<Account> result = new ArrayList<>();
-        for(String accountName : accountsList){
-            result.add((Account)persistenceService.get("logic_account", accountName));
+
+        for(String accountName : loadAccountsList()){
+            result.add((Account)persistenceService.get("logic", "account_" + accountName));
         }
 
         return result;
@@ -75,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("Account cannot be null");
         }
 
-		persistenceService.put("logic_account", account.getName(), account);
+		persistenceService.put("logic", "account_" + account.getName(), account);
 
         logger.info("Account saved: " + account);
 	}
@@ -88,9 +91,11 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("Account cannot be null");
         }
 
-        persistenceService.put("logic_account", account.getName(), null);
+        List<String> accountsList = loadAccountsList();
         accountsList.remove(account.getName());
-        persistenceService.put("logic", "accounts_list", accountsList);
+        saveAccountsList(accountsList);
+
+        persistenceService.remove("logic", "account_" + account.getName());
 
         logger.info("Account removed: " + account);
 	}

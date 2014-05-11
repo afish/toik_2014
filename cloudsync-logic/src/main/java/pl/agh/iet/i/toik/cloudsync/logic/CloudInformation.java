@@ -6,10 +6,12 @@ package pl.agh.iet.i.toik.cloudsync.logic;
 public class CloudInformation {
 	private final String id;
 	private final String humanReadableName;
+    private final Cloud cloud;
 
-	public CloudInformation(String id, String humanReadableName) {
+	public CloudInformation(String id, String humanReadableName, Cloud cloud) {
 		this.id = id;
 		this.humanReadableName = humanReadableName;
+        this.cloud = cloud;
 	}
 
 	public String getId() {
@@ -19,6 +21,8 @@ public class CloudInformation {
 	public String getHumanReadableName() {
 		return humanReadableName;
 	}
+
+    public Cloud getCloud(){ return cloud; }
 
 	@Override
 	public int hashCode() {

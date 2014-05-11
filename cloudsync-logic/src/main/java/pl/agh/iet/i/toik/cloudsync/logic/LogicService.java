@@ -8,9 +8,6 @@ import java.util.concurrent.Callable;
  */
 public interface LogicService {
 
-	/** Returns a list of public information of all registered clouds. */
-	public abstract List<CloudInformation> getAllClouds();
-
 	/**
 	 * Logs in to the cloud. Oauth tokens should be get from account's property list.
 	 */
@@ -30,8 +27,8 @@ public interface LogicService {
 	 * Copies scrFileName to destFileName. File names are absolute paths. Callback is called with
 	 * boolean stating whether the operation succeeded.
 	 */
-	public CloudTask<Boolean> copy(CloudSession session, String srcFileName, String destFileName,
-			Callable<Boolean> callback);
+	public CloudTask<Boolean> copy(CloudSession session, String srcFileName, CloudSession sessionTo,
+                                   String destFileName,	Callable<Boolean> callback);
 
 	/**
 	 * Deletes the given file. File name is absolute path. Callback is called with boolean stating

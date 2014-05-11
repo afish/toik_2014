@@ -7,8 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Import;
-
-import pl.agh.iet.i.toik.cloudsync.logic.LogicService;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
 
 @Import(DefaultConfiguration.class)
 public class CommandLineApp extends SpringBootServletInitializer implements CommandLineRunner {
@@ -16,7 +15,7 @@ public class CommandLineApp extends SpringBootServletInitializer implements Comm
 	private static Logger logger = LoggerFactory.getLogger(CommandLineApp.class);
 
 	@Autowired
-	private LogicService someService;
+	private CloudService someService;
 
 	public static void main(String... args) {
 		logger.info("Hello: Application starting.");

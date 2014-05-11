@@ -1,10 +1,15 @@
 package pl.agh.iet.i.toik.cloudsync.logic;
 
 
+import java.util.List;
+
 /**
  * Service using for registering cloud service providers.
  */
 public interface CloudService {
+
+    /** Returns a list of public information of all registered clouds. */
+    public abstract List<CloudInformation> getAllClouds();
 	/**
 	 * Adds the given cloud to this repository.
 	 * 

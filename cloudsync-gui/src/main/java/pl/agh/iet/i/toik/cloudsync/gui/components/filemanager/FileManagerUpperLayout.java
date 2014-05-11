@@ -45,6 +45,7 @@ public class FileManagerUpperLayout extends
 	private Button helpButton;
 	private Button copyButton;
 	private Button deleteButton;
+	private Button moveButton;
 	private Component captionLabel;
 	
 	@PostConstruct
@@ -83,16 +84,23 @@ public class FileManagerUpperLayout extends
 		footerLayout.setSpacing(true);
 		
 		footerLayout.addComponent(copyButton = new Button(captions.get("copy.button")));
+		footerLayout.addComponent(moveButton = new Button(captions.get("move.button")));
 		footerLayout.addComponent(deleteButton = new Button(captions.get("delete.button")));
 		
-		setComponentsSizeUndefined(footerLayout.iterator());
-		
-		footerLayout.setComponentAlignment(copyButton, Alignment.BOTTOM_CENTER);
-		footerLayout.setComponentAlignment(deleteButton, Alignment.BOTTOM_CENTER);
+		setFooterLayoutComponentsProperties(footerLayout);
 		
 		return footerLayout;
 	}
 
+	private void setFooterLayoutComponentsProperties(
+			HorizontalLayout footerLayout) {
+		Iterator<Component> componentIterator = footerLayout.iterator();
+		setComponentsSizeUndefined(componentIterator);
+		
+		while(componentIterator.hasNext())
+			footerLayout.setComponentAlignment(componentIterator.next(), Alignment.BOTTOM_CENTER);
+		
+	}
 	private Layout createUpperLayout() {
 		HorizontalLayout upperLayout = new HorizontalLayout();
 		setLayoutCommonProperties(upperLayout);

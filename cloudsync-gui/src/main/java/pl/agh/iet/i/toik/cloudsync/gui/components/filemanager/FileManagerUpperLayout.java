@@ -2,23 +2,29 @@ package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager;
 
 import java.util.Iterator;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.UIScope;
 import org.vaadin.spring.VaadinComponent;
+import org.vaadin.spring.i18n.I18N;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.AbstractComponentView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.FileManagerUpperLayout.FileManagerUpperLayoutPresenter;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.Reindeer;
 
 @VaadinComponent
@@ -27,21 +33,31 @@ public class FileManagerUpperLayout extends
 		AbstractComponentView<VerticalLayout, FileManagerUpperLayoutPresenter> {
 
 	public interface FileManagerUpperLayoutPresenter extends Presenter {
-			
-			void deleteAction();
+						
+			public void openAccountsWindow();
+			public void setDefaultFilesTabSheetView(FilesTabSheetView tabSheetView);
 	}
-
-	private static final String ACCOUNTS_BUTTON_CAPTION = "Accounts";
-	private static final String COPY_BUTTON_CAPTION = "Copy";
-	private static final String DELETE_BUTTON_CAPTION = "Delete";
-	private static final String LABEL_CAPTION = "Cloud synchronization";
+	
+	@Autowired
+	private I18N captions;
 
 	private Button accountsButton;
 	private Button helpButton;
 	private Button copyButton;
 	private Button deleteButton;
 	private Component captionLabel;
-
+	
+	@PostConstruct
+	private void intit(){
+		accountsButton.addClickListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getPresenter().openAccountsWindow();
+				
+			}
+		});
+	}
 	@Override
 	protected VerticalLayout createContent() {
 		return initContent();
@@ -66,22 +82,13 @@ public class FileManagerUpperLayout extends
 		HorizontalLayout footerLayout = new HorizontalLayout();
 		footerLayout.setSpacing(true);
 		
-		footerLayout.addComponent(copyButton = new Button(COPY_BUTTON_CAPTION));
-		footerLayout.addComponent(deleteButton = new Button(DELETE_BUTTON_CAPTION));
+		footerLayout.addComponent(copyButton = new Button(captions.get("copy.button")));
+		footerLayout.addComponent(deleteButton = new Button(captions.get("delete.button")));
 		
 		setComponentsSizeUndefined(footerLayout.iterator());
 		
 		footerLayout.setComponentAlignment(copyButton, Alignment.BOTTOM_CENTER);
 		footerLayout.setComponentAlignment(deleteButton, Alignment.BOTTOM_CENTER);
-		
-		deleteButton.addClickListener(new ClickListener() {
-			
-			@Override
-			public void buttonClick(ClickEvent event) {
-				getPresenter().deleteAction();
-				
-			}
-		});
 		
 		return footerLayout;
 	}
@@ -89,16 +96,19 @@ public class FileManagerUpperLayout extends
 	private Layout createUpperLayout() {
 		HorizontalLayout upperLayout = new HorizontalLayout();
 		setLayoutCommonProperties(upperLayout);
-		upperLayout.addComponent(accountsButton = new Button(ACCOUNTS_BUTTON_CAPTION));
-		upperLayout.addComponent(captionLabel = new Label(LABEL_CAPTION));
+		upperLayout.addComponent(accountsButton = new Button(captions.get("accounts.button")));
+		upperLayout.addComponent(captionLabel = new Label(captions.get("page.title")));
 		upperLayout.addComponent(helpButton = new Button());
+		
+		helpButton.setIcon(new ThemeResource("help.ico"));
+		helpButton.setStyleName(Reindeer.BUTTON_LINK);
 		
 		captionLabel.addStyleName(Reindeer.LABEL_H1);
 		setComponentsSizeUndefined(upperLayout.iterator());
 
 		upperLayout.setComponentAlignment(accountsButton, Alignment.BOTTOM_LEFT);
 		upperLayout.setComponentAlignment(captionLabel, Alignment.TOP_CENTER);
-		upperLayout.setComponentAlignment(helpButton, Alignment.BOTTOM_RIGHT);
+		upperLayout.setComponentAlignment(helpButton, Alignment.TOP_RIGHT);
 
 
 		return upperLayout;

@@ -1,0 +1,14 @@
+@import "../reindeer/reindeer.scss";
+
+@mixin cloud {
+  @include reindeer;
+  
+  .greyBackground {
+  
+  	background: url('../reindeer/tabsheet/img/framed/tab-bg.png') ;
+  	border: none;
+  	color: rgba(0, 0, 0, 1);
+  	height: 100%;
+  }
+  
+}

@@ -8,8 +8,6 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 
 public interface FileManagerMainLayoutView extends ComponentView<FileManagerMainLayoutPresenter> {
 	
-	void addMessage(String message);
-	
 
 	public interface FileManagerMainLayoutPresenter extends Presenter {
 		

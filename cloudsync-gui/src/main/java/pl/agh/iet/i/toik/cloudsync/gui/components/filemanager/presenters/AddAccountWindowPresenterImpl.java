@@ -5,8 +5,8 @@ import org.vaadin.spring.events.Event;
 import org.vaadin.spring.events.EventBusListenerMethod;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.WindowView;
-import pl.agh.iet.i.toik.cloudsync.gui.components.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts.AddAccountWindow.AddAccountWindowPresenter;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
 

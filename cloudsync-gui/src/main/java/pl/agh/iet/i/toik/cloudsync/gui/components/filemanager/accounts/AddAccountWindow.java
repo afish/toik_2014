@@ -9,8 +9,8 @@ import org.vaadin.spring.i18n.I18N;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.AbstractWindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.WindowView;
-import pl.agh.iet.i.toik.cloudsync.gui.components.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts.AddAccountWindow.AddAccountWindowPresenter;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
 import pl.agh.iet.i.toik.cloudsync.gui.model.CloudTypeMock;

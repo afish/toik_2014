@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.vaadin.spring.events.Event;
 import org.vaadin.spring.events.EventBusListenerMethod;
 
-import pl.agh.iet.i.toik.cloudsync.gui.components.events.OpenAccountsWindowEvent;
-import pl.agh.iet.i.toik.cloudsync.gui.components.events.OpenAddWindowEvent;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAccountsWindowEvent;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.AccountsWindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.AccountsWindowView.AccountsWindowPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;

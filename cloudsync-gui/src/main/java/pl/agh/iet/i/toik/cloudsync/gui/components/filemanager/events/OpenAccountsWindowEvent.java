@@ -1,4 +1,4 @@
-package pl.agh.iet.i.toik.cloudsync.gui.components.events;
+package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
 

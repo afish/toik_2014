@@ -1,9 +1,11 @@
 package pl.agh.iet.i.toik.cloudsync.logic;
 
+import java.io.Serializable;
+
 /**
  * Basic cloud information set.
  */
-public class CloudInformation {
+public class CloudInformation implements Serializable {
 	private final String id;
 	private final String humanReadableName;
     private final Cloud cloud;

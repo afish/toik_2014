@@ -20,7 +20,7 @@ public class AccountServiceImpl implements AccountService {
     private PersistenceService persistenceService;
 
     private List<String> loadAccountsList(){
-        List<String> accountsList = persistenceService.get("logic", "accounts_list");
+        List<String> accountsList = (List) persistenceService.get("logic", "accounts_list");
         if(accountsList == null){
             accountsList = new ArrayList<>();
         }
@@ -29,7 +29,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private void saveAccountsList(List<String> accountsList){
-        persistenceService.put("logic", "accounts_list", accountsList);
+        ArrayList<String> accountsArrayList = new ArrayList<>(accountsList);
+        persistenceService.put("logic", "accounts_list", accountsArrayList);
     }
 
 	@Override

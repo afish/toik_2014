@@ -16,29 +16,29 @@ public class PersistenceServiceImpl implements PersistenceService {
 	private static Logger logger = LoggerFactory.getLogger(PersistenceServiceImpl.class);
 
     private Map<String, Map<String, Integer>> sequences;
-    private Map<String, Map<String, Object>> database;
+    private Map<String, Map<String, Serializable>> database;
 
     public PersistenceServiceImpl(){
         loadDatabase();
     }
 
 	@Override
-	public <T> void put(String prefix, String id, T obj) {
+	public <T extends Serializable> void put(String prefix, String id, T obj) {
 		logger.info("Putting key: " + id + ", value:" + obj + ", prefix:" + prefix);
 
         if (!database.containsKey(prefix)){
-            database.put(prefix, new HashMap<String, Object>());
+            database.put(prefix, new HashMap<String, Serializable>());
         }
         database.get(prefix).put(id, obj);
 		saveDatabase();
 	}
 
 	@Override
-	public <T> T get(String prefix, String id) {
+	public <T extends Serializable> T get(String prefix, String id) {
 		logger.info("Getting key: " + id + ", prefix:" + prefix);
 
         if (database.containsKey(prefix)){
-            Map<String, Object> prefixDatabaseChunk = database.get(prefix);
+            Map<String, Serializable> prefixDatabaseChunk = database.get(prefix);
             if (prefixDatabaseChunk.containsKey(id)){
                 return (T)prefixDatabaseChunk.get(id);
             }
@@ -56,7 +56,7 @@ public class PersistenceServiceImpl implements PersistenceService {
 		logger.info("Removing key: " + id + ", prefix:" + prefix);
 
         if (database.containsKey(prefix)){
-            Map<String, Object> prefixDatabaseChunk = database.get(prefix);
+            Map<String, Serializable> prefixDatabaseChunk = database.get(prefix);
             if (prefixDatabaseChunk.containsKey(id)){
                 prefixDatabaseChunk.remove(id);
                 saveDatabase();
@@ -103,15 +103,15 @@ public class PersistenceServiceImpl implements PersistenceService {
     private void loadDatabase(){
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(DB_FILE_NAME));
-            database = (Map<String, Map<String, Object>>) ois.readObject();
+            database = (Map<String, Map<String, Serializable>>) ois.readObject();
             sequences = (Map<String, Map<String, Integer>>) ois.readObject();
         } catch (IOException e) {
             logger.warn("Unable to load " + DB_FILE_NAME + ". Creating empty database.");
-            database = new HashMap<String, Map<String, Object>>();
+            database = new HashMap<String, Map<String, Serializable>>();
             sequences = new HashMap<String, Map<String, Integer>>();
         } catch (ClassNotFoundException e) {
             logger.warn("Unable to deserialize " + DB_FILE_NAME + ". Creating empty database.");
-            database = new HashMap<String, Map<String, Object>>();
+            database = new HashMap<String, Map<String, Serializable>>();
             sequences = new HashMap<String, Map<String, Integer>>();
         }
     }

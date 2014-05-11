@@ -1,11 +1,12 @@
 package pl.agh.iet.i.toik.cloudsync.logic;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Account POJO class holding all its information.
  */
-public class Account {
+public class Account implements Serializable{
 	/** Globally unique ID */
 	private final String id;
 	/** Human readable name */

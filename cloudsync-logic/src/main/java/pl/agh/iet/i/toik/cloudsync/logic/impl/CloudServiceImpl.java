@@ -23,14 +23,15 @@ public class CloudServiceImpl implements CloudService {
 
     private List<CloudInformation> loadCloudsList(){
         if(persistenceService.has("logic", "clouds_list")){
-            return persistenceService.get("logic", "clouds_list");
+            return (List) persistenceService.get("logic", "clouds_list");
         }else{
             return new ArrayList<>();
         }
     }
 
     private void saveCloudsList(List<CloudInformation> cloudsList){
-        persistenceService.put("logic", "clouds_list", cloudsList);
+        ArrayList<CloudInformation> cloudsArrayList = new ArrayList<>(cloudsList);
+        persistenceService.put("logic", "clouds_list", cloudsArrayList);
     }
 
     @Override

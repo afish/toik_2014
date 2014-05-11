@@ -84,24 +84,6 @@
                     <!-- Symbol maps etc, not needed in vaadin app, just target them outside war -->
                     <deploy>${project.build.directory}/gwt-deploy</deploy>
                 </configuration>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <!-- if you don't specify any modules, the plugin will find them -->
-                            <!-- <modules> <module>com.vaadin.demo.mobilemail.gwt.ColorPickerWidgetSet</module> 
-                            </modules> -->
-                        </configuration>
-                        <goals>
-                            <goal>clean</goal>
-                            <goal>resources</goal>
-                            <!-- These are non functional currently with spring boot directory structure
-                            <goal>update-theme</goal>
-                            <goal>update-widgetset</goal>-->
-                            <goal>compile-theme</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -123,25 +105,7 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- As we are doing "inplace" GWT compilation, ensure the widgetset -->
-            <!-- directory is cleaned properly -->
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${basedir}/src/main/public/VAADIN/widgetsets</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>src/main/resources/VAADIN/themes/cloud/</directory>
-                            <includes>
-                                <include>*.css</include>
-                            </includes>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
+           
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>

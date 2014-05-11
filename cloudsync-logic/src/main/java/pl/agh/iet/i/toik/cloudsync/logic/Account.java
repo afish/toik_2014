@@ -25,7 +25,7 @@ public class Account {
 		return this.propList;
 	}
 
-	private Account(String id, String name, Map<String, Object> propList) {
+	public Account(String id, String name, Map<String, Object> propList) {
 		this.id = id;
 		this.name = name;
 		this.propList = propList;

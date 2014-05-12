@@ -12,7 +12,8 @@
 		<module>cloudsync-logic</module>
 		<module>cloudsync-gui</module>
 		<module>cloudsync-root</module>
-	</modules>
+        <module>cloudsync-onedrive</module>
+    </modules>
 
 	<properties>
 		<java.version>1.7</java.version>

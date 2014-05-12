@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import pl.agh.iet.i.toik.cloudsync.logic.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**

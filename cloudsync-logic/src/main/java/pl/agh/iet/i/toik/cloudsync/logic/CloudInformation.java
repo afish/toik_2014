@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Basic cloud information set.
  */
 public class CloudInformation implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private final String id;
 	private final String humanReadableName;
     private final Cloud cloud;

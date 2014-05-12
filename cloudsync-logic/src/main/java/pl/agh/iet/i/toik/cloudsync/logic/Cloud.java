@@ -3,7 +3,6 @@ package pl.agh.iet.i.toik.cloudsync.logic;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Interface to be implemented by cloud providers.
@@ -27,30 +26,29 @@ public interface Cloud {
 	void logout(String sessionId);
 
 	/**
-	 * Lists all files under the given directory. CloudTask is called with the list of files.
+	 * Lists all files under the given directory. CloudTask.get should return the list of files. The
+	 * caller of this method will call CloudTask.run.
 	 */
-	CloudTask<List<CloudFile>> listAllFiles(String sessionId, String directory,
-			Callable<List<CloudFile>> callback);
+	CloudTask<List<CloudFile>> listAllFiles(String sessionId, String directory);
 
 	/**
-	 * Downloads file with the given name. CloudTask is called with boolean stating whether
-	 * operation succeeded.
+	 * Downloads file with the given name. CloudTask.get should return boolean stating whether
+	 * operation succeeded. The caller of this method will call CloudTask.run.
 	 * 
 	 * File contents is written to the outputStream;
 	 */
-	CloudTask<Boolean> download(String sessionId, String absoluteFileName,
-			OutputStream outputStream, Callable<Boolean> callback);
+	CloudTask<Boolean> download(String sessionId, String absoluteFileName, OutputStream outputStream);
 
 	/**
-	 * Uploads file with the given name. Gets data from the {@link InputStream}. CloudTask is called
-	 * with boolean stating whether operation succeeded.
+	 * Uploads file with the given name. Gets data from the {@link InputStream}. CloudTask.get
+	 * should return boolean stating whether operation succeeded. The caller of this method will
+	 * call CloudTask.run.
 	 */
-	CloudTask<Boolean> upload(String sessionId, String absoluteFileName,
-			InputStream fileInputStream, Callable<Boolean> callback);
+	CloudTask<Boolean> upload(String sessionId, String absoluteFileName, InputStream fileInputStream);
 
 	/**
-	 * Removes file with the given name. CloudTask is called with boolean stating whether operation
-	 * succeeded.
+	 * Removes file with the given name. CloudTask.get should return boolean stating whether
+	 * operation succeeded. The caller of this method will call CloudTask.run.
 	 */
-	CloudTask<Boolean> remove(String sessionId, String absoluteFileName, Callable<Boolean> callback);
+	CloudTask<Boolean> remove(String sessionId, String absoluteFileName);
 }

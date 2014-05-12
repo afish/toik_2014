@@ -1,7 +1,6 @@
 package pl.agh.iet.i.toik.cloudsync.logic;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Interface to be used to manipulate files in clouds.
@@ -17,30 +16,30 @@ public interface LogicService {
 	public void logout(CloudSession sessionId);
 
 	/**
-	 * Moves fromFileName to toFileName. File names are absolute paths. Callback is called with
-	 * boolean stating whether the operation succeeded.
+	 * Moves fromFileName to toFileName. File names are absolute paths. CloudTask.get returns
+	 * boolean stating whether the operation succeeded. Result should be get from the CloudTask via
+	 * polling.
 	 */
 	public CloudTask<Boolean> move(CloudSession sessionFrom, String fromFileName,
-			CloudSession sessionTo, String toFileName, Callable<Boolean> callback);
+			CloudSession sessionTo, String toFileName);
 
 	/**
-	 * Copies scrFileName to destFileName. File names are absolute paths. Callback is called with
-	 * boolean stating whether the operation succeeded.
+	 * Copies scrFileName to destFileName. File names are absolute paths. CloudTask.get returns
+	 * boolean stating whether the operation succeeded. Result should be get from the CloudTask via
+	 * polling.
 	 */
-	public CloudTask<Boolean> copy(CloudSession session, String srcFileName, CloudSession sessionTo,
-                                   String destFileName,	Callable<Boolean> callback);
+	public CloudTask<Boolean> copy(CloudSession session, String srcFileName,
+			CloudSession sessionTo, String destFileName);
 
 	/**
-	 * Deletes the given file. File name is absolute path. Callback is called with boolean stating
-	 * whether the operation succeeded.
+	 * Deletes the given file. File name is absolute path. CloudTask.get returns boolean stating
+	 * whether the operation succeeded. Result should be get from the CloudTask via polling.
 	 */
-	public CloudTask<Boolean> delete(CloudSession session, String fileName,
-			Callable<Boolean> callback);
+	public CloudTask<Boolean> delete(CloudSession session, String fileName);
 
 	/**
-	 * Lists all files in the given directory. Directory name is absolute path. Callback is called
-	 * with the list of files.
+	 * Lists all files in the given directory. Directory name is absolute path. CloudTask.get
+	 * returns the list of files. Result should be get from the CloudTask via polling.
 	 */
-	public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, String directory,
-			Callable<List<CloudFile>> callback);
+	public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, String directory);
 }

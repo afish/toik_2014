@@ -9,7 +9,6 @@ import java.util.concurrent.FutureTask;
 public abstract class CloudTask<T> extends FutureTask<T> {
 	public CloudTask(Callable<T> callable) {
 		super(callable);
-		// TODO Auto-generated constructor stub
 	}
 
 	/** Returns progress ratio as a number in range [0.0, 1.0]. */

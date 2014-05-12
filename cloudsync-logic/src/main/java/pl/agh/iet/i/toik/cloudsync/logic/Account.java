@@ -7,6 +7,7 @@ import java.util.Map;
  * Account POJO class holding all its information.
  */
 public class Account implements Serializable{
+	private static final long serialVersionUID = 1L;
 	/** Globally unique ID */
 	private final String id;
 	/** Human readable name */

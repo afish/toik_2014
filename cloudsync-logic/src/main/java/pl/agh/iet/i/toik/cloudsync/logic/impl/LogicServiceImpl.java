@@ -1,10 +1,5 @@
 package pl.agh.iet.i.toik.cloudsync.logic.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import pl.agh.iet.i.toik.cloudsync.logic.*;
-
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -12,7 +7,17 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import pl.agh.iet.i.toik.cloudsync.logic.Account;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudTask;
+import pl.agh.iet.i.toik.cloudsync.logic.LogicService;
 
 /**
  * Logic service implementation.
@@ -37,11 +42,11 @@ public class LogicServiceImpl implements LogicService {
 
     @Override
     public CloudTask<Boolean> move(CloudSession sessionFrom, String fromFileName,
-                                   CloudSession sessionTo, String toFileName, final Callable<Boolean> callback) {
+                                   CloudSession sessionTo, String toFileName) {
         logger.info("Moving: " + fromFileName + " -> " + toFileName);
 
-        final CloudTask<Boolean> copyTask = copy(sessionFrom, fromFileName, sessionTo, toFileName, callback);
-        final CloudTask<Boolean> removeTask = sessionFrom.getCloudInformation().getCloud().remove(sessionFrom.getSessionId(), fromFileName, callback);
+        final CloudTask<Boolean> copyTask = copy(sessionFrom, fromFileName, sessionTo, toFileName);
+        final CloudTask<Boolean> removeTask = sessionFrom.getCloudInformation().getCloud().remove(sessionFrom.getSessionId(), fromFileName);
         CloudTask<Boolean> mergedTask = new JoinedCloudTask<>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -60,12 +65,11 @@ public class LogicServiceImpl implements LogicService {
     }
 
     @Override
-    public CloudTask<Boolean> copy(CloudSession session, String srcFileName, CloudSession sessionTo, String destFileName,
-                                   Callable<Boolean> callback) {
+    public CloudTask<Boolean> copy(CloudSession session, String srcFileName, CloudSession sessionTo, String destFileName) {
         logger.info("Copying: " + srcFileName + " -> " + destFileName);
 
         PipedOutputStream outputStream = new PipedOutputStream();
-        final CloudTask<Boolean> firstTask = session.getCloudInformation().getCloud().download(session.getSessionId(), srcFileName, outputStream, callback);
+        final CloudTask<Boolean> firstTask = session.getCloudInformation().getCloud().download(session.getSessionId(), srcFileName, outputStream);
         PipedInputStream inputStream = null;
         try {
             inputStream = new PipedInputStream(outputStream);
@@ -73,7 +77,7 @@ public class LogicServiceImpl implements LogicService {
             // How to recover?
             e.printStackTrace();
         }
-        final CloudTask<Boolean> secondTask = sessionTo.getCloudInformation().getCloud().upload(sessionTo.getSessionId(), destFileName, inputStream, callback);
+        final CloudTask<Boolean> secondTask = sessionTo.getCloudInformation().getCloud().upload(sessionTo.getSessionId(), destFileName, inputStream);
 
         CloudTask<Boolean> mergedTask = new JoinedCloudTask<>(new Callable<Boolean>() {
             @Override
@@ -90,22 +94,20 @@ public class LogicServiceImpl implements LogicService {
     }
 
     @Override
-    public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, String directory,
-                                                Callable<List<CloudFile>> callback) {
+    public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, String directory) {
         logger.info("Listing all files: " + directory);
 
-        CloudTask<List<CloudFile>> listCloudTask = sessionFrom.getCloudInformation().getCloud().listAllFiles(sessionFrom.getSessionId(), directory, callback);
+        CloudTask<List<CloudFile>> listCloudTask = sessionFrom.getCloudInformation().getCloud().listAllFiles(sessionFrom.getSessionId(), directory);
         executor.execute(listCloudTask);
 
         return listCloudTask;
     }
 
     @Override
-    public CloudTask<Boolean> delete(CloudSession session, String fileName,
-                                     Callable<Boolean> callback) {
+    public CloudTask<Boolean> delete(CloudSession session, String fileName) {
         logger.info("Deleting: " + fileName);
 
-        CloudTask<Boolean> remove = session.getCloudInformation().getCloud().remove(session.getSessionId(), fileName, callback);
+        CloudTask<Boolean> remove = session.getCloudInformation().getCloud().remove(session.getSessionId(), fileName);
         executor.execute(remove);
 
         return remove;

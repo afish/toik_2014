@@ -27,28 +27,28 @@ public interface Cloud {
 
 	/**
 	 * Lists all files under the given directory. CloudTask.get should return the list of files. The
-	 * caller of this method will call CloudTask.run.
+	 * caller of this method will call CloudTask.run. Passing null as directory means listing the root directory.
 	 */
-	CloudTask<List<CloudFile>> listAllFiles(String sessionId, String directory);
+	CloudTask<List<CloudFile>> listAllFiles(String sessionId, CloudFile directory);
 
 	/**
-	 * Downloads file with the given name. CloudTask.get should return boolean stating whether
+	 * Downloads the given file. CloudTask.get should return boolean stating whether
 	 * operation succeeded. The caller of this method will call CloudTask.run.
 	 * 
 	 * File contents is written to the outputStream;
 	 */
-	CloudTask<Boolean> download(String sessionId, String absoluteFileName, OutputStream outputStream);
+	CloudTask<Boolean> download(String sessionId, CloudFile file, OutputStream outputStream);
 
 	/**
-	 * Uploads file with the given name. Gets data from the {@link InputStream}. CloudTask.get
-	 * should return boolean stating whether operation succeeded. The caller of this method will
-	 * call CloudTask.run.
+	 * Uploads file with the given name to the specified directory. Gets data from the {@link InputStream}.
+     * CloudTask.get should return CloudFile stating whether operation succeeded (null means fail). The caller of this
+     * method will call CloudTask.run.
 	 */
-	CloudTask<Boolean> upload(String sessionId, String absoluteFileName, InputStream fileInputStream);
+	CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream);
 
 	/**
-	 * Removes file with the given name. CloudTask.get should return boolean stating whether
+	 * Removes the given file. CloudTask.get should return boolean stating whether
 	 * operation succeeded. The caller of this method will call CloudTask.run.
 	 */
-	CloudTask<Boolean> remove(String sessionId, String absoluteFileName);
+	CloudTask<Boolean> remove(String sessionId, CloudFile file);
 }

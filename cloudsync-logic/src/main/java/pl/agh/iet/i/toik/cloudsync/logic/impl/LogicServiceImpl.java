@@ -41,21 +41,22 @@ public class LogicServiceImpl implements LogicService {
     }
 
     @Override
-    public CloudTask<Boolean> move(CloudSession sessionFrom, String fromFileName,
-                                   CloudSession sessionTo, String toFileName) {
-        logger.info("Moving: " + fromFileName + " -> " + toFileName);
+    public CloudTask<CloudFile> move(CloudSession sessionFrom, CloudFile fromFile, CloudSession sessionTo, CloudFile destinationDirectory, String destinationFileName) {
+        logger.info("Moving: " + fromFile + " -> " + destinationDirectory + "\\" + destinationFileName);
 
-        final CloudTask<Boolean> copyTask = copy(sessionFrom, fromFileName, sessionTo, toFileName);
-        final CloudTask<Boolean> removeTask = sessionFrom.getCloudInformation().getCloud().remove(sessionFrom.getSessionId(), fromFileName);
-        CloudTask<Boolean> mergedTask = new JoinedCloudTask<>(new Callable<Boolean>() {
+        final CloudTask<CloudFile> copyTask = copy(sessionFrom, fromFile, sessionTo, destinationDirectory, destinationFileName);
+        final CloudTask<Boolean> removeTask = sessionFrom.getCloudInformation().getCloud().remove(sessionFrom.getSessionId(), fromFile);
+        CloudTask<CloudFile> mergedTask = new JoinedCloudTask<>(new Callable<CloudFile>() {
             @Override
-            public Boolean call() throws Exception {
-                if(copyTask.get()){
+            public CloudFile call() throws Exception {
+                CloudFile result = copyTask.get();
+                if(result != null){
                     executor.execute(removeTask);
-                    return removeTask.get();
+                    removeTask.get();
+                    return result;
                 }
 
-                return false;
+                return null;
             }
         }, copyTask, removeTask);
 
@@ -65,11 +66,11 @@ public class LogicServiceImpl implements LogicService {
     }
 
     @Override
-    public CloudTask<Boolean> copy(CloudSession session, String srcFileName, CloudSession sessionTo, String destFileName) {
-        logger.info("Copying: " + srcFileName + " -> " + destFileName);
+    public CloudTask<CloudFile> copy(CloudSession session, CloudFile fromFile, CloudSession sessionTo, CloudFile destinationDirectory, String destinationFileName) {
+        logger.info("Copying: " + fromFile + " -> " + destinationDirectory + "\\" + destinationFileName);
 
         PipedOutputStream outputStream = new PipedOutputStream();
-        final CloudTask<Boolean> firstTask = session.getCloudInformation().getCloud().download(session.getSessionId(), srcFileName, outputStream);
+        final CloudTask<Boolean> firstTask = session.getCloudInformation().getCloud().download(session.getSessionId(), fromFile, outputStream);
         PipedInputStream inputStream = null;
         try {
             inputStream = new PipedInputStream(outputStream);
@@ -77,12 +78,16 @@ public class LogicServiceImpl implements LogicService {
             // How to recover?
             e.printStackTrace();
         }
-        final CloudTask<Boolean> secondTask = sessionTo.getCloudInformation().getCloud().upload(sessionTo.getSessionId(), destFileName, inputStream);
+        final CloudTask<CloudFile> secondTask = sessionTo.getCloudInformation().getCloud().upload(sessionTo.getSessionId(), destinationDirectory, destinationFileName, inputStream);
 
-        CloudTask<Boolean> mergedTask = new JoinedCloudTask<>(new Callable<Boolean>() {
+        CloudTask<CloudFile> mergedTask = new JoinedCloudTask<>(new Callable<CloudFile>() {
             @Override
-            public Boolean call() throws Exception {
-                return firstTask.get() && secondTask.get();
+            public CloudFile call() throws Exception {
+                if(firstTask.get()){
+                    return secondTask.get();
+                }else{
+                    return null;
+                }
             }
         }, firstTask, secondTask);
 
@@ -94,7 +99,17 @@ public class LogicServiceImpl implements LogicService {
     }
 
     @Override
-    public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, String directory) {
+    public CloudTask<Boolean> delete(CloudSession session, CloudFile file) {
+        logger.info("Deleting: " + file);
+
+        CloudTask<Boolean> remove = session.getCloudInformation().getCloud().remove(session.getSessionId(), file);
+        executor.execute(remove);
+
+        return remove;
+    }
+
+    @Override
+    public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, CloudFile directory) {
         logger.info("Listing all files: " + directory);
 
         CloudTask<List<CloudFile>> listCloudTask = sessionFrom.getCloudInformation().getCloud().listAllFiles(sessionFrom.getSessionId(), directory);
@@ -103,21 +118,12 @@ public class LogicServiceImpl implements LogicService {
         return listCloudTask;
     }
 
-    @Override
-    public CloudTask<Boolean> delete(CloudSession session, String fileName) {
-        logger.info("Deleting: " + fileName);
+    private class JoinedCloudTask<T, U, W> extends CloudTask<W>{
 
-        CloudTask<Boolean> remove = session.getCloudInformation().getCloud().remove(session.getSessionId(), fileName);
-        executor.execute(remove);
+        private CloudTask<T> first;
+        private CloudTask<U> second;
 
-        return remove;
-    }
-
-    private class JoinedCloudTask<T> extends CloudTask<T>{
-
-        private CloudTask<T> first, second;
-
-        public JoinedCloudTask(Callable<T> callback, CloudTask<T> first, CloudTask<T> second){
+        public JoinedCloudTask(Callable<W> callback, CloudTask<T> first, CloudTask<U> second){
             super(callback);
             this.first = first;
             this.second = second;

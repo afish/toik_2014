@@ -16,30 +16,31 @@ public interface LogicService {
 	public void logout(CloudSession sessionId);
 
 	/**
-	 * Moves fromFileName to toFileName. File names are absolute paths. CloudTask.get returns
-	 * boolean stating whether the operation succeeded. Result should be get from the CloudTask via
+	 * Moves fromFileName to toFileName, destinationDirectory represents a directory. CloudTask.get returns
+	 * CloudFile representing the created file or null in case of error. Result should be get from the CloudTask via
 	 * polling.
 	 */
-	public CloudTask<Boolean> move(CloudSession sessionFrom, String fromFileName,
-			CloudSession sessionTo, String toFileName);
+	public CloudTask<CloudFile> move(CloudSession sessionFrom, CloudFile fromFile,
+			CloudSession sessionTo, CloudFile destinationDirectory, String destinationFileName);
 
 	/**
-	 * Copies scrFileName to destFileName. File names are absolute paths. CloudTask.get returns
-	 * boolean stating whether the operation succeeded. Result should be get from the CloudTask via
+	 * Copies scrFileName to destFileName, destinationDirectory represents a directory. CloudTask.get returns
+	 * CloudFile representing the created file or null in case of error. Result should be get from the CloudTask via
 	 * polling.
 	 */
-	public CloudTask<Boolean> copy(CloudSession session, String srcFileName,
-			CloudSession sessionTo, String destFileName);
+	public CloudTask<CloudFile> copy(CloudSession session, CloudFile fromFile,
+			CloudSession sessionTo, CloudFile destinationDirectory, String destinationFileName);
 
 	/**
-	 * Deletes the given file. File name is absolute path. CloudTask.get returns boolean stating
+	 * Deletes the given file. CloudTask.get returns boolean stating
 	 * whether the operation succeeded. Result should be get from the CloudTask via polling.
 	 */
-	public CloudTask<Boolean> delete(CloudSession session, String fileName);
+	public CloudTask<Boolean> delete(CloudSession session, CloudFile file);
 
 	/**
-	 * Lists all files in the given directory. Directory name is absolute path. CloudTask.get
+	 * Lists all files in the given directory. CloudTask.get
 	 * returns the list of files. Result should be get from the CloudTask via polling.
+     * Passing null as directory means listing the root directory;
 	 */
-	public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, String directory);
+	public CloudTask<List<CloudFile>> listFiles(CloudSession sessionFrom, CloudFile directory);
 }

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 import pl.agh.iet.i.toik.cloudsync.onedrive.Session;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveAccountService;
 
@@ -24,7 +25,6 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
     @Autowired
     private Client client;
 
-
     private Map<String, Session> sessionMap = new HashMap<>();
 
     @Override
@@ -33,11 +33,12 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
         String clientSecret = (String) account.getPropertyList().get("client_secret");
         String redirectURI = (String) account.getPropertyList().get("redirect_uri");
         String refreshToken = (String) account.getPropertyList().get("refresh_token");
+        CloudFile rootFolder = new CloudFile("/", null, true, "/", (String) account.getPropertyList().get("root_folder"));
         if (clientId == null || clientSecret == null || redirectURI == null || refreshToken == null) {
             logger.warn("Account has not enough data to login: returning null");
             return null;
         }
-        Session session = new Session(clientId, refreshToken, redirectURI, clientSecret);
+        Session session = new Session(clientId, refreshToken, redirectURI, clientSecret, rootFolder);
         if (refreshAccessToken(session) == null) {
             logger.warn("Unable to get access token from remote service: returning null");
             return null;
@@ -51,7 +52,6 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
 
     @Override
     public void logout(String sessionId) {
-        getAccessToken(sessionId);
         logger.trace("Logging out: sessionId={}", sessionId);
         if (sessionMap.remove(sessionId) == null) {
             logger.warn("Session not found: can't logout");
@@ -83,6 +83,12 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
         }
         logger.warn("Session not found: returning null");
         return null;
+    }
+
+    @Override
+    public Session getSession(String sessionId) {
+        logger.trace("Returning session: sessionId={}", sessionId);
+        return sessionMap.get(sessionId);
     }
 
     private String refreshAccessToken(Session session) {

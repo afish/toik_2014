@@ -1,6 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.onedrive;
 
 import org.joda.time.DateTime;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 
 public class Session {
     private DateTime tokenExpirationDate;
@@ -15,11 +16,14 @@ public class Session {
 
     private String clientSecret;
 
-    public Session(String clientId, String refreshToken, String redirectURI, String clientSecret) {
+    private CloudFile rootFolder;
+
+    public Session(String clientId, String refreshToken, String redirectURI, String clientSecret, CloudFile rootFolder) {
         this.clientId = clientId;
         this.refreshToken = refreshToken;
         this.redirectURI = redirectURI;
         this.clientSecret = clientSecret;
+        this.rootFolder = rootFolder;
     }
 
     public DateTime getTokenExpirationDate() {
@@ -52,5 +56,9 @@ public class Session {
 
     public String getClientSecret() {
         return clientSecret;
+    }
+
+    public CloudFile getRootFolder() {
+        return rootFolder;
     }
 }

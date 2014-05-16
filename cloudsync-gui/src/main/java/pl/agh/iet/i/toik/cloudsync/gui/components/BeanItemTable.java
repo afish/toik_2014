@@ -13,6 +13,7 @@ public class BeanItemTable<T> extends Table {
 		setSortEnabled(true);
 		setImmediate(true);
 		setColumnReorderingAllowed(true);
+		setNullSelectionAllowed(true);
 		setSelectable(true);
 		setMultiSelect(true);
 		setSizeFull();

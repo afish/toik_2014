@@ -7,7 +7,7 @@
 }
 
 .v-vaadin-version:after {
-	content: "7.1.13";
+	content: "7.2.0";
 }
 
 .v-generated-body {
@@ -271,6 +271,14 @@
 	width: 100%;
 }
 
+.v-debugwindow-selector > span.value {
+	width: 100%;
+}
+
+.v-debugwindow-selector :hover {
+	background: rgba(255, 32, 32, 0.5);
+}
+
 .v-debugwindow-log {
 	font-family: monospace;
 }
@@ -310,6 +318,23 @@
 
 .v-debugwindow-network .v-debugwindow-row > span {
 	display: inline;
+}
+
+@font-face {
+	font-family: "FontAwesome";
+	src: url(../base/fonts/fontawesome-webfont.eot);
+	src: url(../base/fonts/fontawesome-webfont.eot?#iefix) format("embedded-opentype"), url(../base/fonts/fontawesome-webfont.woff) format("woff"), url(../base/fonts/fontawesome-webfont.ttf) format("truetype"), url(../base/fonts/fontawesome-webfont.svg) format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+
+.FontAwesome {
+	font-family: "FontAwesome";
+	font-style: normal;
+	font-weight: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	display: inline-block;
 }
 
 /** sprite: verticals; sprite-image: url(common/img/vertical-sprites.png); sprite-layout: vertical */
@@ -1562,10 +1587,6 @@ div.v-csslayout {
 	padding-right: 12px;
 }
 
-.v-customcomponent {
-	overflow: hidden;
-}
-
 .v-customlayout {
 	overflow: hidden;
 }
@@ -1637,7 +1658,7 @@ div.v-csslayout {
 	border: 1px solid #ddd;
 }
 
-.v-disabled .v-datefield-calendarpanel-day, .v-disabled .v-datefield-calendarpanel-day-today {
+.v-disabled .v-datefield-calendarpanel-day, .v-disabled .v-datefield-calendarpanel-day-today, .v-disabled.v-datefield-popupcalendar .v-datefield-button {
 	cursor: default;
 }
 
@@ -1749,7 +1770,7 @@ div.v-csslayout {
 	border: 1px solid #ddd;
 }
 
-.v-disabled .v-inline-datefield-calendarpanel-day, .v-disabled .v-inline-datefield-calendarpanel-day-today {
+.v-disabled .v-inline-datefield-calendarpanel-day, .v-disabled .v-inline-datefield-calendarpanel-day-today, .v-disabled.v-inline-datefield-popupcalendar .v-inline-datefield-button {
 	cursor: default;
 }
 
@@ -1800,6 +1821,8 @@ div.v-csslayout {
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
 	position: relative;
+	-ms-touch-action: none;
+	touch-action: none;
 }
 
 [draggable=true] {
@@ -2661,6 +2684,8 @@ div.v-progressindicator-indeterminate-disabled {
 	height: 12px;
 	margin-top: -5px;
 	font-size: 0;
+	-ms-touch-action: none;
+	touch-action: none;
 }
 
 .v-slider-vertical {
@@ -2716,6 +2741,8 @@ div.v-progressindicator-indeterminate-disabled {
 	background: #ddd;
 	cursor: e-resize;
 	cursor: col-resize;
+	-ms-touch-action: none;
+	touch-action: none;
 }
 
 .v-disabled .v-splitpanel-hsplitter div {
@@ -2731,6 +2758,8 @@ div.v-progressindicator-indeterminate-disabled {
 	background: #ddd;
 	cursor: s-resize;
 	cursor: row-resize;
+	-ms-touch-action: none;
+	touch-action: none;
 }
 
 .v-disabled .v-splitpanel-vsplitter div {
@@ -3141,6 +3170,14 @@ div.v-progressindicator-indeterminate-disabled {
 	cursor: default;
 }
 
+.v-tabsheet-tabitem-focus .v-captiontext {
+	text-decoration: underline;
+}
+
+.v-tabsheet-tabitem-selected.v-tabsheet-tabitem-focus .v-captiontext {
+	text-decoration: inherit;
+}
+
 .v-tabsheet-content {
 	border: 1px solid #aaa;
 	border-top: none;
@@ -3428,7 +3465,6 @@ div.v-tree-node-leaf {
 }
 
 .v-treetable .v-table-row .v-table-cell-content, .v-treetable .v-table-row-odd .v-table-cell-content {
-	position: relative;
 	z-index: 10;
 }
 
@@ -5080,7 +5116,7 @@ td.v-inline-datefield-calendarpanel-nextyear {
 	width: 6px;
 }
 
-.v-verticallayout-blue, .v-horizontallayout-blue, .v-orderedlayout-blue, .v-gridlayout-blue, .v-csslayout-blue, .v-formlayout-blue, .v-splitpanel-vertical-blue, .v-splitpanel-horizontal-blue {
+.v-verticallayout-blue, .v-horizontallayout-blue, .v-orderedlayout-blue, .v-gridlayout-blue, .v-csslayout-blue, .v-formlayout-blue, .v-absolutelayout-blue, .v-splitpanel-vertical-blue, .v-splitpanel-horizontal-blue {
 	background-color: #bcd3de;
 }
 
@@ -5088,7 +5124,7 @@ td.v-inline-datefield-calendarpanel-nextyear {
 	background-color: #bcd3de;
 }
 
-.v-verticallayout-white, .v-horizontallayout-white, .v-orderedlayout-white, .v-gridlayout-white, .v-csslayout-white, .v-formlayout-white, .v-splitpanel-vertical-white, .v-splitpanel-horizontal-white {
+.v-verticallayout-white, .v-horizontallayout-white, .v-orderedlayout-white, .v-gridlayout-white, .v-csslayout-white, .v-formlayout-white, .v-absolutelayout-white, .v-splitpanel-vertical-white, .v-splitpanel-horizontal-white {
 	background-color: #fff;
 	color: #222;
 }
@@ -5098,7 +5134,7 @@ td.v-inline-datefield-calendarpanel-nextyear {
 	color: #222;
 }
 
-.v-verticallayout-black, .v-horizontallayout-black, .v-orderedlayout-black, .v-gridlayout-black, .v-csslayout-black, .v-formlayout-black, .v-splitpanel-vertical-black, .v-splitpanel-horizontal-black {
+.v-verticallayout-black, .v-horizontallayout-black, .v-orderedlayout-black, .v-gridlayout-black, .v-csslayout-black, .v-formlayout-black, .v-absolutelayout-black, .v-splitpanel-vertical-black, .v-splitpanel-horizontal-black {
 	background: #1e2022 url(../reindeer/layouts/img/black-bg.png) repeat-x;
 }
 

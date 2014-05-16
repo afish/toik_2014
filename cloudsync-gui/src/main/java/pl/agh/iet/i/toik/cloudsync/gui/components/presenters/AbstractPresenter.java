@@ -21,7 +21,7 @@ public abstract class AbstractPresenter<VIEW extends ComponentView<? extends Pre
 	
 	@PostConstruct
 	private void init(){
-		eventBus.subscribe(this);
+		eventBus.subscribe(this, true);
 	}
 	
 	@PreDestroy

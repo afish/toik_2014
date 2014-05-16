@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveAccountService;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveFileManagerService;
-import pl.agh.iet.i.toik.cloudsync.onedrive.task.DownloadCallable;
-import pl.agh.iet.i.toik.cloudsync.onedrive.task.DownloadTask;
+import pl.agh.iet.i.toik.cloudsync.onedrive.task.ProgressCallable;
+import pl.agh.iet.i.toik.cloudsync.onedrive.task.ProgressTask;
 
 import javax.ws.rs.core.MediaType;
 import java.io.BufferedInputStream;
@@ -30,8 +30,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
 
 
     @Override
-    public DownloadTask download(final String sessionId, final CloudFile file, final OutputStream outputStream) {
-        DownloadCallable callable = new DownloadCallable() {
+    public ProgressTask<Boolean> download(final String sessionId, final CloudFile file, final OutputStream outputStream) {
+        ProgressCallable<Boolean> callable = new ProgressCallable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 logger.info("Preparing download file \"{}\", {}", file.getName(), file);
@@ -80,6 +80,42 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 return true;
             }
         };
-        return new DownloadTask(callable);
+        return new ProgressTask<>(callable);
+    }
+
+    @Override
+    public ProgressTask<Boolean> remove(final String sessionId, final CloudFile file) {
+        ProgressCallable<Boolean> callable = new ProgressCallable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                logger.info("Preparing to remove file \"{}\", {}", file.getName(), file);
+
+                String accessToken = onedriveAccountService.getAccessToken(sessionId);
+                if (accessToken == null) {
+                    logger.warn("Access token is null");
+                    return false;
+                }
+
+                WebResource webResource = client
+                        .resource("https://apis.live.net/v5.0/" + file.getId()).
+                                queryParam("access_token", accessToken);
+
+                ClientResponse response = webResource.delete(ClientResponse.class);
+
+                this.setProgress(1.0f);
+
+                if (response.getStatus() == 204) {
+                    logger.info("File {} successfully removed from SkyDrive", file.getName());
+                    return true;
+                } else if (response.getStatus() != 200) {
+                    logger.info("Error while removing file {}", file.getName());
+                    return false;
+                } else {
+                    logger.warn("Unhandled http response code {} while removing file {}", response.getStatus(), file.getName());
+                    return false;
+                }
+            }
+        };
+        return new ProgressTask<>(callable);
     }
 }

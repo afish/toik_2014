@@ -36,6 +36,11 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
             public Boolean call() throws Exception {
                 logger.info("Preparing download file \"{}\", {}", file.getName(), file);
 
+                if(file.isDirectory()) {
+                    logger.warn("Unable to download directory");
+                    return false;
+                }
+
                 String accessToken = onedriveAccountService.getAccessToken(sessionId);
                 if (accessToken == null) {
                     logger.warn("Access token is null");

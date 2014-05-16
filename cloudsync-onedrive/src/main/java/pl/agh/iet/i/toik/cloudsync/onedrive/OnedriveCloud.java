@@ -51,6 +51,6 @@ public class OnedriveCloud implements Cloud {
 
     @Override
     public CloudTask<Boolean> remove(String sessionId, CloudFile file) {
-        return null;
+        return onedriveFileManagerService.remove(sessionId, file);
     }
 }

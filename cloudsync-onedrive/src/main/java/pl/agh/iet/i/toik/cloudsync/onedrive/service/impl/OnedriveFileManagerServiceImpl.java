@@ -61,19 +61,22 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
 
                 byte[] buffer = new byte[65536];
                 int readBytes;
+                int totalReadBytes = 0;
                 int maxSize = response.getLength();
                 logger.info("Downloading file \"{}\" with size={}B, {}", file.getName(), maxSize, file);
 
                 try {
                     BufferedInputStream is = new BufferedInputStream(response.getEntityInputStream());
                     while ((readBytes = is.read(buffer, 0, 65536)) > 0) {
-                        setProgress(1 - is.available() / maxSize);
+                        totalReadBytes += readBytes;
+                        setProgress((float)totalReadBytes / maxSize);
                         outputStream.write(buffer, 0, readBytes);
                     }
                 } catch (IOException e) {
                     logger.error("Error occurred during downloading file from remove service", e);
                     return false;
                 }
+                logger.info("Download file {} completed, received {}B", file, totalReadBytes);
                 return true;
             }
         };

@@ -28,15 +28,14 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
     @Autowired
     private Client client;
 
-
     @Override
     public ProgressTask<Boolean> download(final String sessionId, final CloudFile file, final OutputStream outputStream) {
         ProgressCallable<Boolean> callable = new ProgressCallable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                logger.info("Preparing download file \"{}\", {}", file.getName(), file);
+                logger.debug("Preparing download file \"{}\", {}", file.getName(), file);
 
-                if(file.isDirectory()) {
+                if (file.isDirectory()) {
                     logger.warn("Unable to download directory");
                     return false;
                 }
@@ -63,13 +62,13 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 int readBytes;
                 int totalReadBytes = 0;
                 int maxSize = response.getLength();
-                logger.info("Downloading file \"{}\" with size={}B, {}", file.getName(), maxSize, file);
+                logger.debug("Downloading file \"{}\" with size={}B, {}", file.getName(), maxSize, file);
 
                 try {
                     BufferedInputStream is = new BufferedInputStream(response.getEntityInputStream());
                     while ((readBytes = is.read(buffer, 0, 65536)) > 0) {
                         totalReadBytes += readBytes;
-                        setProgress((float)totalReadBytes / maxSize);
+                        setProgress((float) totalReadBytes / maxSize);
                         outputStream.write(buffer, 0, readBytes);
                     }
                 } catch (IOException e) {
@@ -88,7 +87,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
         ProgressCallable<Boolean> callable = new ProgressCallable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                logger.info("Preparing to remove file \"{}\", {}", file.getName(), file);
+                String fileType = file.isDirectory() ? "file" : "directory";
+                logger.debug("Preparing to remove {} \"{}\", {}", fileType, file.getName(), file);
 
                 String accessToken = onedriveAccountService.getAccessToken(sessionId);
                 if (accessToken == null) {
@@ -97,21 +97,18 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 }
 
                 WebResource webResource = client
-                        .resource("https://apis.live.net/v5.0/" + file.getId()).
-                                queryParam("access_token", accessToken);
+                        .resource("https://apis.live.net/v5.0/" + file.getId())
+                        .queryParam("access_token", accessToken);
 
                 ClientResponse response = webResource.delete(ClientResponse.class);
 
                 this.setProgress(1.0f);
 
                 if (response.getStatus() == 204) {
-                    logger.info("File {} successfully removed from SkyDrive", file.getName());
+                    logger.info("{} {} successfully removed from OneDrive", fileType, file.getName());
                     return true;
-                } else if (response.getStatus() != 200) {
-                    logger.info("Error while removing file {}", file.getName());
-                    return false;
                 } else {
-                    logger.warn("Unhandled http response code {} while removing file {}", response.getStatus(), file.getName());
+                    logger.info("Error while removing {} : {}. Remote service returned HTTP error code: {}", fileType, file.getName(), response.getStatus());
                     return false;
                 }
             }

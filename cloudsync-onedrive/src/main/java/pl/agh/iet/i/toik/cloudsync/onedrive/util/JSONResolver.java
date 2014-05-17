@@ -44,6 +44,19 @@ public class JSONResolver {
         return filesList;
     }
 
+    public CloudFile resolveUploadedFileDetails(String jsonClientResponse, CloudFile parent) {
+
+        JSONObject jsonFileDetails = new JSONObject(jsonClientResponse);
+
+        return new CloudFile(
+                jsonFileDetails.getString(fileNameJSONAttribute),
+                null, //how to set date?
+                false,
+                resolvePath(parent, jsonFileDetails),
+                jsonFileDetails.getString(fileIdJSONAttribute)
+        );
+    }
+
     private boolean isDirectory(JSONObject jsonFileDetails) {
         return jsonFileDetails.getString(fileTypeJSONAttribute).equals(folderJSONValue);
     }

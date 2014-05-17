@@ -129,7 +129,7 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
             public List<CloudFile> call() throws Exception {
                 List<CloudFile> filesList;
 
-                if (directory.isDirectory() == false) {
+                if (!directory.isDirectory()) {
                     logger.warn("Specified file is not a directory: {}", directory.getName());
                     return new ArrayList<>();
                 }
@@ -153,7 +153,7 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 }
 
                 //TODO add parsing progress if really needed
-                filesList = jsonResolver.getCloudFilesListFromJSON(response.getEntity(String.class), directory);
+                filesList = jsonResolver.resolveFileListDetails(response.getEntity(String.class), directory);
                 logger.info("Files list successfully loaded from directory {}", directory.getName());
                 setProgress(1.0f);
 
@@ -184,7 +184,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 byte[] buffer = new byte[65536];
                 int readBytes;
 
-                //Cannot obtain file length from inputstream which means that we can't create working progress without that detail provided (probably)
+                // Cannot obtain file length from inputstream which means that
+                // we can't create working progress without that detail provided (probably)
                 try {
                     OutputStream out = httpURLConnection.getOutputStream();
                     while ((readBytes = fileInputStream.read(buffer, 0, 65536)) > 0) {
@@ -211,12 +212,30 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 }
                 responseReader.close();
 
-                CloudFile cloudFile = jsonResolver.resolveUploadedFileDetails(serverResponse.toString(), directory);
+                CloudFile cloudFile = getUploadedFileDetails(serverResponse.toString(), accessToken, directory);
                 setProgress(1.0f);
                 return cloudFile;
             }
         };
         return new ProgressTask<>(callable);
+    }
+
+    private CloudFile getUploadedFileDetails(String serverResponse, String accessToken, CloudFile parent) {
+        String fileId = jsonResolver.resolveUploadedFileId(serverResponse);
+
+        WebResource webResource = client
+                .resource("https://apis.live.net/v5.0/" + fileId)
+                .queryParam("access_token", accessToken);
+
+        ClientResponse response = webResource
+                .accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
+        if (response.getStatus() != 200) {
+            logger.error("Remote service returned HTTP error code: {} while obtaining file details {}", response.getStatus(), fileId);
+            return null;
+        }
+
+        return jsonResolver.resolveUploadedFileDetails(response.getEntity(String.class), parent);
     }
 
 }

@@ -23,6 +23,8 @@ public interface FilesTabSheetView extends ComponentView<FilesTabSheetPresenter>
 		@EventBusListenerMethod
 		public void onFileSelected(org.vaadin.spring.events.Event<FileSelectedEvent> event);
 
+		public void changePath(String value, FilesTabView filesTabView);
+
 	}
 
 	public void unselect();

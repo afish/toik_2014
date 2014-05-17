@@ -17,4 +17,5 @@ public interface FilesTabView extends ComponentView<FilesTabSheetPresenter> {
 	public void refresh(String path, Collection<FileMock> files);
 
 	public void unselect();
+
 }

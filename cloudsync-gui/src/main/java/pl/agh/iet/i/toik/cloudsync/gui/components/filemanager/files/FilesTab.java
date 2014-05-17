@@ -8,12 +8,12 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabShee
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabView;
 import pl.agh.iet.i.toik.cloudsync.gui.model.FileMock;
 
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -32,6 +32,7 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 		setComponents();
 		setListeners();
 		filesTable.addItem(new FileMock("path", "DIR", "N/A", new Date()));
+		filesTable.addItem(new FileMock("path2", "DIR", "N/A", new Date()));
 
 	}
 
@@ -42,6 +43,14 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 			@Override
 			public void itemClick(ItemClickEvent event) {
 				getPresenter().fileSelected();
+			}
+		});
+		
+		changePathButton.addClickListener( new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getPresenter().changePath(pathField.getValue(),(FilesTabView)FilesTab.this);
 			}
 		});
 		
@@ -56,6 +65,7 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 		pathField = new TextField();
 		pathField.setImmediate(true);
 		pathField.setWidth(100, Unit.PERCENTAGE);
+		pathField.setValue("/");
 		changePathButton = createButtonWithIcon("play.png");
 
 		HorizontalLayout pathLayout = new HorizontalLayout();
@@ -110,7 +120,10 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 
 	@Override
 	public void refresh(String path, Collection<FileMock> files) {
-		// TODO Auto-generated method stub
+		pathField.setValue(path);
+		filesTable.removeAllItems();
+		for(FileMock file : files)
+			filesTable.addItem(file);
 		
 	}
 

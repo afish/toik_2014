@@ -5,10 +5,12 @@ import org.springframework.stereotype.Component;
 import org.vaadin.spring.events.Event;
 import org.vaadin.spring.events.EventBusListenerMethod;
 
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.ChangePathEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.FileSelectedEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAccountsWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView.FilesTabSheetPresenter;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 
 @Component
@@ -35,6 +37,12 @@ public class FilesTabSheetPresenterImpl extends AbstractPresenter<FilesTabSheetV
 			
 		}
 	
+	}
+
+	@Override
+	public void changePath(String path, FilesTabView filesTabView) {
+		eventBus.publish(this, new ChangePathEvent(path, filesTabView));
+		
 	}
 
 

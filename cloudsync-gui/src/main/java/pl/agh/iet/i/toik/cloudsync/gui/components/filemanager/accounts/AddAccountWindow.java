@@ -107,7 +107,7 @@ public class AddAccountWindow extends
 
 	private ComboBox createCloudTypeComboBox() {
 		ComboBox cloudTypeComboBox = new ComboBox(
-				captions.get("cloud.type.cmbobox"));
+				captions.get("cloud.type.combobox"));
 		for (CloudTypeMock type : CloudTypeMock.values())
 			cloudTypeComboBox.addItem(type);
 		cloudTypeComboBox.select(CloudTypeMock.DROPBOX);

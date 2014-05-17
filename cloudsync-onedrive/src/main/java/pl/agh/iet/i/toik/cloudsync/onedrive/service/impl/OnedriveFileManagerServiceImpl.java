@@ -12,11 +12,14 @@ import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveAccountService;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveFileManagerService;
 import pl.agh.iet.i.toik.cloudsync.onedrive.task.ProgressCallable;
 import pl.agh.iet.i.toik.cloudsync.onedrive.task.ProgressTask;
+import pl.agh.iet.i.toik.cloudsync.onedrive.util.JSONResolver;
 
 import javax.ws.rs.core.MediaType;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerService {
@@ -27,6 +30,9 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
 
     @Autowired
     private Client client;
+
+    @Autowired
+    private JSONResolver jsonResolver;
 
     @Override
     public ProgressTask<Boolean> download(final String sessionId, final CloudFile file, final OutputStream outputStream) {
@@ -111,6 +117,47 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                     logger.info("Error while removing {} : {}. Remote service returned HTTP error code: {}", fileType, file.getName(), response.getStatus());
                     return false;
                 }
+            }
+        };
+        return new ProgressTask<>(callable);
+    }
+
+    @Override
+    public ProgressTask<List<CloudFile>> listFiles(final String sessionId, final CloudFile directory) {
+        ProgressCallable<List<CloudFile>> callable = new ProgressCallable<List<CloudFile>>() {
+            @Override
+            public List<CloudFile> call() throws Exception {
+                List<CloudFile> filesList;
+
+                if (directory.isDirectory() == false) {
+                    logger.warn("Specified file is not a directory: {}", directory.getName());
+                    return new ArrayList<>();
+                }
+
+                String accessToken = onedriveAccountService.getAccessToken(sessionId);
+                if (accessToken == null) {
+                    logger.warn("Access token is null");
+                    return new ArrayList<>();
+                }
+
+                WebResource webResource = client
+                        .resource("https://apis.live.net/v5.0/" + directory.getId() + "/files")
+                        .queryParam("access_token", accessToken);
+
+                ClientResponse response = webResource
+                        .accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
+                if (response.getStatus() != 200) {
+                    logger.error("Remote service returned HTTP error code: {} while listing files in {}", response.getStatus(), directory.getName());
+                    return new ArrayList<>();
+                }
+
+                //TODO add parsing progress if really needed
+                filesList = jsonResolver.getCloudFilesListFromJSON(response.getEntity(String.class), directory);
+                logger.info("Files list successfully loaded from directory {}", directory.getName());
+                setProgress(1.0f);
+
+                return filesList;
             }
         };
         return new ProgressTask<>(callable);

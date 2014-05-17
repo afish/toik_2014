@@ -36,7 +36,7 @@ public class OnedriveCloud implements Cloud {
 
     @Override
     public CloudTask<List<CloudFile>> listAllFiles(String sessionId, CloudFile directory) {
-        return null;
+        return onedriveFileManagerService.listFiles(sessionId, directory);
     }
 
     @Override

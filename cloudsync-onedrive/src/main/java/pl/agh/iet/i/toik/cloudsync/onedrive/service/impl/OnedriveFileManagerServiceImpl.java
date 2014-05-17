@@ -15,9 +15,9 @@ import pl.agh.iet.i.toik.cloudsync.onedrive.task.ProgressTask;
 import pl.agh.iet.i.toik.cloudsync.onedrive.util.JSONResolver;
 
 import javax.ws.rs.core.MediaType;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,4 +162,61 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
         };
         return new ProgressTask<>(callable);
     }
+
+    @Override
+    public ProgressTask<CloudFile> upload(final String sessionId, final CloudFile directory, final String fileName, final InputStream fileInputStream) {
+        ProgressCallable<CloudFile> callable = new ProgressCallable<CloudFile>() {
+            @Override
+            public CloudFile call() throws Exception {
+
+                String accessToken = onedriveAccountService.getAccessToken(sessionId);
+                if (accessToken == null) {
+                    logger.warn("Access token is null");
+                    return null;
+                }
+
+                URL url = new URL("https://apis.live.net/v5.0/" + directory.getId() + "/files/" + fileName + "?access_token=" + accessToken);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setRequestMethod("PUT");
+
+                byte[] buffer = new byte[65536];
+                int readBytes;
+
+                //Cannot obtain file length from inputstream which means that we can't create working progress without that detail provided (probably)
+                try {
+                    OutputStream out = httpURLConnection.getOutputStream();
+                    while ((readBytes = fileInputStream.read(buffer, 0, 65536)) > 0) {
+                        out.write(buffer, 0, readBytes);
+                    }
+                    out.close();
+                } catch (IOException e) {
+                    logger.error("Error occurred during uploading file to server", e);
+                    return null;
+                }
+
+                if (httpURLConnection.getResponseCode() != 200) {
+                    logger.error("Remote service returned HTTP error code: {} while uploading file to server",
+                            httpURLConnection.getResponseCode(), fileName);
+                    return null;
+                }
+
+                BufferedReader responseReader = new BufferedReader(new InputStreamReader(
+                        httpURLConnection.getInputStream()));
+                String line;
+                StringBuilder serverResponse = new StringBuilder();
+                while ((line = responseReader.readLine()) != null) {
+                    serverResponse.append(line);
+                }
+                responseReader.close();
+
+                CloudFile cloudFile = jsonResolver.resolveUploadedFileDetails(serverResponse.toString(), directory);
+                setProgress(1.0f);
+                return cloudFile;
+            }
+        };
+        return new ProgressTask<>(callable);
+    }
+
 }

@@ -46,7 +46,7 @@ public class OnedriveCloud implements Cloud {
 
     @Override
     public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream) {
-        return null;
+        return onedriveFileManagerService.upload(sessionId, directory, fileName, fileInputStream);
     }
 
     @Override

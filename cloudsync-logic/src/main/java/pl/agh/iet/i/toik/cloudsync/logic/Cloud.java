@@ -44,7 +44,7 @@ public interface Cloud {
      * CloudTask.get should return CloudFile stating whether operation succeeded (null means fail). The caller of this
      * method will call CloudTask.run.
 	 */
-	CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream);
+	CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize);
 
 	/**
 	 * Removes the given file. CloudTask.get should return boolean stating whether

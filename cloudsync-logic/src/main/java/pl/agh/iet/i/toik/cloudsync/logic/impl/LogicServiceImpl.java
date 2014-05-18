@@ -78,7 +78,7 @@ public class LogicServiceImpl implements LogicService {
             // How to recover?
             e.printStackTrace();
         }
-        final CloudTask<CloudFile> secondTask = sessionTo.getCloudInformation().getCloud().upload(sessionTo.getSessionId(), destinationDirectory, destinationFileName, inputStream);
+        final CloudTask<CloudFile> secondTask = sessionTo.getCloudInformation().getCloud().upload(sessionTo.getSessionId(), destinationDirectory, destinationFileName, inputStream, fromFile.getSize());
 
         CloudTask<CloudFile> mergedTask = new JoinedCloudTask<>(new Callable<CloudFile>() {
             @Override

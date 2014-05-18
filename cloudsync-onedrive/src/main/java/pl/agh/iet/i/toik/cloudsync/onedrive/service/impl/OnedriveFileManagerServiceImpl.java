@@ -34,6 +34,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
     @Autowired
     private JSONResolver jsonResolver;
 
+    private static int BUFFER_SIZE = 65536;
+
     @Override
     public ProgressTask<Boolean> download(final String sessionId, final CloudFile file, final OutputStream outputStream) {
         ProgressCallable<Boolean> callable = new ProgressCallable<Boolean>() {
@@ -64,24 +66,24 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                     return false;
                 }
 
-                byte[] buffer = new byte[65536];
+                byte[] buffer = new byte[BUFFER_SIZE];
                 int readBytes;
-                int totalReadBytes = 0;
+                int totalDownloadedBytes = 0;
                 int maxSize = response.getLength();
                 logger.debug("Downloading file \"{}\" with size={}B, {}", file.getName(), maxSize, file);
 
                 try {
                     BufferedInputStream is = new BufferedInputStream(response.getEntityInputStream());
-                    while ((readBytes = is.read(buffer, 0, 65536)) > 0) {
-                        totalReadBytes += readBytes;
-                        setProgress((float) totalReadBytes / maxSize);
+                    while ((readBytes = is.read(buffer, 0, BUFFER_SIZE)) > 0) {
                         outputStream.write(buffer, 0, readBytes);
+                        totalDownloadedBytes += readBytes;
+                        setProgress((float) totalDownloadedBytes / maxSize);
                     }
                 } catch (IOException e) {
                     logger.error("Error occurred during downloading file from remove service", e);
                     return false;
                 }
-                logger.info("Download file {} completed, received {}B", file, totalReadBytes);
+                logger.info("Download file {} completed, received {}B", file, totalDownloadedBytes);
                 return true;
             }
         };
@@ -164,10 +166,11 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
     }
 
     @Override
-    public ProgressTask<CloudFile> upload(final String sessionId, final CloudFile directory, final String fileName, final InputStream fileInputStream) {
+    public ProgressTask<CloudFile> upload(final String sessionId, final CloudFile directory, final String fileName, final InputStream fileInputStream, final Long fileSize) {
         ProgressCallable<CloudFile> callable = new ProgressCallable<CloudFile>() {
             @Override
             public CloudFile call() throws Exception {
+                logger.debug("Preparing download file \"{}\"", fileName);
 
                 String accessToken = onedriveAccountService.getAccessToken(sessionId);
                 if (accessToken == null) {
@@ -181,15 +184,17 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setRequestMethod("PUT");
 
-                byte[] buffer = new byte[65536];
+                byte[] buffer = new byte[BUFFER_SIZE];
                 int readBytes;
-
-                // Cannot obtain file length from inputstream which means that
-                // we can't create working progress without that detail provided (probably)
+                int totalUploadedBytes = 0;
+                httpURLConnection.setChunkedStreamingMode(BUFFER_SIZE);
+                logger.debug("Uploading file \"{}\" with size={}B", fileName, fileSize);
                 try {
                     OutputStream out = httpURLConnection.getOutputStream();
-                    while ((readBytes = fileInputStream.read(buffer, 0, 65536)) > 0) {
+                    while ((readBytes = fileInputStream.read(buffer, 0, BUFFER_SIZE)) > 0) {
                         out.write(buffer, 0, readBytes);
+                        totalUploadedBytes += readBytes;
+                        setProgress((float) totalUploadedBytes / fileSize);
                     }
                     out.close();
                 } catch (IOException e) {
@@ -197,9 +202,14 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                     return null;
                 }
 
-                if (httpURLConnection.getResponseCode() != 200) {
-                    logger.error("Remote service returned HTTP error code: {} while uploading file to server",
-                            httpURLConnection.getResponseCode(), fileName);
+                int responseCode = httpURLConnection.getResponseCode();
+                if (responseCode == 200) {
+                    logger.debug("Overwrite mode");
+                } else if (responseCode == 201) {
+                    logger.debug("Create new file mode");
+                } else {
+                    logger.error("Remote service returned HTTP error code: {} while uploading file {} to server",
+                            responseCode, fileName);
                     return null;
                 }
 
@@ -213,7 +223,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 responseReader.close();
 
                 CloudFile cloudFile = getUploadedFileDetails(serverResponse.toString(), accessToken, directory);
-                setProgress(1.0f);
+
+                logger.info("Upload file {} completed, sent {}B", cloudFile, totalUploadedBytes);
                 return cloudFile;
             }
         };

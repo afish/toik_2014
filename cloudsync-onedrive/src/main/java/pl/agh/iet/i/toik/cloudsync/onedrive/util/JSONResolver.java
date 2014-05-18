@@ -26,6 +26,7 @@ public class JSONResolver {
 
     private static final String fileTypeJSONAttribute = "type";
     private static final String folderJSONValue = "folder";
+    private static final String fileSizeJSONAttribute = "size";
 
     private static final Logger logger = LoggerFactory.getLogger(JSONResolver.class);
 
@@ -74,12 +75,22 @@ public class JSONResolver {
                 getCreatedDate(jsonFileDetails),
                 isDirectory(jsonFileDetails),
                 resolvePath(parent, jsonFileDetails),
-                jsonFileDetails.getString(fileIdJSONAttribute)
+                jsonFileDetails.getString(fileIdJSONAttribute),
+                getFileSize(jsonFileDetails)
         );
     }
 
     private boolean isDirectory(JSONObject jsonFileDetails) {
         return jsonFileDetails.getString(fileTypeJSONAttribute).equals(folderJSONValue);
+    }
+
+    private Long getFileSize(JSONObject jsonFileDetails) {
+        try {
+            return Long.parseLong(jsonFileDetails.getString(fileSizeJSONAttribute));
+        } catch (NumberFormatException e) {
+            logger.error("Error while getting file size - {}", e.getMessage());
+            return null;
+        }
     }
 
     //Temporary path solution

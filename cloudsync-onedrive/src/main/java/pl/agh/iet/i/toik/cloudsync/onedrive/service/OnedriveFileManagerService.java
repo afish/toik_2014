@@ -15,5 +15,5 @@ public interface OnedriveFileManagerService {
 
     public ProgressTask<List<CloudFile>> listFiles(String sessionId, CloudFile directory);
 
-    public ProgressTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream);
+    public ProgressTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize);
 }

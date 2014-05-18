@@ -35,11 +35,11 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public Account createAccount(String name) {
-		logger.info("Creating account: " + name);
-
         if(name == null){
             throw new IllegalArgumentException("Account name cannot be null");
         }
+
+		logger.info("Creating account: " + name);
 
         List<String> accountsList = loadAccountsList();
         if(accountsList.contains(name)){
@@ -73,11 +73,11 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public void saveAccount(Account account) {
-		logger.info("Saving account: " + account);
-
         if(account == null){
             throw new IllegalArgumentException("Account cannot be null");
         }
+
+		logger.info("Saving account: " + account);
 
 		persistenceService.put("logic", "account_" + account.getName(), account);
 
@@ -86,11 +86,11 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public void removeAccount(Account account) {
-		logger.info("Removing account: " + account);
-
         if(account == null){
             throw new IllegalArgumentException("Account cannot be null");
         }
+
+		logger.info("Removing account: " + account);
 
         List<String> accountsList = loadAccountsList();
         accountsList.remove(account.getName());

@@ -42,12 +42,12 @@ public class CloudServiceImpl implements CloudService {
 
 	@Override
 	public void registerCloud(Cloud cloud) {
-		logger.info("Registering cloud: " + cloud.getCloudInformation().getId() + ", name: "
-				+ cloud.getCloudInformation().getHumanReadableName());
-
         if(cloud == null){
             throw new IllegalArgumentException("Cloud cannot be null");
         }
+
+        logger.info("Registering cloud: " + cloud.getCloudInformation().getId() + ", name: "
+				+ cloud.getCloudInformation().getHumanReadableName());
 
         List<CloudInformation> cloudsList = loadCloudsList();
         if(cloudsList.contains(cloud.getCloudInformation())){
@@ -59,12 +59,12 @@ public class CloudServiceImpl implements CloudService {
 
 	@Override
 	public void deregisterCloud(Cloud cloud) {
-		logger.info("Deregistering cloud: " + cloud.getCloudInformation().getId() + ", name: "
-				+ cloud.getCloudInformation().getHumanReadableName());
-
         if(cloud == null){
             throw new IllegalArgumentException("Cloud cannot be null");
         }
+
+        logger.info("Deregistering cloud: " + cloud.getCloudInformation().getId() + ", name: "
+				+ cloud.getCloudInformation().getHumanReadableName());
 
         List<CloudInformation> cloudsList = loadCloudsList();
         cloudsList.remove(cloud.getCloudInformation());

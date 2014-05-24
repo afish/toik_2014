@@ -1,18 +1,23 @@
 package pl.agh.iet.i.toik.cloudsync.googledrive;
 
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 import pl.agh.iet.i.toik.cloudsync.logic.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-@Service
 public class GoogleDriveCloud implements Cloud {
+
+	@Value("${googleDriveID}")
+	private String GOOGLE_DRIVE_ID;
+
+	@Value("${googleDriveName}")
+	private String GOOGLE_DRIVE_NAME;
 
     @Override
     public CloudInformation getCloudInformation() {
-        return null;
+        return new CloudInformation(GOOGLE_DRIVE_ID,  GOOGLE_DRIVE_NAME, this);
     }
 
     @Override

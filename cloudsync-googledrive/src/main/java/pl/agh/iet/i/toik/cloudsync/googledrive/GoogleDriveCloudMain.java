@@ -20,5 +20,6 @@ public class GoogleDriveCloudMain implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 		System.out.println("Name "+googleDriveCloud.getCloudInformation().getHumanReadableName());
+		//googleDriveCloud.login(null);
 	}
 }

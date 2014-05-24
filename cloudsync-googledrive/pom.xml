@@ -17,6 +17,13 @@
             <artifactId>cloudsync-logic</artifactId>
             <version>0.0.1</version>
         </dependency>
+	    <dependency>
+		    <groupId>com.google.apis</groupId>
+		    <artifactId>google-api-services-drive</artifactId>
+		    <version>v2-rev126-1.18.0-rc</version>
+	    </dependency>
     </dependencies>
+
+
 
 </project>

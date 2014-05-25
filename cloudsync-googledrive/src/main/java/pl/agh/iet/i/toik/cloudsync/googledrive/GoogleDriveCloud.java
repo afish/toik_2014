@@ -7,15 +7,15 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.ChildList;
+import com.google.api.services.drive.model.ChildReference;
+import com.google.api.services.drive.model.FileList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import pl.agh.iet.i.toik.cloudsync.logic.*;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class GoogleDriveCloud implements Cloud {
 
@@ -73,7 +73,38 @@ public class GoogleDriveCloud implements Cloud {
 
     @Override
     public CloudTask<List<CloudFile>> listAllFiles(String sessionId, CloudFile directory) {
-        return null;
+        Account account = SESSION.get(sessionId);
+	    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
+	    String folderId;
+	    if(directory == null) {
+		    folderId = "root";
+	    } else {
+		    folderId = directory.getId();
+	    }
+	    try {
+		    Drive.Children.List request = drive.children().list(folderId);
+		    do {
+			    ChildList children = request.execute();
+			    for(ChildReference child : children.getItems()) {
+				    com.google.api.services.drive.model.File file = drive.files().get(child.getId()).execute();
+				    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
+				    String fullPath = "needToBeImplemented";
+				    long size = file.getFileSize() == null ? -1 : file.getFileSize();
+				    CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
+				    System.out.println(cloudFile+" Size "+cloudFile.getSize());
+				    if(isDir) { /* Remove it */
+					    listAllFiles(sessionId, cloudFile);
+				    }
+			    }
+			    request.setPageToken(children.getNextPageToken());
+		    } while (request.getPageToken() != null &&
+				    request.getPageToken().length() > 0);
+
+	    } catch (IOException e) {
+		    System.out.println("An error occurred: " + e);
+	    }
+
+	    return null;
     }
 
     @Override

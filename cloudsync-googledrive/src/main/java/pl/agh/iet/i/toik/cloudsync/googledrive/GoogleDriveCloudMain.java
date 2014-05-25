@@ -56,15 +56,15 @@ public class GoogleDriveCloudMain implements CommandLineRunner {
 		googleDriveCloud.download(id, cloudFile, os);
 		*/
 
-		/*
-		System.out.println("Please insert id of dir");
-		String dirID = br.readLine();
-		InputStream is = new FileInputStream("TOIK2.txt");
-		CloudFile dir = new CloudFile("TOIK", new Date(), false, "test", dirID, 1L);
-		googleDriveCloud.upload(id, dir, "TOIK2.txt", is, 1L);
-		is = new FileInputStream("TOIK2.txt");
-		googleDriveCloud.upload(id, null, "TOIK2.txt", is, 1L);
-		*/
+
+		//System.out.println("Please insert id of dir");
+		//String dirID = br.readLine();
+		//InputStream is = new FileInputStream("TOIK2.txt");
+		//CloudFile dir = new CloudFile("TOIK", new Date(), false, "test", dirID, 1L);
+		//googleDriveCloud.upload(id, dir, "TOIK2.txt", is, 1L);
+		//is = new FileInputStream("TOIK2.txt");
+		//googleDriveCloud.upload(id, null, "TOIK2.txt", is, 1L);
+
 		/*
 		System.out.println("Please insert id of file");
 		String fileIDremove = br.readLine();

@@ -4,8 +4,9 @@ import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.vaadin.spring.VaadinComponent;
 import org.vaadin.spring.i18n.I18N;
 
@@ -13,7 +14,7 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.AbstractWindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.BeanItemTable;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.AccountsWindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.AccountsWindowView.AccountsWindowPresenter;
-import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
+import pl.agh.iet.i.toik.cloudsync.logic.Account;
 
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
@@ -29,6 +30,8 @@ import com.vaadin.ui.VerticalLayout;
 public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 		implements AccountsWindowView {
 
+	private static Logger logger = LoggerFactory.getLogger(AccountsWindow.class);
+	
 	@Autowired
 	private I18N captions;
 
@@ -40,10 +43,11 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 
 	private Button cancelButton;
 
-	private BeanItemTable<AccountMock> accountTable;
+	private BeanItemTable<Account> accountTable;
 
 	@PostConstruct
 	private void init() {
+		logger.debug("init");
 		setWidth(40, Unit.PERCENTAGE);
 		setHeight(40, Unit.PERCENTAGE);
 		setListeners();
@@ -72,7 +76,8 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				Collection<AccountMock> accounts = (Collection<AccountMock>) accountTable.getValue();
+				@SuppressWarnings("unchecked")
+				Collection<Account> accounts = (Collection<Account>) accountTable.getValue();
 				if (accounts != null && accounts.size() > 0) {
 					getPresenter().login(accounts);
 					close();
@@ -89,8 +94,8 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 	protected Component createWindowContent() {
 		HorizontalLayout mainLayout = new HorizontalLayout();
 		mainLayout.setSpacing(true);
-		mainLayout.addComponent(accountTable = new BeanItemTable<AccountMock>(
-				AccountMock.class));
+		mainLayout.addComponent(accountTable = new BeanItemTable<Account>(
+				Account.class));
 		mainLayout.addComponent(createButtonLayout());
 		mainLayout.setSizeFull();
 		return mainLayout;
@@ -124,7 +129,8 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 	}
 
 	@Override
-	public void addAccount(AccountMock account) {
+	public void addAccount(Account account) {
+		logger.debug("addAccount:", account);
 		accountTable.addItem(account);
 
 	}

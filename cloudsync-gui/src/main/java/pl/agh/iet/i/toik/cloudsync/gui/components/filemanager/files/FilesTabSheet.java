@@ -13,6 +13,7 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabShee
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView.FilesTabSheetPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabView;
 import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
+import pl.agh.iet.i.toik.cloudsync.logic.Account;
 
 import com.vaadin.ui.Component;
 
@@ -26,9 +27,9 @@ public class FilesTabSheet extends
 	private DynamicTabSheet content;
 
 	@Override
-	public void addNewTab(Collection<AccountMock> accountsMock) {
-		for(AccountMock account : accountsMock)
-		content.addTab(new FilesTab(getPresenter()), account.getAccountName());
+	public void addNewTab(Collection<Account> accounts) {
+		for(Account account : accounts)
+		content.addTab(new FilesTab(getPresenter()), account.getName());
 		
 	}
 

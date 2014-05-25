@@ -8,11 +8,11 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.ComponentView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.FileSelectedEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView.FilesTabSheetPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
-import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
+import pl.agh.iet.i.toik.cloudsync.logic.Account;
 
 public interface FilesTabSheetView extends ComponentView<FilesTabSheetPresenter> {
 
-	public void addNewTab(Collection<AccountMock> accountsMock);
+	public void addNewTab(Collection<Account> accounts);
 	
 	public interface FilesTabSheetPresenter extends Presenter {
 		

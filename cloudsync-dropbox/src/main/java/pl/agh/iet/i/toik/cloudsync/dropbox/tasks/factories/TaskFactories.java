@@ -12,6 +12,9 @@ public class TaskFactories {
 
 	@Autowired
 	private RemoveTaskFactory removeTaskFactory;
+	
+	@Autowired
+	private ListAllTaskFactory listAllTaskFactory;
 
 	public DownloadTaskFactory getDownloadTaskFactory() {
 		return downloadTaskFactory;
@@ -25,4 +28,8 @@ public class TaskFactories {
 		return removeTaskFactory;
 	}
 
+	public ListAllTaskFactory getListAllTaskFactory() {
+		return listAllTaskFactory;
+	}
+	
 }

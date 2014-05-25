@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.agh.iet.i.toik.cloudsync.dropbox.configuration.DropboxConfiguration;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories.DownloadTaskFactory;
+import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories.ListAllTaskFactory;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories.RemoveTaskFactory;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories.TaskFactories;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories.UploadTaskFactory;
@@ -20,16 +21,16 @@ import com.dropbox.core.DbxClient;
 public class DropboxService {
 
 	@Autowired
-	private DropboxConfiguration configuration;
-
-	@Autowired
-	private TaskFactories taskFactories;
+	private DropboxConfiguration dropboxConfiguration;
 
 	@Autowired
 	private AuthService authService;
+	
+	@Autowired
+	private TaskFactories taskFactories;
 
 	public String login(Account account) {
-		String sessionId = authService.login(configuration, account);
+		String sessionId = authService.login(dropboxConfiguration, account);
 		return sessionId;
 	}
 
@@ -38,27 +39,29 @@ public class DropboxService {
 	}
 
 	public CloudTask<List<CloudFile>> listAllFiles(String sessionId, CloudFile directory) {
-		// TODO: implement me
-		return null;
+		DbxClient dbxClient = authService.getDbxClient(sessionId);
+		ListAllTaskFactory listAllTaskFactory = taskFactories.getListAllTaskFactory();
+		CloudTask<List<CloudFile>> cloudTask = listAllTaskFactory.create(dbxClient, directory);
+		return cloudTask;
 	}
 
 	public CloudTask<Boolean> download(String sessionId, CloudFile file, OutputStream outputStream) {
 		DbxClient dbxClient = authService.getDbxClient(sessionId);
-		DownloadTaskFactory downloadTaskFactory = this.taskFactories.getDownloadTaskFactory();
+		DownloadTaskFactory downloadTaskFactory = taskFactories.getDownloadTaskFactory();
 		CloudTask<Boolean> downloadTask = downloadTaskFactory.create(dbxClient, outputStream, file.getFullPath());
 		return downloadTask;
 	}
 
 	public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize) {
 		DbxClient dbxClient = authService.getDbxClient(sessionId);
-		UploadTaskFactory uploadTaskFactory = this.taskFactories.getUploadTaskFactory();
+		UploadTaskFactory uploadTaskFactory = taskFactories.getUploadTaskFactory();
 		CloudTask<CloudFile> uploadTask = uploadTaskFactory.create(dbxClient, directory, fileName, fileInputStream, fileSize);
 		return uploadTask;
 	}
 
 	public CloudTask<Boolean> remove(String sessionId, CloudFile file) {
 		DbxClient dbxClient = authService.getDbxClient(sessionId);
-		RemoveTaskFactory removeTaskFactory = this.taskFactories.getRemoveTaskFactory();
+		RemoveTaskFactory removeTaskFactory = taskFactories.getRemoveTaskFactory();
 		CloudTask<Boolean> removeTask = removeTaskFactory.create(dbxClient, file);
 		return removeTask;
 	}

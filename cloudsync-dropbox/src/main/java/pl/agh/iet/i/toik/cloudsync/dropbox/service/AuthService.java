@@ -21,12 +21,12 @@ public class AuthService {
 		this.sessionMap = new HashMap<String, DbxClient>();
 	}
 
-	public String login(DropboxConfiguration configuration, Account account) {
-		DbxRequestConfig dbxRequestConfig = configuration.getConfig();
+	public String login(DropboxConfiguration dropboxConfiguration, Account account) {
+		DbxRequestConfig dbxRequestConfig = dropboxConfiguration.getConfig();
 		// TODO: token - get from account or where ?
 		String token = null;
 		try {
-			String sessionId = account == null || token == null ? authenticate(configuration) : token;
+			String sessionId = account == null || token == null ? authenticate(dropboxConfiguration) : token;
 			initializeSession(dbxRequestConfig, sessionId);
 			return sessionId;
 		} catch (DbxException e) {
@@ -45,8 +45,9 @@ public class AuthService {
 		return sessionMap.get(sessionId);
 	}
 
-	private String authenticate(DropboxConfiguration configuration) throws DbxException, IOException {
-		DbxWebAuthNoRedirect webAuth = configuration.getWebAuth();
+	//TODO: implement, verify
+	private String authenticate(DropboxConfiguration dropboxConfiguration) throws DbxException, IOException {
+		DbxWebAuthNoRedirect webAuth = dropboxConfiguration.getWebAuth();
 		String authorizeUrl = webAuth.start();
 		// TODO: get code
 		String code = "";

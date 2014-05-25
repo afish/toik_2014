@@ -9,10 +9,12 @@ import pl.agh.iet.i.toik.cloudsync.googledrive.config.GoogleDriveConfiguration;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudTask;
 
 import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Import(GoogleDriveConfiguration.class)
@@ -43,7 +45,8 @@ public class GoogleDriveCloudMain implements CommandLineRunner {
 		propList.put("cloud.google.code", code);
 		Account account = new Account("1", "test", propList);
 		String id = googleDriveCloud.login(account);
-		googleDriveCloud.listAllFiles(id, null);
+		CloudTask<List<CloudFile>> task =  googleDriveCloud.listAllFiles(id, null);
+		task.run();
 
 		/*
 		System.out.println("Please insert id of file");
@@ -61,6 +64,7 @@ public class GoogleDriveCloudMain implements CommandLineRunner {
 		is = new FileInputStream("TOIK2.txt");
 		googleDriveCloud.upload(id, null, "TOIK2.txt", is, 1L);
 
+		;
 
 	}
 }

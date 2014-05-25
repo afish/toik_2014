@@ -14,6 +14,8 @@ import com.google.api.services.drive.model.ChildReference;
 import com.google.api.services.drive.model.FileList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import pl.agh.iet.i.toik.cloudsync.googledrive.task.GoogleDriveCloudCallable;
+import pl.agh.iet.i.toik.cloudsync.googledrive.task.GoogleDriveCloudTask;
 import pl.agh.iet.i.toik.cloudsync.logic.*;
 
 import java.io.*;
@@ -89,39 +91,50 @@ public class GoogleDriveCloud implements Cloud {
     }
 
     @Override
-    public CloudTask<List<CloudFile>> listAllFiles(String sessionId, CloudFile directory) {
-        Account account = SESSION.get(sessionId);
-	    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
-	    String folderId;
-	    if(directory == null) {
-		    folderId = "root";
-	    } else {
-		    folderId = directory.getId();
-	    }
-	    try {
-		    Drive.Children.List request = drive.children().list(folderId);
-		    do {
-			    ChildList children = request.execute();
-			    for(ChildReference child : children.getItems()) {
-				    com.google.api.services.drive.model.File file = drive.files().get(child.getId()).execute();
-				    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
-				    String fullPath = "needToBeImplemented";
-				    long size = file.getFileSize() == null ? -1 : file.getFileSize();
-				    CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
-				    System.out.println(cloudFile+" Size "+cloudFile.getSize());
-				    if(isDir) { /* Remove it */
-					    listAllFiles(sessionId, cloudFile);
-				    }
-			    }
-			    request.setPageToken(children.getNextPageToken());
-		    } while (request.getPageToken() != null &&
-				    request.getPageToken().length() > 0);
+    public CloudTask<List<CloudFile>> listAllFiles(final String sessionId, final CloudFile directory) {
+        GoogleDriveCloudCallable<List<CloudFile>> callable = new GoogleDriveCloudCallable<List<CloudFile>>() {
+            @Override
+            public List<CloudFile> call() throws Exception {
+                Account account = SESSION.get(sessionId);
+                if(account == null){
+                    logger.warn("Session id doesn't exists");
+                    return null;
+                }
+                List<CloudFile> fileList = new ArrayList<>();
+                Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
+                String folderId;
+                if(directory == null) {
+                    folderId = "root";
+                } else {
+                    folderId = directory.getId();
+                }
+                try {
+                    Drive.Children.List request = drive.children().list(folderId);
+                    do {
+                        ChildList children = request.execute();
+                        for(ChildReference child : children.getItems()) {
+                            com.google.api.services.drive.model.File file = drive.files().get(child.getId()).execute();
+                            boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
+                            String fullPath = "needToBeImplemented";
+                            long size = file.getFileSize() == null ? -1 : file.getFileSize();
+                            CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
+                            fileList.add(cloudFile);
+                            logger.info(cloudFile+" Size "+cloudFile.getSize());
+                        }
+                        request.setPageToken(children.getNextPageToken());
+                    } while (request.getPageToken() != null &&
+                            request.getPageToken().length() > 0);
 
-	    } catch (IOException e) {
-		    System.out.println("An error occurred: " + e);
-	    }
+                } catch (IOException e) {
+                    logger.error("An error occurred: ", e.getMessage());
+                    return null;
+                }
+                return fileList;
+            }
+        };
 
-	    return null;
+        return new GoogleDriveCloudTask<>(callable);
+
     }
 
     @Override

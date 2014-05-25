@@ -6,12 +6,15 @@ import java.util.concurrent.Callable;
 
 public class GoogleDriveCloudTask<T> extends CloudTask<T> {
 
-    public GoogleDriveCloudTask(Callable<T> callable) {
+    private GoogleDriveCloudCallable<T> googleDriveCloudCallable;
+
+    public GoogleDriveCloudTask(GoogleDriveCloudCallable<T> callable) {
         super(callable);
+        this.googleDriveCloudCallable = callable;
     }
 
     @Override
     public float getProgress() {
-        return 0;
+        return googleDriveCloudCallable.getProgress();
     }
 }

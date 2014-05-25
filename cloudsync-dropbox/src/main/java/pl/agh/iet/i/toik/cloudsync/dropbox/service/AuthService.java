@@ -1,6 +1,8 @@
 package pl.agh.iet.i.toik.cloudsync.dropbox.service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import pl.agh.iet.i.toik.cloudsync.dropbox.configuration.DropboxConfiguration;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
@@ -13,22 +15,23 @@ import com.dropbox.core.DbxWebAuthNoRedirect;
 
 public class AuthService {
 	
-	private DbxClient dbxClient;
-	private String currentPath;
-	private String accessToken;
-
+	private Map<String, DbxClient> sessionMap;
+	
+	public AuthService() {
+		this.sessionMap = new HashMap<String, DbxClient>();
+	}
+	
 	public String login(DropboxConfiguration configuration, Account account) {
 		DbxRequestConfig dbxRequestConfig = configuration.getConfig();
 		// TODO: token - get from account or where ?
 		String token = null;
 		try {
-			if (account == null || token == null) {
-				accessToken = authenticate(configuration);
-			} else {
-				accessToken = token;
-			}
-			initializeDbxClient(dbxRequestConfig, accessToken);
-			return accessToken;
+			String sessionId = 
+				account == null || token == null 
+					? authenticate(configuration) 
+					: token;
+			initializeSession(dbxRequestConfig, sessionId);
+			return sessionId;
 		} catch (DbxException e) {
 			//TODO: logger
 		} catch (IOException e) {
@@ -38,13 +41,11 @@ public class AuthService {
 	}
 
 	public void logout(String sessionId) {
-		dbxClient = null;
-		currentPath = null;
-		accessToken = null;
+		sessionMap.remove(sessionId);
 	}
 	
-	public DbxClient getDbxClient() {
-		return dbxClient;
+	public DbxClient getDbxClient(String sessionId) {
+		return sessionMap.get(sessionId);
 	}
 
 	private String authenticate(DropboxConfiguration configuration) throws DbxException, IOException {
@@ -56,9 +57,9 @@ public class AuthService {
 		return authFinish.accessToken;
 	}
 
-	private void initializeDbxClient(DbxRequestConfig dbxRequestConfig, String accessToken) {
-		DbxClient dbxClient = new DbxClient(dbxRequestConfig, accessToken);
-		this.dbxClient = dbxClient;
+	private void initializeSession(DbxRequestConfig dbxRequestConfig, String sessionId) {
+		DbxClient dbxClient = new DbxClient(dbxRequestConfig, sessionId);
+		sessionMap.put(sessionId, dbxClient);
 	}
 
 }

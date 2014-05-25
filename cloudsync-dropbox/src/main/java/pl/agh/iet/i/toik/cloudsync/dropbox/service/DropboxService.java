@@ -44,15 +44,13 @@ public class DropboxService {
 	}
 
 	public CloudTask<Boolean> download(String sessionId, CloudFile file, OutputStream outputStream) {
-		//TODO: sessionId
-		DbxClient dbxClient = authService.getDbxClient();
+		DbxClient dbxClient = authService.getDbxClient(sessionId);
 		CloudTask<Boolean> downloadTask = this.downloadTaskFactory.create(dbxClient, outputStream, file.getFullPath());
 		return downloadTask;
 	}
 
 	public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize) {
-		//TODO: sessionId
-		DbxClient dbxClient = authService.getDbxClient();
+		DbxClient dbxClient = authService.getDbxClient(sessionId);
 		CloudTask<CloudFile> uploadTask = this.uploadTaskFactory.create(dbxClient, directory, fileName, fileInputStream, fileSize);
 		return uploadTask;
 	}

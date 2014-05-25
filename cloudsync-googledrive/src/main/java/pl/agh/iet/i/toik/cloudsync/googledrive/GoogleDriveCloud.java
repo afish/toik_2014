@@ -3,12 +3,10 @@ package pl.agh.iet.i.toik.cloudsync.googledrive;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.*;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.ParentReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.api.services.drive.model.ChildList;
@@ -148,7 +146,37 @@ public class GoogleDriveCloud implements Cloud {
     @Override
     public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName,
                                        InputStream fileInputStream, Long fileSize) {
-        return null;
+	    Account account = SESSION.get(sessionId);
+	    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
+
+	    com.google.api.services.drive.model.File body = new com.google.api.services.drive.model.File();
+	    body.setTitle(fileName);
+	    body.setFileSize(fileSize);
+	    body.setMimeType("application/vnd.google-apps.file");
+	    String parentId;
+		if(directory != null) {
+			parentId = directory.getId();
+		} else {
+			parentId = "root";
+		}
+	    body.setParents(Arrays.asList(new ParentReference().setId(parentId)));
+
+	    InputStreamContent inputStreamContent = new InputStreamContent(null, fileInputStream);
+	    try {
+		    com.google.api.services.drive.model.File file = drive.files().insert(body, inputStreamContent).execute();
+		    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
+		    String fullPath = "needToBeImplemented";
+		    long size = file.getFileSize() == null ? -1 : file.getFileSize();
+		    CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
+		    System.out.println(cloudFile+" Size "+cloudFile.getSize());
+			//return cloudFile;
+	    } catch (IOException e) {
+		    // An error occurred.
+		    e.printStackTrace();
+		    return null;
+	    }
+
+	    return null;
     }
 
     @Override

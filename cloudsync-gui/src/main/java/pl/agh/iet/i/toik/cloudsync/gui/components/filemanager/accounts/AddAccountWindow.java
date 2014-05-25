@@ -1,8 +1,11 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.spring.VaadinComponent;
 import org.vaadin.spring.events.EventBusListenerMethod;
 import org.vaadin.spring.i18n.I18N;
@@ -14,6 +17,8 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWind
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
 import pl.agh.iet.i.toik.cloudsync.gui.model.CloudTypeMock;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -36,6 +41,10 @@ public class AddAccountWindow extends
 	private ComboBox cloudTypeComboBox;
 	private Button cancelButton;
 	private Button addButton;
+	
+	@Autowired
+	@Qualifier("cloudServiceMockImpl")
+	private CloudService cloudService;
 
 	public interface AddAccountWindowPresenter extends Presenter {
 
@@ -108,9 +117,14 @@ public class AddAccountWindow extends
 	private ComboBox createCloudTypeComboBox() {
 		ComboBox cloudTypeComboBox = new ComboBox(
 				captions.get("cloud.type.combobox"));
-		for (CloudTypeMock type : CloudTypeMock.values())
-			cloudTypeComboBox.addItem(type);
-		cloudTypeComboBox.select(CloudTypeMock.DROPBOX);
+//		for (CloudTypeMock type : CloudTypeMock.values())
+//			cloudTypeComboBox.addItem(type);
+		List<CloudInformation> clouds = cloudService.getAllClouds();
+		for (CloudInformation cloud : clouds){
+			cloudTypeComboBox.addItem(cloud.getHumanReadableName());
+		}
+		cloudTypeComboBox.select(clouds.get(0).getHumanReadableName());
+//		cloudTypeComboBox.select(CloudTypeMock.DROPBOX);
 		cloudTypeComboBox.setNullSelectionAllowed(false);
 		return cloudTypeComboBox;
 	}

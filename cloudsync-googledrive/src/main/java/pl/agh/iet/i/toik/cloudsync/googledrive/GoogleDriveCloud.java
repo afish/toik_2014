@@ -3,7 +3,9 @@ package pl.agh.iet.i.toik.cloudsync.googledrive;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.drive.Drive;
@@ -125,8 +127,22 @@ public class GoogleDriveCloud implements Cloud {
     }
 
     @Override
-    public CloudTask<Boolean> download(String sessionId, CloudFile file, OutputStream outputStream) {
-        return null;
+    public CloudTask<Boolean> download(String sessionId, CloudFile cloudFile, OutputStream outputStream) {
+	    Account account = SESSION.get(sessionId);
+	    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
+	    try {
+		    com.google.api.services.drive.model.File file = drive.files().get(cloudFile.getId()).execute();
+		    if (file.getDownloadUrl() != null && file.getDownloadUrl().length() > 0) {
+			    HttpResponse resp = drive.getRequestFactory()
+					    .buildGetRequest(new GenericUrl(file.getDownloadUrl())).execute();
+			    copyStream(resp.getContent(), outputStream);
+		    }
+	    } catch (IOException e) {
+		    // An error occurred.
+		    e.printStackTrace();
+		    return null;
+	    }
+	    return null;
     }
 
     @Override
@@ -147,6 +163,14 @@ public class GoogleDriveCloud implements Cloud {
 		credential.setRefreshToken(refreshToken);
 		final HttpRequestFactory requestFactory = httpTransport.createRequestFactory(credential);
 		return new Drive(httpTransport, jsonFactory, requestFactory.getInitializer());
+	}
+
+	private void copyStream(InputStream input, OutputStream output) throws IOException {
+		byte[] buffer = new byte[1024];
+		int bytesRead;
+		while ((bytesRead = input.read(buffer)) != -1) {
+			output.write(buffer, 0, bytesRead);
+		}
 	}
 
 }

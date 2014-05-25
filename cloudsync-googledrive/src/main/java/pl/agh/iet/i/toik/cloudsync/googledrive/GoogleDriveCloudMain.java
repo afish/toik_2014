@@ -8,9 +8,13 @@ import org.springframework.context.annotation.Import;
 import pl.agh.iet.i.toik.cloudsync.googledrive.config.GoogleDriveConfiguration;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +47,13 @@ public class GoogleDriveCloudMain implements CommandLineRunner {
 		Account account = new Account("1", "test", propList);
 		String id = googleDriveCloud.login(account);
 		googleDriveCloud.listAllFiles(id, null);
+
+		System.out.println("Please insert id of file");
+		String fileID = br.readLine();
+		OutputStream os = new FileOutputStream("TOIK.txt");
+		CloudFile cloudFile = new CloudFile("TOIK.txt", new Date(), false, "test", fileID, 1L);
+		googleDriveCloud.download(id, cloudFile, os);
+
 
 
 	}

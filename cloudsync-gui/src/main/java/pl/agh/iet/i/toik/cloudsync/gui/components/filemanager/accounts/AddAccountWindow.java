@@ -1,5 +1,6 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,8 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWind
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
 import pl.agh.iet.i.toik.cloudsync.gui.model.CloudTypeMock;
+import pl.agh.iet.i.toik.cloudsync.logic.Account;
+import pl.agh.iet.i.toik.cloudsync.logic.AccountService;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
 
@@ -45,10 +48,13 @@ public class AddAccountWindow extends
 	@Autowired
 	@Qualifier("cloudServiceMockImpl")
 	private CloudService cloudService;
+	@Autowired
+	private AccountService accountService;
 
 	public interface AddAccountWindowPresenter extends Presenter {
 
-		public void addAccount(AccountMock account);
+//		public void addAccount(AccountMock account);
+		public void addAccount(Account account);
 		
 		@EventBusListenerMethod
 		public void onOpenAddAccountWindow(org.vaadin.spring.events.Event<OpenAddWindowEvent> event);
@@ -66,9 +72,16 @@ public class AddAccountWindow extends
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				getPresenter().addAccount(
-						new AccountMock(accountNameField.getValue(),
-								(CloudTypeMock) cloudTypeComboBox.getValue()));
+//				getPresenter().addAccount(
+//						new AccountMock(accountNameField.getValue(),
+//								(CloudTypeMock) cloudTypeComboBox.getValue()));
+				getPresenter()
+						.addAccount(
+								accountService.createAccount(cloudTypeComboBox
+										.getValue()
+										+ "_"
+										+ accountNameField.getValue()));
+
 				close();
 
 			}

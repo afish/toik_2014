@@ -14,8 +14,7 @@ import com.dropbox.core.DbxWriteMode;
 
 public class UploadTaskFactory {
 
-	public UploadTask create(DbxClient dbxClient, CloudFile directory, String fileName, InputStream fileInputStream,
-			Long fileSize) {
+	public UploadTask create(DbxClient dbxClient, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize) {
 		UploadTaskParams uploadTaskParams = new UploadTaskParams(directory, fileName, fileInputStream, fileSize);
 		Callable<CloudFile> callable = this.getCallable(dbxClient, uploadTaskParams);
 		UploadTask uploadTask = new UploadTask(callable);
@@ -27,22 +26,22 @@ public class UploadTaskFactory {
 		final String fileName = uploadTaskParams.getFileName();
 		final InputStream fileInputStream = uploadTaskParams.getFileInputStream();
 		final Integer fileSize = uploadTaskParams.getFileSize().intValue();
+
 		return new Callable<CloudFile>() {
-			
 			@Override
 			public CloudFile call() throws Exception {
 				try {
-					//TODO: implement
+					// TODO: implement
 					String uploadingID = client.chunkedUploadFirst(fileSize, new DbxStreamWriter.InputStreamCopier(fileInputStream));
 					String path = directory.getFullPath() + fileName;
 					client.chunkedUploadFinish(path, DbxWriteMode.add(), uploadingID);
-					
+
 					// setprogress finished
 
-					//TODO: return value
+					// TODO: return value
+					return null;
 				} catch (DbxException e) {
 					// TODO: logger
-					return null;
 				}
 				return null;
 			}

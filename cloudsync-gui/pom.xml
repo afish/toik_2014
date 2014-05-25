@@ -17,7 +17,12 @@
 	</properties>
 
 	<dependencies>
-	
+		<!-- Logic -->
+		<dependency>
+            <groupId>pl.agh.iet.i.toik.cloudsync</groupId>
+            <artifactId>cloudsync-logic</artifactId>
+            <version>0.0.1</version>
+        </dependency>
 		<!-- Spring Vaadin -->
 		<dependency>
 			<groupId>org.vaadin.spring</groupId>

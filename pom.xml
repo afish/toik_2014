@@ -13,6 +13,7 @@
 		<module>cloudsync-gui</module>
 		<module>cloudsync-root</module>
         <module>cloudsync-onedrive</module>
+		<module>cloudsync-dropbox</module>
     </modules>
 
 	<properties>

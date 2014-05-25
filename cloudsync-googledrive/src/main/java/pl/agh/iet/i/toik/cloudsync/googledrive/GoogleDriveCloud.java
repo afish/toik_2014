@@ -7,6 +7,8 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.drive.Drive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.api.services.drive.model.ChildList;
 import com.google.api.services.drive.model.ChildReference;
 import com.google.api.services.drive.model.FileList;
@@ -18,6 +20,8 @@ import java.io.*;
 import java.util.*;
 
 public class GoogleDriveCloud implements Cloud {
+
+    private static Logger logger = LoggerFactory.getLogger(GoogleDriveCloud.class);
 
 	@Value("${googleDriveID}")
 	private String GOOGLE_DRIVE_ID;
@@ -52,22 +56,38 @@ public class GoogleDriveCloud implements Cloud {
     @Override
     public String login(Account account) {
 	    String code = (String) account.getPropertyList().get("cloud.google.code");
-	    try {
-		    GoogleTokenResponse response = googleAuthorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute();
-		    GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
-			account.getPropertyList().put("cloud.google.token", credential.getAccessToken());
-			account.getPropertyList().put("cloud.google.token.refresh", credential.getAccessToken());
-			String sessionID = UUID.randomUUID().toString();
-		    SESSION.put(sessionID, account);
-		    return sessionID;
-	    } catch (IOException e) {
-		    e.printStackTrace();
-		    return null;
-	    }
+        if(code != null || !code.isEmpty()){
+            try {
+                GoogleTokenResponse response = googleAuthorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute();
+                GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
+                account.getPropertyList().put("cloud.google.token", credential.getAccessToken());
+                account.getPropertyList().put("cloud.google.token.refresh", credential.getAccessToken());
+                String sessionID = UUID.randomUUID().toString();
+                SESSION.put(sessionID, account);
+                return sessionID;
+            } catch (IOException e) {
+                logger.error("Problem with login", e.getMessage());
+                return null;
+            }
+        }else{
+            logger.warn("Code is empty or null");
+            return null;
+        }
+
     }
 
     @Override
     public void logout(String sessionId) {
+
+        Account account = SESSION.get(sessionId);
+        if(account != null){
+            account.getPropertyList().remove("cloud.google.code");
+            account.getPropertyList().remove("cloud.google.token");
+            account.getPropertyList().remove("cloud.google.token.refresh");
+            SESSION.remove(sessionId);
+        }else{
+            logger.warn("Session id not found");
+        }
 
     }
 

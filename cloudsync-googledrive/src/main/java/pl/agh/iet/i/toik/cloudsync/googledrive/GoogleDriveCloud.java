@@ -165,7 +165,7 @@ public class GoogleDriveCloud implements Cloud {
 	    com.google.api.services.drive.model.File body = new com.google.api.services.drive.model.File();
 	    body.setTitle(fileName);
 	    body.setFileSize(fileSize);
-	    body.setMimeType("application/vnd.google-apps.file");
+	    //body.setMimeType("application/vnd.google-apps.unknown");
 	    String parentId;
 		if(directory != null) {
 			parentId = directory.getId();
@@ -194,7 +194,14 @@ public class GoogleDriveCloud implements Cloud {
 
     @Override
     public CloudTask<Boolean> remove(String sessionId, CloudFile file) {
-        return null;
+	    Account account = SESSION.get(sessionId);
+	    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
+	    try {
+		    drive.files().delete(file.getId()).execute();
+	    } catch (IOException e) {
+		    System.out.println("An error occurred: " + e);
+	    }
+	    return null;
     }
 
 	private Drive getDrive(String token, String refreshToken) {

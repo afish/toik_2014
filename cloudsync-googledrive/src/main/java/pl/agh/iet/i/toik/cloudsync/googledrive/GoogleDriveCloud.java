@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.services.drive.model.ChildList;
 import com.google.api.services.drive.model.ChildReference;
-import com.google.api.services.drive.model.FileList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,7 +98,8 @@ public class GoogleDriveCloud implements Cloud {
         GoogleDriveCloudCallable<List<CloudFile>> callable = new GoogleDriveCloudCallable<List<CloudFile>>() {
             @Override
             public List<CloudFile> call() throws Exception {
-                Account account = SESSION.get(sessionId);
+                this.setProgress(0.0f);
+	            Account account = SESSION.get(sessionId);
                 if(account == null){
                     logger.warn("Session id doesn't exists");
                     return null;
@@ -133,6 +133,7 @@ public class GoogleDriveCloud implements Cloud {
                     logger.error("An error occurred: ", e.getMessage());
                     return null;
                 }
+	            this.setProgress(1.0f);
                 return fileList;
             }
         };
@@ -145,7 +146,8 @@ public class GoogleDriveCloud implements Cloud {
     public CloudTask<Boolean> download(final String sessionId, final CloudFile cloudFile, final OutputStream outputStream) {
     	GoogleDriveCloudCallable<Boolean> callable = new GoogleDriveCloudCallable<Boolean>() {
     		 @Override
-             public Boolean call() throws Exception {   	
+             public Boolean call() throws Exception {
+			    this.setProgress(0.0f);
 			    Account account = SESSION.get(sessionId);
 			    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
 			    try {
@@ -155,12 +157,12 @@ public class GoogleDriveCloud implements Cloud {
 							    .buildGetRequest(new GenericUrl(file.getDownloadUrl())).execute();
 					    copyStream(resp.getContent(), outputStream);
 				    }
+				    this.setProgress(1.0f);
+				    return true;
 			    } catch (IOException e) {
 				    logger.error("Error while downloading file: " +e.getMessage());
-				    //e.printStackTrace();
-				    return null;
+				    return false;
 			    }
-			    return null;
     		 }
     	};
     	return new GoogleDriveCloudTask<>(callable);
@@ -172,13 +174,13 @@ public class GoogleDriveCloud implements Cloud {
     	GoogleDriveCloudCallable<CloudFile> callable = new GoogleDriveCloudCallable<CloudFile>() {
     		@Override
     		public CloudFile call() throws Exception {
+			    this.setProgress(0.0f);
 			    Account account = SESSION.get(sessionId);
 			    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
 		
 			    com.google.api.services.drive.model.File body = new com.google.api.services.drive.model.File();
 			    body.setTitle(fileName);
 			    body.setFileSize(fileSize);
-			    //body.setMimeType("application/vnd.google-apps.unknown");
 			    String parentId;
 				if(directory != null) {
 					parentId = directory.getId();
@@ -195,14 +197,12 @@ public class GoogleDriveCloud implements Cloud {
 				    long size = file.getFileSize() == null ? -1 : file.getFileSize();
 				    CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
 				    logger.info(cloudFile+" Size "+cloudFile.getSize());
-					//return cloudFile;
+				    this.setProgress(1.0f);
+					return cloudFile;
 			    } catch (IOException e) {
-				    logger.error("Error while uploading file: " +e.getMessage());
-				    //e.printStackTrace();
+				    logger.error("Error while uploading file: " + e.getMessage());
 				    return null;
 			    }
-		
-			    return null;
     		}
     	};
     	return new GoogleDriveCloudTask<>(callable);
@@ -213,17 +213,19 @@ public class GoogleDriveCloud implements Cloud {
     	GoogleDriveCloudCallable<Boolean> callable = new GoogleDriveCloudCallable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
+				this.setProgress(0.0f);
 			    Account account = SESSION.get(sessionId);
 			    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
 			    try {
 				    drive.files().delete(file.getId()).execute();
+				    this.setProgress(1.0f);
+				    return true;
 			    } catch (IOException e) {
 				    logger.error("Error while removing file: " +e.getMessage());
-				    return null;
+				    return false;
 			    }
-			    return null;
 			}
-    	};
+		};
     	return new GoogleDriveCloudTask<>(callable);
     }
 

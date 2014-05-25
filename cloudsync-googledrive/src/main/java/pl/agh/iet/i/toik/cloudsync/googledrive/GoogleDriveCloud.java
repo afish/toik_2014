@@ -62,7 +62,7 @@ public class GoogleDriveCloud implements Cloud {
     @Override
     public String login(Account account) {
 	    String code = (String) account.getPropertyList().get("cloud.google.code");
-        if(code != null || !code.isEmpty()){
+        if(code != null && !code.isEmpty()){
             try {
                 GoogleTokenResponse response = googleAuthorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute();
                 GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);

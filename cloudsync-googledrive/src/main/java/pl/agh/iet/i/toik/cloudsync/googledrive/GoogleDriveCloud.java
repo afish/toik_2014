@@ -73,12 +73,10 @@ public class GoogleDriveCloud implements Cloud {
             logger.warn("Code is empty or null");
             return null;
         }
-
     }
 
     @Override
     public void logout(String sessionId) {
-
         Account account = SESSION.get(sessionId);
         if(account != null){
             account.getPropertyList().remove("cloud.google.code");
@@ -88,7 +86,6 @@ public class GoogleDriveCloud implements Cloud {
         }else{
             logger.warn("Session id not found");
         }
-
     }
 
     @Override

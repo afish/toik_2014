@@ -10,9 +10,9 @@ import com.dropbox.core.DbxClient;
 
 public class DownloadTaskFactory {
 
-	public DownloadTask create(DbxClient client, OutputStream outputStream, String file) {
+	public DownloadTask create(DbxClient dbxClient, OutputStream outputStream, String file) {
 		DownloadTaskParams downloadTaskParams = new DownloadTaskParams(outputStream, file);
-		Callable<Boolean> callable = this.getCallable(client, downloadTaskParams);
+		Callable<Boolean> callable = this.getCallable(dbxClient, downloadTaskParams);
 		DownloadTask downloadTask = new DownloadTask(callable);
 		return downloadTask;
 	}

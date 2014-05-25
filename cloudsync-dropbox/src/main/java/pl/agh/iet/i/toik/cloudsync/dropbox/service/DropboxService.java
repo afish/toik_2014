@@ -25,22 +25,17 @@ public class DropboxService {
 	
 	@Autowired 
 	private UploadTaskFactory uploadTaskFactory;
-
+	
 	@Autowired
-	private DbxClient client;
-
-	private String currentPath;
-	private String accessToken;
+	private AuthService authService;
 
 	public String login(Account account){
-		//DbxRequestConfig dbxConfig = configuration.getConfig();
-		//if(account == null || account.getPropertyList().get(""))
-		//TODO: implement me
-		return null;
+		String sessionId = authService.login(configuration, account);
+		return sessionId;
 	}
 
 	public void logout(String sessionId) {
-		//TODO: implement me
+		authService.logout(sessionId);
 	}
 
 	public CloudTask<List<CloudFile>> listAllFiles(String sessionId, CloudFile directory) {
@@ -50,13 +45,15 @@ public class DropboxService {
 
 	public CloudTask<Boolean> download(String sessionId, CloudFile file, OutputStream outputStream) {
 		//TODO: sessionId
-		CloudTask<Boolean> downloadTask = this.downloadTaskFactory.create(client, outputStream, file.getFullPath());
+		DbxClient dbxClient = authService.getDbxClient();
+		CloudTask<Boolean> downloadTask = this.downloadTaskFactory.create(dbxClient, outputStream, file.getFullPath());
 		return downloadTask;
 	}
 
 	public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize) {
 		//TODO: sessionId
-		CloudTask<CloudFile> uploadTask = this.uploadTaskFactory.create(client, directory, fileName, fileInputStream, fileSize);
+		DbxClient dbxClient = authService.getDbxClient();
+		CloudTask<CloudFile> uploadTask = this.uploadTaskFactory.create(dbxClient, directory, fileName, fileInputStream, fileSize);
 		return uploadTask;
 	}
 

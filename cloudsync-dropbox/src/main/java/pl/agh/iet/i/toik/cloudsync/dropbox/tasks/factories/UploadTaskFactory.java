@@ -14,10 +14,10 @@ import com.dropbox.core.DbxWriteMode;
 
 public class UploadTaskFactory {
 
-	public UploadTask create(DbxClient client, CloudFile directory, String fileName, InputStream fileInputStream,
+	public UploadTask create(DbxClient dbxClient, CloudFile directory, String fileName, InputStream fileInputStream,
 			Long fileSize) {
 		UploadTaskParams uploadTaskParams = new UploadTaskParams(directory, fileName, fileInputStream, fileSize);
-		Callable<CloudFile> callable = this.getCallable(client, uploadTaskParams);
+		Callable<CloudFile> callable = this.getCallable(dbxClient, uploadTaskParams);
 		UploadTask uploadTask = new UploadTask(callable);
 		return uploadTask;
 	}

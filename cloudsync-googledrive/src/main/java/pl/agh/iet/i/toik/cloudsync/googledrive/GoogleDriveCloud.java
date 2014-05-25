@@ -156,8 +156,8 @@ public class GoogleDriveCloud implements Cloud {
 					    copyStream(resp.getContent(), outputStream);
 				    }
 			    } catch (IOException e) {
-				    // An error occurred.
-				    e.printStackTrace();
+				    logger.error("Error while downloading file: " +e.getMessage());
+				    //e.printStackTrace();
 				    return null;
 			    }
 			    return null;
@@ -194,11 +194,11 @@ public class GoogleDriveCloud implements Cloud {
 				    String fullPath = "needToBeImplemented";
 				    long size = file.getFileSize() == null ? -1 : file.getFileSize();
 				    CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
-				    System.out.println(cloudFile+" Size "+cloudFile.getSize());
+				    logger.info(cloudFile+" Size "+cloudFile.getSize());
 					//return cloudFile;
 			    } catch (IOException e) {
-				    // An error occurred.
-				    e.printStackTrace();
+				    logger.error("Error while uploading file: " +e.getMessage());
+				    //e.printStackTrace();
 				    return null;
 			    }
 		
@@ -218,7 +218,8 @@ public class GoogleDriveCloud implements Cloud {
 			    try {
 				    drive.files().delete(file.getId()).execute();
 			    } catch (IOException e) {
-				    System.out.println("An error occurred: " + e);
+				    logger.error("Error while removing file: " +e.getMessage());
+				    return null;
 			    }
 			    return null;
 			}

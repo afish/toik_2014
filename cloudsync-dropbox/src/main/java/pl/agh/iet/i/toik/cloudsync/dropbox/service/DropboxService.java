@@ -68,5 +68,9 @@ public class DropboxService {
 		CloudTask<Boolean> removeTask = removeTaskFactory.create(dbxClient, file);
 		return removeTask;
 	}
+	
+	public DropboxConfiguration getDropboxConfiguration() {
+		return dropboxConfiguration;
+	}
 
 }

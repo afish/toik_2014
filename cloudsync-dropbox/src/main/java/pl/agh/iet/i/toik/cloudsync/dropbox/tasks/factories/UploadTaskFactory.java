@@ -35,7 +35,6 @@ public class UploadTaskFactory {
 					String uploadingID = client.chunkedUploadFirst(fileSize, new DbxStreamWriter.InputStreamCopier(fileInputStream));
 					String path = directory.getFullPath() + fileName;
 					client.chunkedUploadFinish(path, DbxWriteMode.add(), uploadingID);
-
 					// setprogress finished
 
 					// TODO: return value

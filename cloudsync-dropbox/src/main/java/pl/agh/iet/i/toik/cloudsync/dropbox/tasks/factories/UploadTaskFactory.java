@@ -3,6 +3,9 @@ package pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.UploadTask;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.params.UploadTaskParams;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
@@ -14,6 +17,8 @@ import com.dropbox.core.DbxWriteMode;
 
 public class UploadTaskFactory {
 
+	private static Logger logger = LoggerFactory.getLogger(UploadTaskFactory.class);
+	
 	public UploadTask create(DbxClient dbxClient, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize) {
 		UploadTaskParams uploadTaskParams = new UploadTaskParams(directory, fileName, fileInputStream, fileSize);
 		Callable<CloudFile> callable = this.getCallable(dbxClient, uploadTaskParams);
@@ -35,13 +40,12 @@ public class UploadTaskFactory {
 					String uploadingID = client.chunkedUploadFirst(fileSize, new DbxStreamWriter.InputStreamCopier(fileInputStream));
 					String path = directory.getFullPath() + fileName;
 					client.chunkedUploadFinish(path, DbxWriteMode.add(), uploadingID);
-
 					// setprogress finished
 
 					// TODO: return value
 					return null;
 				} catch (DbxException e) {
-					// TODO: logger
+					 logger.error("Problem with uploading", e.getMessage());
 				}
 				return null;
 			}

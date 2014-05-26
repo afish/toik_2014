@@ -11,5 +11,10 @@
 	<artifactId>cloudsync-logic</artifactId>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.4</version>
+        </dependency>
 	</dependencies>
 </project>

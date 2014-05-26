@@ -55,5 +55,9 @@ public class DropboxCloud implements Cloud {
 	public CloudTask<Boolean> remove(String sessionId, CloudFile file) {
 		return this.dropboxService.remove(sessionId, file);
 	}
+	
+	public DropboxService getDropboxService() {
+		return dropboxService;
+	}
 
 }

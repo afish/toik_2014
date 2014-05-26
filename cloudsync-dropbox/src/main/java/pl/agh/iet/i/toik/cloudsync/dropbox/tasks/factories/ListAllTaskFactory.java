@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.ListAllTask;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.params.ListAllTaskParams;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
@@ -15,6 +18,8 @@ import com.dropbox.core.DbxException;
 
 public class ListAllTaskFactory {
 
+	private static Logger logger = LoggerFactory.getLogger(ListAllTaskFactory.class);
+	
 	public ListAllTask create(DbxClient dbxClient, CloudFile directory) {
 		ListAllTaskParams listAllTaskParams = new ListAllTaskParams(directory);
 		Callable<List<CloudFile>> callable = this.getCallable(dbxClient, listAllTaskParams);
@@ -32,7 +37,7 @@ public class ListAllTaskFactory {
 					List<CloudFile> files = listAllDirectories(dbxClient, directory);
 					return files;
 				} catch (DbxException e) {
-					// TODO: logger
+					 logger.error("Problem with listing", e.getMessage());
 				}
 				return new LinkedList<CloudFile>();
 			}

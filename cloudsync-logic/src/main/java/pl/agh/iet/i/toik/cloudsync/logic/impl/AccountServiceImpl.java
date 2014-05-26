@@ -19,7 +19,11 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private PersistenceService persistenceService;
 
-    private List<String> loadAccountsList(){
+    public void setPersistenceService(PersistenceService persistenceService) {
+		this.persistenceService = persistenceService;
+	}
+
+	private List<String> loadAccountsList(){
         List<String> accountsList = (List) persistenceService.get("logic", "accounts_list");
         if(accountsList == null){
             accountsList = new ArrayList<>();

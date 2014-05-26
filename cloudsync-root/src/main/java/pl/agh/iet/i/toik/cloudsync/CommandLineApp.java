@@ -27,6 +27,9 @@ public class CommandLineApp extends SpringBootServletInitializer implements Comm
 	@Autowired
 	private Cloud dropboxCloud;
 
+    @Autowired
+    private Cloud onedriveCloud;
+
 	public static void main(String... args) {
 		logger.info("Hello: Application starting.");
 		SpringApplication.run(CommandLineApp.class, args);
@@ -36,7 +39,8 @@ public class CommandLineApp extends SpringBootServletInitializer implements Comm
 	@Override
 	public void run(String... strings) throws Exception {
 		someService.registerCloud(googleDriveCloud);
-		someService.registerCloud(dropboxCloud);
+        someService.registerCloud(dropboxCloud);
+        someService.registerCloud(onedriveCloud);
 		someService.getAllClouds();
 		System.out.println("Hello: Started executing code");
 	}

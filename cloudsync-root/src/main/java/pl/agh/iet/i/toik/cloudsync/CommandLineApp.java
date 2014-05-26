@@ -9,12 +9,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Import;
 
-import pl.agh.iet.i.toik.cloudsync.dropbox.configuration.DropboxConfiguration;
-import pl.agh.iet.i.toik.cloudsync.googledrive.config.GoogleDriveConfiguration;
 import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
 
-@Import({DefaultConfiguration.class, GoogleDriveConfiguration.class, DropboxConfiguration.class})
+@Import(DefaultConfiguration.class)
 public class CommandLineApp extends SpringBootServletInitializer implements CommandLineRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(CommandLineApp.class);

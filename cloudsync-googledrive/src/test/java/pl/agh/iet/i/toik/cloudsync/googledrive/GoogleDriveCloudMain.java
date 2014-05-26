@@ -48,28 +48,29 @@ public class GoogleDriveCloudMain implements CommandLineRunner {
 		CloudTask<List<CloudFile>> task =  googleDriveCloud.listAllFiles(id, null);
 		task.run();
 
-		/*
+
 		System.out.println("Please insert id of file");
 		String fileID = br.readLine();
 		OutputStream os = new FileOutputStream("TOIK.txt");
 		CloudFile cloudFile = new CloudFile("TOIK.txt", new Date(), false, "test", fileID, 1L);
-		googleDriveCloud.download(id, cloudFile, os);
-		*/
+		CloudTask<Boolean> task1 = googleDriveCloud.download(id, cloudFile, os);
+		task1.run();
 
 
-		//System.out.println("Please insert id of dir");
-		//String dirID = br.readLine();
-		//InputStream is = new FileInputStream("TOIK2.txt");
-		//CloudFile dir = new CloudFile("TOIK", new Date(), false, "test", dirID, 1L);
-		//googleDriveCloud.upload(id, dir, "TOIK2.txt", is, 1L);
-		//is = new FileInputStream("TOIK2.txt");
-		//googleDriveCloud.upload(id, null, "TOIK2.txt", is, 1L);
+		System.out.println("Please insert id of dir");
+		String dirID = br.readLine();
+		InputStream is = new FileInputStream("TOIK2.txt");
+		CloudFile dir = new CloudFile("TOIK", new Date(), false, "test", dirID, 1L);
+		CloudTask<CloudFile> task2 = googleDriveCloud.upload(id, dir, "TOIK2.txt", is, 1L);
+		task2.run();
+		is = new FileInputStream("TOIK2.txt");
+		CloudTask<CloudFile> task3 = googleDriveCloud.upload(id, null, "TOIK2.txt", is, 1L);
+		task3.run();
 
-		/*
 		System.out.println("Please insert id of file");
-		String fileIDremove = br.readLine();
-		CloudFile cloudFile = new CloudFile("TOIK2.txt", new Date(), false, "test", fileIDremove, 1L);
-		googleDriveCloud.remove(id, cloudFile);
-		*/
+		String fileIDRemove = br.readLine();
+		CloudFile cloudFile2 = new CloudFile("TOIK2.txt", new Date(), false, "test", fileIDRemove, 1L);
+		CloudTask<Boolean> task4 = googleDriveCloud.remove(id, cloudFile2);
+		task4.run();
 	}
 }

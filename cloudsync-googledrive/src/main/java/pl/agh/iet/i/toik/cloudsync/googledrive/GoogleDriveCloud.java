@@ -114,7 +114,8 @@ public class GoogleDriveCloud implements Cloud {
                 }
                 try {
                     Drive.Children.List request = drive.children().list(folderId);
-                    do {
+	                this.setProgress(0.2f);
+	                do {
                         ChildList children = request.execute();
                         for(ChildReference child : children.getItems()) {
                             com.google.api.services.drive.model.File file = drive.files().get(child.getId()).execute();
@@ -149,15 +150,20 @@ public class GoogleDriveCloud implements Cloud {
              public Boolean call() throws Exception {
 			    this.setProgress(0.0f);
 			    Account account = SESSION.get(sessionId);
+			    if(account == null){
+				    logger.warn("Session id doesn't exists");
+				     return null;
+			    }
 			    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
-			    try {
+			     this.setProgress(0.2f);
+			     try {
 				    com.google.api.services.drive.model.File file = drive.files().get(cloudFile.getId()).execute();
 				    if (file.getDownloadUrl() != null && file.getDownloadUrl().length() > 0) {
 					    HttpResponse resp = drive.getRequestFactory()
 							    .buildGetRequest(new GenericUrl(file.getDownloadUrl())).execute();
 					    copyStream(resp.getContent(), outputStream);
 				    }
-				    this.setProgress(1.0f);
+					this.setProgress(1.0f);
 				    return true;
 			    } catch (IOException e) {
 				    logger.error("Error while downloading file: " +e.getMessage());
@@ -176,8 +182,12 @@ public class GoogleDriveCloud implements Cloud {
     		public CloudFile call() throws Exception {
 			    this.setProgress(0.0f);
 			    Account account = SESSION.get(sessionId);
+			    if(account == null){
+				    logger.warn("Session id doesn't exists");
+				    return null;
+			    }
 			    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
-		
+			    this.setProgress(0.2f);
 			    com.google.api.services.drive.model.File body = new com.google.api.services.drive.model.File();
 			    body.setTitle(fileName);
 			    body.setFileSize(fileSize);
@@ -192,6 +202,7 @@ public class GoogleDriveCloud implements Cloud {
 			    InputStreamContent inputStreamContent = new InputStreamContent(null, fileInputStream);
 			    try {
 				    com.google.api.services.drive.model.File file = drive.files().insert(body, inputStreamContent).execute();
+				    this.setProgress(0.8f);
 				    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
 				    String fullPath = "needToBeImplemented";
 				    long size = file.getFileSize() == null ? -1 : file.getFileSize();
@@ -215,8 +226,13 @@ public class GoogleDriveCloud implements Cloud {
 			public Boolean call() throws Exception {
 				this.setProgress(0.0f);
 			    Account account = SESSION.get(sessionId);
+				if(account == null){
+					logger.warn("Session id doesn't exists");
+					return false;
+				}
 			    Drive drive = getDrive((String)account.getPropertyList().get("cloud.google.token"), (String)account.getPropertyList().get("cloud.google.token.refresh"));
-			    try {
+				this.setProgress(0.2f);
+				try {
 				    drive.files().delete(file.getId()).execute();
 				    this.setProgress(1.0f);
 				    return true;

@@ -19,6 +19,9 @@ import com.dropbox.core.DbxWebAuthNoRedirect;
 @Service
 public class AuthService {
 
+	private static final String SESSION_ID = "session-id";
+	private static final String CODE = "code";
+	
 	private Map<String, Session> sessionMap;
 
 	public AuthService() {
@@ -27,10 +30,17 @@ public class AuthService {
 
 	public String login(DropboxConfiguration dropboxConfiguration, Account account) {
 		DbxRequestConfig dbxRequestConfig = dropboxConfiguration.getConfig();
-		// TODO: token - get from account or where ?
-		String token = null;
+		Map<String, Object> properties = account.getPropertyList();
+		//TODO: set code somewhere
+		String code = (String) properties.get(CODE);
+		String sessionId = (String) properties.get(SESSION_ID);
 		try {
-			String sessionId = account == null || token == null ? authenticate(dropboxConfiguration) : token;
+			sessionId = account == null || sessionId == null ? authenticate(dropboxConfiguration, code) : sessionId;
+			if(sessionId != null) {
+				properties.put(SESSION_ID, sessionId);
+			} else {
+				properties.remove(SESSION_ID);
+			}
 			initializeSession(dbxRequestConfig, sessionId, account);
 			return sessionId;
 		} catch (DbxException e) {
@@ -49,12 +59,9 @@ public class AuthService {
 		return sessionMap.get(sessionId);
 	}
 
-	//TODO: implement, verify
-	private String authenticate(DropboxConfiguration dropboxConfiguration) throws DbxException, IOException {
+	private String authenticate(DropboxConfiguration dropboxConfiguration, String code) throws DbxException, IOException {
 		DbxWebAuthNoRedirect webAuth = dropboxConfiguration.getWebAuth();
 		String authorizeUrl = webAuth.start();
-		// TODO: get code
-		String code = "";
 		DbxAuthFinish authFinish = webAuth.finish(code);
 		return authFinish.accessToken;
 	}

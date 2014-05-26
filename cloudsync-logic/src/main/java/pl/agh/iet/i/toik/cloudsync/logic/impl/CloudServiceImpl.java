@@ -1,14 +1,17 @@
 package pl.agh.iet.i.toik.cloudsync.logic.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import pl.agh.iet.i.toik.cloudsync.logic.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
+import pl.agh.iet.i.toik.cloudsync.logic.PersistenceService;
 
 /**
  * Service using for obtaining cloud service providers.
@@ -20,7 +23,11 @@ public class CloudServiceImpl implements CloudService {
     @Autowired
     private PersistenceService persistenceService;
 
-    private List<CloudInformation> loadCloudsList(){
+    public void setPersistenceService(PersistenceService persistenceService) {
+		this.persistenceService = persistenceService;
+	}
+
+	private List<CloudInformation> loadCloudsList(){
         if(persistenceService.has("logic", "clouds_list")){
             return (List) persistenceService.get("logic", "clouds_list");
         }else{

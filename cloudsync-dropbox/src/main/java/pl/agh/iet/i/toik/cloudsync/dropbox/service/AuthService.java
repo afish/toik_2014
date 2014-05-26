@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import pl.agh.iet.i.toik.cloudsync.dropbox.configuration.DropboxConfiguration;
@@ -19,6 +21,8 @@ import com.dropbox.core.DbxWebAuthNoRedirect;
 @Service
 public class AuthService {
 
+	private static Logger logger = LoggerFactory.getLogger(AuthService.class);
+	 
 	private Map<String, Session> sessionMap;
 
 	public AuthService() {
@@ -34,9 +38,9 @@ public class AuthService {
 			initializeSession(dbxRequestConfig, sessionId, account);
 			return sessionId;
 		} catch (DbxException e) {
-			// TODO: logger
+			 logger.error("Problem with login", e.getMessage());
 		} catch (IOException e) {
-			// TODO: logger
+			 logger.error("Problem with login", e.getMessage());
 		}
 		return null;
 	}

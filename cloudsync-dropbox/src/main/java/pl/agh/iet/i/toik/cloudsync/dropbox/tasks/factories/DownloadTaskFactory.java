@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.DownloadTask;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.params.DownloadTaskParams;
 
@@ -12,6 +15,8 @@ import com.dropbox.core.DbxException;
 
 public class DownloadTaskFactory {
 
+	private static Logger logger = LoggerFactory.getLogger(DownloadTaskFactory.class);
+	
 	public DownloadTask create(DbxClient dbxClient, OutputStream outputStream, String file) {
 		DownloadTaskParams downloadTaskParams = new DownloadTaskParams(outputStream, file);
 		Callable<Boolean> callable = this.getCallable(dbxClient, downloadTaskParams);
@@ -30,9 +35,9 @@ public class DownloadTaskFactory {
 					client.getFile(file, null, outputStream);
 					return true;
 				} catch (DbxException e) {
-					// TODO: logger
+					 logger.error("Problem with downloading", e.getMessage());
 				} catch (IOException e) {
-					// TODO: logger
+					 logger.error("Problem with downloading", e.getMessage());
 				}
 				return false;
 			}

@@ -22,12 +22,15 @@ public class CommandLineApp extends SpringBootServletInitializer implements Comm
 	private CloudService someService;
 
 	@Autowired
+	@Qualifier("googleDriveCloud")
 	private Cloud googleDriveCloud;
 	
 	@Autowired
+	@Qualifier("dropboxCloud")
 	private Cloud dropboxCloud;
 
     @Autowired
+    @Qualifier("onedriveCloud")
     private Cloud onedriveCloud;
 
 	public static void main(String... args) {

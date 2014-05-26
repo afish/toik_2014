@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-@Component("onedriveCloud")
+@Component//("onedriveCloud")
 public class OnedriveCloud implements Cloud {
 
     @Autowired

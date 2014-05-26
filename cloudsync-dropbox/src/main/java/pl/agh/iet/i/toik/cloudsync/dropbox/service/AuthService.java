@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import pl.agh.iet.i.toik.cloudsync.dropbox.configuration.DropboxConfiguration;
+import pl.agh.iet.i.toik.cloudsync.dropbox.session.Session;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
 
 import com.dropbox.core.DbxAuthFinish;
@@ -13,12 +16,13 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxWebAuthNoRedirect;
 
+@Service
 public class AuthService {
 
-	private Map<String, DbxClient> sessionMap;
+	private Map<String, Session> sessionMap;
 
 	public AuthService() {
-		this.sessionMap = new HashMap<String, DbxClient>();
+		this.sessionMap = new HashMap<String, Session>();
 	}
 
 	public String login(DropboxConfiguration dropboxConfiguration, Account account) {
@@ -27,7 +31,7 @@ public class AuthService {
 		String token = null;
 		try {
 			String sessionId = account == null || token == null ? authenticate(dropboxConfiguration) : token;
-			initializeSession(dbxRequestConfig, sessionId);
+			initializeSession(dbxRequestConfig, sessionId, account);
 			return sessionId;
 		} catch (DbxException e) {
 			// TODO: logger
@@ -41,7 +45,7 @@ public class AuthService {
 		sessionMap.remove(sessionId);
 	}
 
-	public DbxClient getDbxClient(String sessionId) {
+	public Session getSession(String sessionId) {
 		return sessionMap.get(sessionId);
 	}
 
@@ -55,9 +59,10 @@ public class AuthService {
 		return authFinish.accessToken;
 	}
 
-	private void initializeSession(DbxRequestConfig dbxRequestConfig, String sessionId) {
+	private void initializeSession(DbxRequestConfig dbxRequestConfig, String sessionId, Account account) {
 		DbxClient dbxClient = new DbxClient(dbxRequestConfig, sessionId);
-		sessionMap.put(sessionId, dbxClient);
+		Session session = new Session(sessionId, account, dbxClient);
+		sessionMap.put(sessionId, session);
 	}
 
 }

@@ -8,9 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Import;
-import pl.agh.iet.i.toik.cloudsync.googledrive.config.GoogleDriveConfiguration;
-import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
+//import pl.agh.iet.i.toik.cloudsync.googledrive.config.GoogleDriveConfiguration;
 
+import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
 
 @Import({DefaultConfiguration.class, GoogleDriveConfiguration.class})
@@ -24,6 +24,9 @@ public class CommandLineApp extends SpringBootServletInitializer implements Comm
 
 	@Autowired
 	private Cloud googleDriveCloud;
+	
+	@Autowired
+	private Cloud dropboxCloud;
 
 	public static void main(String... args) {
 		logger.info("Hello: Application starting.");
@@ -34,6 +37,7 @@ public class CommandLineApp extends SpringBootServletInitializer implements Comm
 	@Override
 	public void run(String... strings) throws Exception {
 		someService.registerCloud(googleDriveCloud);
+		someService.registerCloud(dropboxCloud);
 		someService.getAllClouds();
 		System.out.println("Hello: Started executing code");
 	}

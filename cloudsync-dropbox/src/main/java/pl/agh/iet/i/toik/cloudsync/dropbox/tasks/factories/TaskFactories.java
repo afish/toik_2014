@@ -1,20 +1,23 @@
 package pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class TaskFactories {
 
-	@Autowired
 	private DownloadTaskFactory downloadTaskFactory;
 
-	@Autowired
 	private UploadTaskFactory uploadTaskFactory;
 
-	@Autowired
 	private RemoveTaskFactory removeTaskFactory;
 	
-	@Autowired
 	private ListAllTaskFactory listAllTaskFactory;
+	
+
+	public TaskFactories(DownloadTaskFactory downloadTaskFactory, UploadTaskFactory uploadTaskFactory, RemoveTaskFactory removeTaskFactory, ListAllTaskFactory listAllTaskFactory) {
+		this.downloadTaskFactory = downloadTaskFactory;
+		this.uploadTaskFactory = uploadTaskFactory;
+		this.removeTaskFactory = removeTaskFactory;
+		this.listAllTaskFactory = listAllTaskFactory;
+	}
 
 	public DownloadTaskFactory getDownloadTaskFactory() {
 		return downloadTaskFactory;

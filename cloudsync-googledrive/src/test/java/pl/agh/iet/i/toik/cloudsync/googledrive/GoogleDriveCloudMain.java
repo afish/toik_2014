@@ -72,5 +72,8 @@ public class GoogleDriveCloudMain implements CommandLineRunner {
 		CloudFile cloudFile2 = new CloudFile("TOIK2.txt", new Date(), false, "test", fileIDRemove, 1L);
 		CloudTask<Boolean> task4 = googleDriveCloud.remove(id, cloudFile2);
 		task4.run();
+
+		googleDriveCloud.logout(id);
+
 	}
 }

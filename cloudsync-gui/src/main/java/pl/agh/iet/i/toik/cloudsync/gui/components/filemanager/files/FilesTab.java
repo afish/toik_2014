@@ -101,22 +101,12 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 	}
 
 	@Override
-	public Collection<FileMock> getSelection() {
+	public FileMock getSelection() {
 
-		return (Collection<FileMock>) filesTable.getValue();
+		return (FileMock) filesTable.getValue();
 	}
 
-	@Override
-	public void addFiles(Collection<FileMock> files) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteFiles(Collection<FileMock> files) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void refresh(String path, Collection<FileMock> files) {
@@ -130,5 +120,17 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 	@Override
 	public void unselect() {
 		filesTable.setValue(null);
+	}
+
+	@Override
+	public void addFile(FileMock file) {
+		filesTable.addItem(file);
+		
+	}
+
+	@Override
+	public void deleteFile(FileMock file) {
+		filesTable.removeItem(file);
+		
 	}
 }

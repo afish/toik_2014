@@ -1,12 +1,10 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.vaadin.spring.VaadinComponent;
 import org.vaadin.spring.events.EventBusListenerMethod;
 import org.vaadin.spring.i18n.I18N;
@@ -16,12 +14,8 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.WindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts.AddAccountWindow.AddAccountWindowPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
-import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
-import pl.agh.iet.i.toik.cloudsync.gui.model.CloudTypeMock;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
-import pl.agh.iet.i.toik.cloudsync.logic.AccountService;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -44,20 +38,16 @@ public class AddAccountWindow extends
 	private ComboBox cloudTypeComboBox;
 	private Button cancelButton;
 	private Button addButton;
-	
-	@Autowired
-	@Qualifier("cloudServiceMockImpl")
-	private CloudService cloudService;
-	@Autowired
-	private AccountService accountService;
+
 
 	public interface AddAccountWindowPresenter extends Presenter {
 
-//		public void addAccount(AccountMock account);
 		public void addAccount(Account account);
 		
 		@EventBusListenerMethod
 		public void onOpenAddAccountWindow(org.vaadin.spring.events.Event<OpenAddWindowEvent> event);
+
+		public List<CloudInformation> getAllClouds();
 	}
 
 	@PostConstruct
@@ -72,15 +62,6 @@ public class AddAccountWindow extends
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-//				getPresenter().addAccount(
-//						new AccountMock(accountNameField.getValue(),
-//								(CloudTypeMock) cloudTypeComboBox.getValue()));
-				getPresenter()
-						.addAccount(
-								accountService.createAccount(cloudTypeComboBox
-										.getValue()
-										+ "_"
-										+ accountNameField.getValue()));
 
 				close();
 
@@ -130,14 +111,12 @@ public class AddAccountWindow extends
 	private ComboBox createCloudTypeComboBox() {
 		ComboBox cloudTypeComboBox = new ComboBox(
 				captions.get("cloud.type.combobox"));
-//		for (CloudTypeMock type : CloudTypeMock.values())
-//			cloudTypeComboBox.addItem(type);
-		List<CloudInformation> clouds = cloudService.getAllClouds();
+		List<CloudInformation> clouds = getPresenter().getAllClouds();
 		for (CloudInformation cloud : clouds){
-			cloudTypeComboBox.addItem(cloud.getHumanReadableName());
+			cloudTypeComboBox.addItem(cloud);
+			cloudTypeComboBox.setItemCaption(cloud, cloud.getHumanReadableName());
 		}
-		cloudTypeComboBox.select(clouds.get(0).getHumanReadableName());
-//		cloudTypeComboBox.select(CloudTypeMock.DROPBOX);
+		cloudTypeComboBox.select(clouds.iterator().next());
 		cloudTypeComboBox.setNullSelectionAllowed(false);
 		return cloudTypeComboBox;
 	}

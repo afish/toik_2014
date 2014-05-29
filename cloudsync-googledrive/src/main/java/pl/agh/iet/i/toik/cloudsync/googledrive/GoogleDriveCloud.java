@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import pl.agh.iet.i.toik.cloudsync.googledrive.task.GoogleDriveCloudCallable;
 import pl.agh.iet.i.toik.cloudsync.googledrive.task.GoogleDriveCloudTask;
 import pl.agh.iet.i.toik.cloudsync.logic.*;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 
 import java.io.*;
 import java.util.*;
@@ -55,7 +56,7 @@ public class GoogleDriveCloud implements Cloud {
 
     @Override
     public CloudInformation getCloudInformation() {
-        return new CloudInformation(GOOGLE_DRIVE_ID,  GOOGLE_DRIVE_NAME, this);
+        return new CloudInformation(GOOGLE_DRIVE_ID,  GOOGLE_DRIVE_NAME, this, CloudType.GOOGLEDRIVE);
     }
 
     @Override

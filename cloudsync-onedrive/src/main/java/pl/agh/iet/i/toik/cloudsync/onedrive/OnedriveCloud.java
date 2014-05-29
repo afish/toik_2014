@@ -1,10 +1,12 @@
 package pl.agh.iet.i.toik.cloudsync.onedrive;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
 import pl.agh.iet.i.toik.cloudsync.logic.*;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveAccountService;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveFileManagerService;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +23,7 @@ public class OnedriveCloud implements Cloud {
 
     @Override
     public CloudInformation getCloudInformation() {
-        return new CloudInformation("onedrive-cloud", "CloudSync - Onedrive", this);
+        return new CloudInformation("onedrive-cloud", "CloudSync - Onedrive", this, CloudType.ONEDRIVE);
     }
 
     @Override

@@ -13,6 +13,7 @@ import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudTask;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 
 @Component("dropboxCloud")
 public class DropboxCloud implements Cloud {
@@ -22,7 +23,7 @@ public class DropboxCloud implements Cloud {
 
 	@Override
 	public CloudInformation getCloudInformation() {
-		return new CloudInformation("dropbox-cloud", "CloudSync - Dropbox", this);
+		return new CloudInformation("dropbox-cloud", "CloudSync - Dropbox", this, CloudType.DROPBOX);
 	}
 
 	@Override

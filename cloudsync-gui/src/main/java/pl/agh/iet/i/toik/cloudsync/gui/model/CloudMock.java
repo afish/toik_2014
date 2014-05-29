@@ -36,7 +36,7 @@ public class CloudMock implements Cloud {
 	public CloudMock(String id, String name) {
 		logger.info("Creating mock cloud: " + name);
 		logger.info(this.toString());
-		cloudInformation = new CloudInformation(id, name, this);
+		cloudInformation = new CloudInformation(id, name, this, null);
 	}
 	
 	/* (non-Javadoc)

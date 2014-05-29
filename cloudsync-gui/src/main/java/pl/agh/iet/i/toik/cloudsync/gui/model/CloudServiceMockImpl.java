@@ -18,7 +18,7 @@ import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
  * @author daniel
  *
  */
-@Service
+
 public class CloudServiceMockImpl implements CloudService {
 	private static Logger logger = LoggerFactory.getLogger(CloudServiceMockImpl.class);
 	

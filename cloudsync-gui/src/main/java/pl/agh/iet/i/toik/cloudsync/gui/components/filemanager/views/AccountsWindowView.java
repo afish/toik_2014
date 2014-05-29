@@ -24,6 +24,8 @@ public interface AccountsWindowView extends WindowView<AccountsWindowPresenter> 
 		@EventBusListenerMethod
 		public void onNewAccountAdded(org.vaadin.spring.events.Event<Account> event);
 	
-		public void login(Collection<Account> accountsMock);
+		public void login(Account account);
+		
+		public Collection<Account> getAccounts();
 	}
 }

@@ -1,6 +1,5 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.files;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 import org.springframework.context.annotation.Scope;
@@ -12,7 +11,6 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.AbstractComponentView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView.FilesTabSheetPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabView;
-import pl.agh.iet.i.toik.cloudsync.gui.model.AccountMock;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
 
 import com.vaadin.ui.Component;
@@ -27,8 +25,7 @@ public class FilesTabSheet extends
 	private DynamicTabSheet content;
 
 	@Override
-	public void addNewTab(Collection<Account> accounts) {
-		for(Account account : accounts)
+	public void addNewTab(Account account) {
 		content.addTab(new FilesTab(getPresenter()), account.getName());
 		
 	}

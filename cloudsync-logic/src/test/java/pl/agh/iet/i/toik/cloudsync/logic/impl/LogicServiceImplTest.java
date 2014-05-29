@@ -27,7 +27,7 @@ public class LogicServiceImplTest {
     @Test
     public void testLogin(){
         Cloud cloud = mock(Cloud.class);
-        CloudInformation information = new CloudInformation(null, null, cloud);
+        CloudInformation information = new CloudInformation(null, null, cloud, null);
         Account account = new Account(null, null, null);
 
         service.login(information, account);
@@ -38,7 +38,7 @@ public class LogicServiceImplTest {
     @Test
     public void testLogout(){
         Cloud cloud = mock(Cloud.class);
-        CloudInformation information = new CloudInformation(null, null, cloud);
+        CloudInformation information = new CloudInformation(null, null, cloud, null);
         CloudSession session = new CloudSession(information, "1");
 
         service.logout(session);
@@ -49,7 +49,7 @@ public class LogicServiceImplTest {
     @Test
     public void testDelete() throws ExecutionException, InterruptedException, TimeoutException {
         Cloud cloud = mock(Cloud.class);
-        CloudInformation information = new CloudInformation(null, null, cloud);
+        CloudInformation information = new CloudInformation(null, null, cloud, null);
         CloudSession session = new CloudSession(information, "1");
         CloudFile file = new CloudFile(null, null, false, null, null, 0l);
         CloudTask<Boolean> task = new FakeCloudTask<>(new Callable<Boolean>(){
@@ -68,7 +68,7 @@ public class LogicServiceImplTest {
     @Test
     public void testListFiles() throws InterruptedException, ExecutionException, TimeoutException {
         Cloud cloud = mock(Cloud.class);
-        CloudInformation information = new CloudInformation(null, null, cloud);
+        CloudInformation information = new CloudInformation(null, null, cloud, null);
         CloudSession session = new CloudSession(information, "1");
         CloudFile file = new CloudFile(null, null, false, null, null, 0l);
         final List<CloudFile> list = new ArrayList<>();
@@ -88,7 +88,7 @@ public class LogicServiceImplTest {
     @Test
     public void testCopy() throws InterruptedException, ExecutionException, TimeoutException {
         Cloud cloud = mock(Cloud.class);
-        CloudInformation information = new CloudInformation(null, null, cloud);
+        CloudInformation information = new CloudInformation(null, null, cloud, null);
         CloudSession session = new CloudSession(information, "1");
         final CloudFile file = new CloudFile(null, null, false, null, null, 0l);
         CloudTask<Boolean> downloadTask = new FakeCloudTask<>(new Callable<Boolean>(){
@@ -116,7 +116,7 @@ public class LogicServiceImplTest {
     @Test
     public void testMove() throws InterruptedException, ExecutionException, TimeoutException {
         Cloud cloud = mock(Cloud.class);
-        CloudInformation information = new CloudInformation(null, null, cloud);
+        CloudInformation information = new CloudInformation(null, null, cloud, null);
         CloudSession session = new CloudSession(information, "1");
         final CloudFile file = new CloudFile(null, null, false, null, null, 0l);
         CloudTask<Boolean> downloadTask = new FakeCloudTask<>(new Callable<Boolean>(){

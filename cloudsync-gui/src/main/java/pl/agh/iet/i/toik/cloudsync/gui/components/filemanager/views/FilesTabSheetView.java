@@ -1,7 +1,5 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views;
 
-import java.util.Collection;
-
 import org.vaadin.spring.events.EventBusListenerMethod;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.ComponentView;
@@ -12,7 +10,7 @@ import pl.agh.iet.i.toik.cloudsync.logic.Account;
 
 public interface FilesTabSheetView extends ComponentView<FilesTabSheetPresenter> {
 
-	public void addNewTab(Collection<Account> accounts);
+	public void addNewTab(Account account);
 	
 	public interface FilesTabSheetPresenter extends Presenter {
 		

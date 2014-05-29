@@ -1,7 +1,5 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts;
 
-import java.util.Collection;
-
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -51,6 +49,9 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 		setWidth(40, Unit.PERCENTAGE);
 		setHeight(40, Unit.PERCENTAGE);
 		setListeners();
+		for(Account account : getPresenter().getAccounts())
+			addAccount(account);
+		
 	}
 
 	private void setListeners() {
@@ -77,9 +78,9 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 			@Override
 			public void buttonClick(ClickEvent event) {
 				@SuppressWarnings("unchecked")
-				Collection<Account> accounts = (Collection<Account>) accountTable.getValue();
-				if (accounts != null && accounts.size() > 0) {
-					getPresenter().login(accounts);
+				Account account = (Account) accountTable.getValue();
+				if (account != null ) {
+					getPresenter().login(account);
 					close();
 				}else
 					Notification.show(

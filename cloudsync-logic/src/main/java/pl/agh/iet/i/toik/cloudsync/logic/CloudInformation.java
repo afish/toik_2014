@@ -10,11 +10,13 @@ public class CloudInformation implements Serializable {
 	private final String id;
 	private final String humanReadableName;
     private final Cloud cloud;
+    private final CloudType cloudType;
 
-	public CloudInformation(String id, String humanReadableName, Cloud cloud) {
+	public CloudInformation(String id, String humanReadableName, Cloud cloud, CloudType cloudType) {
 		this.id = id;
 		this.humanReadableName = humanReadableName;
         this.cloud = cloud;
+        this.cloudType = cloudType;
 	}
 
 	public String getId() {
@@ -25,7 +27,11 @@ public class CloudInformation implements Serializable {
 		return humanReadableName;
 	}
 
-    public Cloud getCloud(){ return cloud; }
+    public CloudType getCloudType() {
+		return cloudType;
+	}
+
+	public Cloud getCloud(){ return cloud; }
 
 	@Override
 	public int hashCode() {

@@ -1,9 +1,6 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.presenters;
 
 import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,24 +29,12 @@ public class AccountsWindowPresenterImpl extends
 	
 	@Autowired
 	private AccountService accountService;
-
-	private boolean wasOpened = false;
 	
 	@Override
 	@EventBusListenerMethod
 	public void onOpenWindow(Event<OpenAccountsWindowEvent> event) {
 		logger.info("onOpenWindow");
-		currentFilesTabSheetView = event.getPayload().getCaller();
-		
-		if (!wasOpened) {
-			List<Account> accounts = accountService.getAllAccounts();
-			logger.info("adding accounts: " + accounts.size() + " account");
-			for (Account account : accounts) {
-				getComponentView().addAccount(account);
-			}
-			wasOpened = true;
-		}
-		
+		currentFilesTabSheetView = event.getPayload().getCaller();		
 		getComponentView().showWindow();
 
 	}
@@ -70,10 +55,16 @@ public class AccountsWindowPresenterImpl extends
 	}
 
 	@Override
-	public void login(Collection<Account> accounts ) {
+	public void login(Account account ) {
 		logger.info("login");
-		currentFilesTabSheetView.addNewTab(accounts);
+		currentFilesTabSheetView.addNewTab(account);
 		
+	}
+
+	@Override
+	public Collection<Account> getAccounts() {
+		logger.info("Getting accounts");
+		return accountService.getAllAccounts();
 	}
 
 }

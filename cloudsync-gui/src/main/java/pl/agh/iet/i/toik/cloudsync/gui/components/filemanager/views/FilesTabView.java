@@ -8,11 +8,11 @@ import pl.agh.iet.i.toik.cloudsync.gui.model.FileMock;
 
 public interface FilesTabView extends ComponentView<FilesTabSheetPresenter> {
 
-	public Collection<FileMock> getSelection();
+	public FileMock getSelection();
 	
-	public void addFiles(Collection<FileMock> files);
+	public void addFile(FileMock file);
 	
-	public void deleteFiles(Collection<FileMock> files);
+	public void deleteFile(FileMock file);
 	
 	public void refresh(String path, Collection<FileMock> files);
 

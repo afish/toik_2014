@@ -57,7 +57,7 @@ public class CloudServiceImplTest {
 
 			@Override
 			public CloudInformation getCloudInformation() {
-				return new CloudInformation("cl_id", "Test cloud", this);
+				return new CloudInformation("cl_id", "Test cloud", this, null);
 			}
 
 			@Override

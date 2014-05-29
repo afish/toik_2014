@@ -60,7 +60,7 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 			setSpacing(true);
 			linkLabel = new Label();
 			linkLabel.setContentMode(ContentMode.HTML);
-			linkLabel.setValue("<a href='"+getCloudLink(CloudType.GOOGLEDRIVE)+"'> Get token </a>" );
+			linkLabel.setValue("<a href='"+getCloudLink(CloudType.GOOGLEDRIVE)+"' target = '_blank'> Get token </a>" );
 			tokenField = new TextField("Token");
 			addComponent(linkLabel);
 			addComponent(tokenField);

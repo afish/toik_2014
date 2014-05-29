@@ -7,7 +7,6 @@ public class ProgressTaskTest extends TestCase {
     private ProgressTask<String> progressTask;
 
     public void setUp() throws Exception {
-
         super.setUp();
         progressTask = new ProgressTask<>(new ProgressCallable<String>() {
             @Override
@@ -15,7 +14,6 @@ public class ProgressTaskTest extends TestCase {
                 return "e4c5Nf3Nc6";
             }
         });
-
     }
 
     public void tearDown() throws Exception { }

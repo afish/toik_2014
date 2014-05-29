@@ -16,9 +16,7 @@ public class OnedriveAccountServiceImplTest extends TestCase {
         onedriveAccountService = new OnedriveAccountServiceImpl();
     }
 
-    public void tearDown() throws Exception {
-
-    }
+    public void tearDown() throws Exception { }
 
     public void testLogin() throws Exception {
         assertNull(onedriveAccountService.login(new Account("id", "name", new HashMap<String, Object>())));

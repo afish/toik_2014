@@ -32,6 +32,7 @@ public class OnedriveFileManagerServiceImplTest extends TestCase {
                 }
             }
         );
+
         assertFalse(ret.get());
     }
 
@@ -40,6 +41,7 @@ public class OnedriveFileManagerServiceImplTest extends TestCase {
             "ala",
             new CloudFile("ala", new Date(321321421), false, ".", "10", 231244422L)
         );
+
         assertFalse(ret.get());
     }
 

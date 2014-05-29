@@ -32,9 +32,17 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
         String clientId = (String) account.getPropertyList().get("client_id");
         String clientSecret = (String) account.getPropertyList().get("client_secret");
         String redirectURI = (String) account.getPropertyList().get("redirect_uri");
+        if (redirectURI == null) {
+            logger.debug("Redirect URI not provided - using default");
+            redirectURI = "https:%2F%2Flogin.live.com%2Foauth20_desktop.srf";
+        }
         String refreshToken = (String) account.getPropertyList().get("refresh_token");
-        CloudFile rootFolder = new CloudFile("/", null, true, "/", (String) account.getPropertyList().get("root_folder"), 0L);
-        if (clientId == null || clientSecret == null || redirectURI == null || refreshToken == null) {
+        String rootFolderName = (String) account.getPropertyList().get("root_folder");
+        if (rootFolderName == null) {
+            rootFolderName = "me/skydrive";
+        }
+        CloudFile rootFolder = new CloudFile("/", null, true, "/", rootFolderName, 0L);
+        if (clientId == null || clientSecret == null || refreshToken == null) {
             logger.warn("Account has not enough data to login: returning null");
             return null;
         }

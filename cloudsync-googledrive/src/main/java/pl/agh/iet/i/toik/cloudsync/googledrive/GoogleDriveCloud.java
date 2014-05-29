@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.*;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.ParentList;
 import com.google.api.services.drive.model.ParentReference;
 
 import org.slf4j.Logger;
@@ -62,6 +63,7 @@ public class GoogleDriveCloud implements Cloud {
     @Override
     public String login(Account account) {
 	    String code = (String) account.getPropertyList().get("cloud.google.code");
+	    logger.debug("Login for "+account.getName());
         if(code != null && !code.isEmpty()){
             try {
                 GoogleTokenResponse response = googleAuthorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute();
@@ -70,6 +72,7 @@ public class GoogleDriveCloud implements Cloud {
                 account.getPropertyList().put("cloud.google.token.refresh", credential.getAccessToken());
                 String sessionID = UUID.randomUUID().toString();
                 SESSION.put(sessionID, account);
+	            logger.debug("Session ID for "+account.getName()+" is "+sessionID);
                 return sessionID;
             } catch (IOException e) {
                 logger.error("Problem with login", e.getMessage());
@@ -99,6 +102,7 @@ public class GoogleDriveCloud implements Cloud {
         GoogleDriveCloudCallable<List<CloudFile>> callable = new GoogleDriveCloudCallable<List<CloudFile>>() {
             @Override
             public List<CloudFile> call() throws Exception {
+	            logger.debug("List All files for: "+sessionId);
                 this.setProgress(0.0f);
 	            Account account = SESSION.get(sessionId);
                 if(account == null){
@@ -121,7 +125,16 @@ public class GoogleDriveCloud implements Cloud {
                         for(ChildReference child : children.getItems()) {
                             com.google.api.services.drive.model.File file = drive.files().get(child.getId()).execute();
                             boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
-                            String fullPath = "needToBeImplemented";
+	                        ParentList parents = drive.parents().list(file.getId()).execute();
+	                        String fullPath = "/";
+	                        for (ParentReference parent : parents.getItems()) {
+								if(!parent.getIsRoot()) {
+									com.google.api.services.drive.model.File file2 = drive.files().get(parent.getId()).execute();
+									fullPath += file2.getTitle()+"/";
+								}
+	                        }
+	                        fullPath += file.getTitle();
+
                             long size = file.getFileSize() == null ? -1 : file.getFileSize();
                             CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
                             fileList.add(cloudFile);
@@ -150,8 +163,9 @@ public class GoogleDriveCloud implements Cloud {
     		 @Override
              public Boolean call() throws Exception {
 			    this.setProgress(0.0f);
+			    logger.debug("Download file for: "+sessionId);
 			    Account account = SESSION.get(sessionId);
-			    if(account == null){
+				if(account == null){
 				    logger.warn("Session id doesn't exists");
 				     return null;
 			    }
@@ -182,6 +196,7 @@ public class GoogleDriveCloud implements Cloud {
     		@Override
     		public CloudFile call() throws Exception {
 			    this.setProgress(0.0f);
+			    logger.debug("Upload file for: "+sessionId);
 			    Account account = SESSION.get(sessionId);
 			    if(account == null){
 				    logger.warn("Session id doesn't exists");
@@ -205,7 +220,15 @@ public class GoogleDriveCloud implements Cloud {
 				    com.google.api.services.drive.model.File file = drive.files().insert(body, inputStreamContent).execute();
 				    this.setProgress(0.8f);
 				    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
-				    String fullPath = "needToBeImplemented";
+				    ParentList parents = drive.parents().list(file.getId()).execute();
+				    String fullPath = "/";
+				    for (ParentReference parent : parents.getItems()) {
+					    if(!parent.getIsRoot()) {
+						    com.google.api.services.drive.model.File file2 = drive.files().get(parent.getId()).execute();
+						    fullPath += file2.getTitle()+"/";
+					    }
+				    }
+				    fullPath += file.getTitle();
 				    long size = file.getFileSize() == null ? -1 : file.getFileSize();
 				    CloudFile cloudFile = new CloudFile(file.getTitle(), new Date(file.getCreatedDate().getValue()), isDir, fullPath, file.getId(), size);
 				    logger.info(cloudFile+" Size "+cloudFile.getSize());
@@ -226,7 +249,8 @@ public class GoogleDriveCloud implements Cloud {
 			@Override
 			public Boolean call() throws Exception {
 				this.setProgress(0.0f);
-			    Account account = SESSION.get(sessionId);
+				logger.debug("remove file for: "+sessionId);
+				Account account = SESSION.get(sessionId);
 				if(account == null){
 					logger.warn("Session id doesn't exists");
 					return false;

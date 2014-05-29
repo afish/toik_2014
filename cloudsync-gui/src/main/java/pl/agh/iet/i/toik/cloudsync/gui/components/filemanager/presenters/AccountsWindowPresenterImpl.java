@@ -17,6 +17,9 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabShee
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.AccountService;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
+import pl.agh.iet.i.toik.cloudsync.logic.LogicService;
 
 @Component
 public class AccountsWindowPresenterImpl extends
@@ -29,6 +32,10 @@ public class AccountsWindowPresenterImpl extends
 	
 	@Autowired
 	private AccountService accountService;
+	
+	@Autowired
+	private LogicService logicService;
+
 	
 	@Override
 	@EventBusListenerMethod
@@ -57,7 +64,9 @@ public class AccountsWindowPresenterImpl extends
 	@Override
 	public void login(Account account ) {
 		logger.info("login");
-		currentFilesTabSheetView.addNewTab(account);
+		CloudInformation cloudInformation = (CloudInformation) account.getPropertyList().get("cloudInformation");
+		CloudSession cloudSession = logicService.login(cloudInformation, account);
+		currentFilesTabSheetView.addNewTab(cloudSession, account);
 		
 	}
 

@@ -1,5 +1,6 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.presenters;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.vaadin.spring.events.Event;
@@ -12,12 +13,17 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabShee
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView.FilesTabSheetPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
+import pl.agh.iet.i.toik.cloudsync.logic.LogicService;
 
 @Component
 @Scope("prototype")
 public class FilesTabSheetPresenterImpl extends AbstractPresenter<FilesTabSheetView> implements
 		FilesTabSheetPresenter {
-
+	
+	@Autowired
+	private LogicService logicService;
+	
 	@Override
 	public void openAccountsWindow() {
 		eventBus.publish(this, new OpenAccountsWindowEvent(getComponentView()));
@@ -40,10 +46,11 @@ public class FilesTabSheetPresenterImpl extends AbstractPresenter<FilesTabSheetV
 	}
 
 	@Override
-	public void changePath(String path, FilesTabView filesTabView) {
-		eventBus.publish(this, new ChangePathEvent(path, filesTabView));
+	public void changePath(CloudFile destinantion,  FilesTabView filesTabView) {
+		eventBus.publish(this, new ChangePathEvent(destinantion, filesTabView));
 		
 	}
+
 
 
 

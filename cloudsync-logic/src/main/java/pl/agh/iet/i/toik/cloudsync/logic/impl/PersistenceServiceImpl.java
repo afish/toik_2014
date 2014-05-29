@@ -97,6 +97,7 @@ public class PersistenceServiceImpl implements PersistenceService {
             oos.writeObject(sequences);
         } catch (IOException e) {
             logger.error("Unable to save to " + DB_FILE_NAME);
+            e.printStackTrace();
         }
     }
 
@@ -106,6 +107,7 @@ public class PersistenceServiceImpl implements PersistenceService {
             database = (Map<String, Map<String, Serializable>>) ois.readObject();
             sequences = (Map<String, Map<String, Integer>>) ois.readObject();
         } catch (IOException e) {
+        	e.printStackTrace();
             logger.warn("Unable to load " + DB_FILE_NAME + ". Creating empty database.");
             database = new HashMap<String, Map<String, Serializable>>();
             sequences = new HashMap<String, Map<String, Integer>>();

@@ -23,7 +23,6 @@ public abstract class AbstractWindowView<PRESENTER extends Presenter> extends
 		setResizable(false);
 		center();
 		setContent(createWindowContent());
-		setSizeUndefined();
 	}
 	
 	@Autowired

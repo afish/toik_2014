@@ -1,6 +1,12 @@
 package pl.agh.iet.i.toik.cloudsync.gui.threads;
 
+import java.util.concurrent.ExecutionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.agh.iet.i.toik.cloudsync.gui.components.CloseableProgressBar;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudTask;
 
 import com.vaadin.ui.UI;
 
@@ -10,20 +16,22 @@ public abstract class AbstractUIThread<T> extends Thread {
 	private CloseableProgressBar progressBar;
 
 	private volatile float progress = 0.0f;
-	private T result;
+	private CloudTask<T> cloudTask;
 
 	protected abstract void finished(T result);
-
-	public AbstractUIThread(UI ui, CloseableProgressBar progressBar, T mockResult) {
+	
+	private static Logger logger = LoggerFactory.getLogger(AbstractUIThread.class);
+	
+	public AbstractUIThread(UI ui, CloseableProgressBar progressBar, CloudTask<T> cloudTask) {
 		this.ui = ui;
 		this.progressBar = progressBar;
-		this.result = mockResult;
+		this.cloudTask = cloudTask;
 	}
 
 	@Override
 	public void run() {
 		while (progress < 1.0f) {
-			progress += 0.1f;
+			progress += cloudTask.getProgress();
 			updateProgessBar(progress);
 			try {
 				sleep(1000);
@@ -66,7 +74,11 @@ public abstract class AbstractUIThread<T> extends Thread {
 
 			@Override
 			public void run() {
-				finished(result);
+				try {
+					finished(cloudTask.get());
+				} catch (InterruptedException | ExecutionException e) {
+					logger.error(e.getMessage());
+				}
 			}
 		});
 	}

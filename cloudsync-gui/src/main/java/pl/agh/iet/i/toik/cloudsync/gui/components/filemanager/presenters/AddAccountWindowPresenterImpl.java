@@ -1,6 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.presenters;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,10 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts.AddAccoun
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
+import pl.agh.iet.i.toik.cloudsync.logic.AccountService;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
+import pl.agh.iet.i.toik.cloudsync.logic.PersistenceService;
 
 @Component
 public class AddAccountWindowPresenterImpl extends
@@ -26,12 +29,9 @@ public class AddAccountWindowPresenterImpl extends
 	@Autowired
 	private CloudService cloudService;
 	
-	@Override
-	public void addAccount(Account account) {
-		logger.info("addAccount: " + account);
-		eventBus.publish(this, account);
-
-	}
+	@Autowired
+	private AccountService accountService;
+	
 	
 	@EventBusListenerMethod
 	@Override
@@ -44,6 +44,17 @@ public class AddAccountWindowPresenterImpl extends
 	@Override
 	public List<CloudInformation> getAllClouds() {
 		return cloudService.getAllClouds();
+	}
+
+	@Override
+	public void addAccount(String name, CloudInformation cloudInformation,
+			Map<String, Object> properties) {
+		properties.put("cloudInformation", cloudInformation);
+		Account account = new Account(cloudInformation.getId(), name, properties);
+		accountService.saveAccount(account);
+		logger.info("addAccount: " + account);
+		eventBus.publish(this, account);
+		
 	}
 
 }

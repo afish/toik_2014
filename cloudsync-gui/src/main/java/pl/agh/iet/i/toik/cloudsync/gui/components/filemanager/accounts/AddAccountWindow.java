@@ -1,6 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -14,9 +15,10 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.WindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts.AddAccountWindow.AddAccountWindowPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
-import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -38,22 +40,23 @@ public class AddAccountWindow extends
 	private ComboBox cloudTypeComboBox;
 	private Button cancelButton;
 	private Button addButton;
-
+	private CloudAccountContent cloudContent;
 
 	public interface AddAccountWindowPresenter extends Presenter {
 
-		public void addAccount(Account account);
-		
+		public void addAccount(String name, CloudInformation cloudInformation,
+				Map<String, Object> properties);
+
 		@EventBusListenerMethod
-		public void onOpenAddAccountWindow(org.vaadin.spring.events.Event<OpenAddWindowEvent> event);
+		public void onOpenAddAccountWindow(
+				org.vaadin.spring.events.Event<OpenAddWindowEvent> event);
 
 		public List<CloudInformation> getAllClouds();
 	}
 
 	@PostConstruct
 	private void init() {
-		setWidth(30, Unit.PERCENTAGE);
-		setHeight(30, Unit.PERCENTAGE);
+
 		setListeners();
 	}
 
@@ -62,18 +65,30 @@ public class AddAccountWindow extends
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-
+				getPresenter().addAccount(accountNameField.getValue(),
+						(CloudInformation) cloudTypeComboBox.getValue(),
+						cloudContent.getAccountProperties());
 				close();
 
 			}
 		});
-		
+
 		cancelButton.addClickListener(new ClickListener() {
-			
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				close();
-				
+
+			}
+		});
+
+		cloudTypeComboBox.addValueChangeListener(new ValueChangeListener() {
+
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				cloudContent.setCloudType(((CloudInformation) event
+						.getProperty().getValue()).getCloudType());
+
 			}
 		});
 	}
@@ -83,9 +98,11 @@ public class AddAccountWindow extends
 		VerticalLayout contentLayout = new VerticalLayout();
 		contentLayout.setSpacing(true);
 		contentLayout.setMargin(true);
-		contentLayout.setSizeFull();
 		contentLayout
 				.addComponent(cloudTypeComboBox = createCloudTypeComboBox());
+		contentLayout.addComponent(cloudContent = new CloudAccountContent(
+				(((CloudInformation) cloudTypeComboBox.getValue())
+						.getCloudType())));
 		contentLayout.addComponent(accountNameField = new TextField(captions
 				.get("account.name.field")));
 		contentLayout.addComponent(createFooterLayout());
@@ -112,9 +129,10 @@ public class AddAccountWindow extends
 		ComboBox cloudTypeComboBox = new ComboBox(
 				captions.get("cloud.type.combobox"));
 		List<CloudInformation> clouds = getPresenter().getAllClouds();
-		for (CloudInformation cloud : clouds){
+		for (CloudInformation cloud : clouds) {
 			cloudTypeComboBox.addItem(cloud);
-			cloudTypeComboBox.setItemCaption(cloud, cloud.getHumanReadableName());
+			cloudTypeComboBox.setItemCaption(cloud,
+					cloud.getHumanReadableName());
 		}
 		cloudTypeComboBox.select(clouds.iterator().next());
 		cloudTypeComboBox.setNullSelectionAllowed(false);

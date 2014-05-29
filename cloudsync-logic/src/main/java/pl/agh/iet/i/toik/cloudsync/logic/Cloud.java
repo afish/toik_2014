@@ -2,12 +2,13 @@ package pl.agh.iet.i.toik.cloudsync.logic;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Interface to be implemented by cloud providers.
  */
-public interface Cloud {
+public interface Cloud extends Serializable {
 	/**
 	 * Returns {@link CloudInformation} of this cloud.
 	 */

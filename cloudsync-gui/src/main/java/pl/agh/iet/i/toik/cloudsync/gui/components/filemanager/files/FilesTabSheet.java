@@ -12,6 +12,7 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabShee
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView.FilesTabSheetPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabView;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
 
 import com.vaadin.ui.Component;
 
@@ -24,11 +25,6 @@ public class FilesTabSheet extends
 
 	private DynamicTabSheet content;
 
-	@Override
-	public void addNewTab(Account account) {
-		content.addTab(new FilesTab(getPresenter()), account.getName());
-		
-	}
 
 	@Override
 	protected DynamicTabSheet createContent() {
@@ -53,5 +49,11 @@ public class FilesTabSheet extends
 			tab = (FilesTabView) tabIterator.next();
 			tab.unselect();
 		}
+	}
+
+	@Override
+	public void addNewTab(CloudSession cloudSession, Account account) {
+		content.addTab(new FilesTab(getPresenter(), account, cloudSession), account.getName());
+		
 	}
 }

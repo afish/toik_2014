@@ -1,6 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components;
 
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.ProgressBar;
 
 public class CloseableProgressBar extends ProgressBar {
@@ -12,6 +13,7 @@ public class CloseableProgressBar extends ProgressBar {
 
 	public void close() {
 		((ComponentContainer)getParent()).removeComponent(this);
+		Notification.show("Task: "+getCaption()+" completed", Notification.Type.TRAY_NOTIFICATION);
 	}
 	
 }

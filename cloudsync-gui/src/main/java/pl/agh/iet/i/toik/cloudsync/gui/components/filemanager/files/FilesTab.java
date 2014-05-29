@@ -1,12 +1,13 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.files;
 
 import java.util.Collection;
-import java.util.Date;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.BeanItemTable;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView.FilesTabSheetPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabView;
-import pl.agh.iet.i.toik.cloudsync.gui.model.FileMock;
+import pl.agh.iet.i.toik.cloudsync.logic.Account;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
 
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
@@ -22,38 +23,47 @@ import com.vaadin.ui.themes.Reindeer;
 
 public class FilesTab extends VerticalLayout implements FilesTabView {
 
-	private BeanItemTable<FileMock> filesTable;
+	private BeanItemTable<CloudFile> filesTable;
 	private Button changePathButton;
 	private FilesTabSheetPresenter presenter;
 	private TextField pathField;
+	private CloudSession cloudSession;
+	private Account account;
 
-	public FilesTab(FilesTabSheetPresenter tabSheetPresenter) {
+	public FilesTab(FilesTabSheetPresenter tabSheetPresenter, Account account,
+			CloudSession cloudSession) {
 		this.presenter = tabSheetPresenter;
+		this.account = account;
+		this.cloudSession = cloudSession;
 		setComponents();
 		setListeners();
-		filesTable.addItem(new FileMock("path", "DIR", "N/A", new Date()));
-		filesTable.addItem(new FileMock("path2", "DIR", "N/A", new Date()));
+		setItems();
+
+	}
+
+	private void setItems() {
+		getPresenter().changePath(null, this);
 
 	}
 
 	private void setListeners() {
-		
+
 		filesTable.addItemClickListener(new ItemClickListener() {
-			
+
 			@Override
 			public void itemClick(ItemClickEvent event) {
 				getPresenter().fileSelected();
 			}
 		});
-		
-		changePathButton.addClickListener( new ClickListener() {
-			
+
+		changePathButton.addClickListener(new ClickListener() {
+
 			@Override
 			public void buttonClick(ClickEvent event) {
-				getPresenter().changePath(pathField.getValue(),(FilesTabView)FilesTab.this);
+		
 			}
 		});
-		
+
 	}
 
 	private void setComponents() {
@@ -76,7 +86,7 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 		pathLayout.setExpandRatio(pathField, 3);
 
 		addComponent(pathLayout);
-		addComponent(filesTable = new BeanItemTable<FileMock>(FileMock.class));
+		addComponent(filesTable = new BeanItemTable<CloudFile>(CloudFile.class));
 		setExpandRatio(filesTable, 2);
 		setSizeFull();
 	}
@@ -101,20 +111,19 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 	}
 
 	@Override
-	public FileMock getSelection() {
+	public CloudFile getSelection() {
 
-		return (FileMock) filesTable.getValue();
+		return (CloudFile) filesTable.getValue();
 	}
 
-	
-
 	@Override
-	public void refresh(String path, Collection<FileMock> files) {
-		pathField.setValue(path);
+	public void refresh(CloudFile destination, Collection<CloudFile> files) {
+		if(destination != null)
+			pathField.setValue(destination.getFullPath());
 		filesTable.removeAllItems();
-		for(FileMock file : files)
+		for (CloudFile file : files)
 			filesTable.addItem(file);
-		
+
 	}
 
 	@Override
@@ -123,14 +132,23 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 	}
 
 	@Override
-	public void addFile(FileMock file) {
+	public void addFile(CloudFile file) {
 		filesTable.addItem(file);
-		
+
 	}
 
 	@Override
-	public void deleteFile(FileMock file) {
+	public void deleteFile(CloudFile file) {
 		filesTable.removeItem(file);
-		
+
 	}
+
+	public CloudSession getCloudSession() {
+		return cloudSession;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
 }

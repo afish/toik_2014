@@ -1,6 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.gui;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.vaadin.spring.VaadinUI;
 import org.vaadin.spring.navigator.SpringViewProvider;
 

@@ -62,6 +62,15 @@ public class GoogleDriveCloud implements Cloud {
 
     @Override
     public String login(Account account) {
+	    if(SESSION.containsValue(account)){
+		    logger.debug("Account already in session: "+account.getName());
+		    for(Map.Entry<String, Account> entry : SESSION.entrySet()) {
+			    if(entry.getValue().equals(account)) {
+				    return entry.getKey();
+			    }
+		    }
+	    }
+
 	    String code = (String) account.getPropertyList().get("cloud.google.code");
 	    logger.debug("Login for "+account.getName());
         if(code != null && !code.isEmpty()){

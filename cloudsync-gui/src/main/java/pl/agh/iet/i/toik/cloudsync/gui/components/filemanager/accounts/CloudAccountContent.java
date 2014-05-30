@@ -31,6 +31,7 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 	private AccountPropertiesProvider getProvider(CloudType cloudType) {
 		switch(cloudType){
 			case DROPBOX:
+				return new DropboxCloudAccountContent();
 			case ONEDRIVE:
 			case GOOGLEDRIVE:
 				return new GoogleCloudAccountContent();
@@ -39,14 +40,14 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 	}
 
 	private String getCloudLink(CloudType cloudType) {
-		switch(cloudType){
-			case GOOGLEDRIVE:
+		switch (cloudType) {
+		case GOOGLEDRIVE:
 			return "https://accounts.google.com/o/oauth2/auth?access_type=online&approval_prompt=auto&client_id=1003330706141-633o0oabcinl1b18cajq7ta9koremm1s.apps.googleusercontent.com&redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=code&scope=https://www.googleapis.com/auth/drive ";
 		case DROPBOX:
-			break;
+			return "https://www.dropbox.com/1/oauth2/authorize?locale=pl_PL&client_id=hn2bx52zyvavui7&response_type=code";
 		case ONEDRIVE:
 			break;
-		
+
 		}
 		return "";
 	}
@@ -69,6 +70,29 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 		public Map<String, Object> getAccountProperties() {
 			Map<String, Object> props = new HashMap<String,Object>();
 			props.put("cloud.google.code", tokenField.getValue());
+			return props;
+		}
+
+	}
+	
+	private class DropboxCloudAccountContent extends VerticalLayout implements AccountPropertiesProvider {
+
+		private Label linkLabel;
+		private TextField tokenField;
+
+		public DropboxCloudAccountContent() {
+			setSpacing(true);
+			linkLabel = new Label();
+			linkLabel.setContentMode(ContentMode.HTML);
+			linkLabel.setValue("<a href='"+getCloudLink(CloudType.DROPBOX)+"' target = '_blank'> Get token </a>" );
+			tokenField = new TextField("Token");
+			addComponent(linkLabel);
+			addComponent(tokenField);
+		}
+		@Override
+		public Map<String, Object> getAccountProperties() {
+			Map<String, Object> props = new HashMap<String,Object>();
+			props.put("cloud.dropbox.code", tokenField.getValue());
 			return props;
 		}
 

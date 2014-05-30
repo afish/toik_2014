@@ -136,6 +136,7 @@ public class AddAccountWindow extends
 		}
 		cloudTypeComboBox.select(clouds.iterator().next());
 		cloudTypeComboBox.setNullSelectionAllowed(false);
+		cloudTypeComboBox.setImmediate(true);
 		return cloudTypeComboBox;
 	}
 

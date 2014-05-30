@@ -82,11 +82,24 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 				if (account != null ) {
 					getPresenter().login(account);
 					close();
-				}else
-					Notification.show(
-							captions.get("empty.selection.notification"),
-							Notification.Type.WARNING_MESSAGE);
+				} else
+					showEmptySelectionNotification();
 
+			}
+		
+		});
+		
+		deleteButton.addClickListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Account account = (Account) accountTable.getValue();
+				if (account != null ) {
+					getPresenter().deleteAccount(account);
+					accountTable.removeItem(account);
+				}else
+					showEmptySelectionNotification();
+				
 			}
 		});
 	}
@@ -134,6 +147,12 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 		logger.debug("addAccount:", account);
 		accountTable.addItem(account);
 
+	}
+	
+	private void showEmptySelectionNotification() {
+		Notification.show(
+				captions.get("empty.selection.notification"),
+				Notification.Type.WARNING_MESSAGE);
 	}
 
 }

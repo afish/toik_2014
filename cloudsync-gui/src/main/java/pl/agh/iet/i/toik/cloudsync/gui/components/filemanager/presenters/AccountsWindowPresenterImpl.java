@@ -76,4 +76,10 @@ public class AccountsWindowPresenterImpl extends
 		return accountService.getAllAccounts();
 	}
 
+	@Override
+	public void deleteAccount(Account account) {
+		accountService.removeAccount(account);
+		
+	}
+
 }

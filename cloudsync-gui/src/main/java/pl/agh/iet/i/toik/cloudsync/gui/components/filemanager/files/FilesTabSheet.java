@@ -38,6 +38,7 @@ public class FilesTabSheet extends
 			}
 		});
 		content.setSizeFull();
+		content.setImmediate(true);
 		return content;
 	}
 

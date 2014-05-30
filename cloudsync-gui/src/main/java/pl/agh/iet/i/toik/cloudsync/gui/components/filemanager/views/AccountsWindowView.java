@@ -27,5 +27,7 @@ public interface AccountsWindowView extends WindowView<AccountsWindowPresenter> 
 		public void login(Account account);
 		
 		public Collection<Account> getAccounts();
+
+		public void deleteAccount(Account account);
 	}
 }

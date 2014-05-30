@@ -35,6 +35,7 @@ public class FilesTable extends BeanItemTable<CloudFile> {
 		setColumnHeader("creationDate", "Creation Date");
 		setColumnHeader("icon", "");
 		setSortEnabled(false);
+		setCacheRate(0);
 		
 	}
 

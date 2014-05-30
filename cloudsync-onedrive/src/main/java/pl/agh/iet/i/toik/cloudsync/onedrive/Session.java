@@ -50,6 +50,10 @@ public class Session {
         return refreshToken;
     }
 
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public String getRedirectURI() {
         return redirectURI;
     }

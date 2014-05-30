@@ -1,18 +1,16 @@
 package pl.agh.iet.i.toik.cloudsync.onedrive;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Component;
 import pl.agh.iet.i.toik.cloudsync.logic.*;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveAccountService;
 import pl.agh.iet.i.toik.cloudsync.onedrive.service.OnedriveFileManagerService;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-@Component//("onedriveCloud")
+@Component
 public class OnedriveCloud implements Cloud {
 
     @Autowired
@@ -47,7 +45,8 @@ public class OnedriveCloud implements Cloud {
     }
 
     @Override
-    public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize) {
+    public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName,
+                                       InputStream fileInputStream, Long fileSize) {
         return onedriveFileManagerService.upload(sessionId, directory, fileName, fileInputStream, fileSize);
     }
 

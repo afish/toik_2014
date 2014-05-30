@@ -32,22 +32,32 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
         String clientId = (String) account.getPropertyList().get("client_id");
         String clientSecret = (String) account.getPropertyList().get("client_secret");
         String redirectURI = (String) account.getPropertyList().get("redirect_uri");
+        String refreshToken = (String) account.getPropertyList().get("refresh_token");
+        String code = (String) account.getPropertyList().get("code");
+        String rootFolderName = (String) account.getPropertyList().get("root_folder");
         if (redirectURI == null) {
             logger.debug("Redirect URI not provided - using default");
             redirectURI = "https:%2F%2Flogin.live.com%2Foauth20_desktop.srf";
         }
-        String refreshToken = (String) account.getPropertyList().get("refresh_token");
-        String rootFolderName = (String) account.getPropertyList().get("root_folder");
         if (rootFolderName == null) {
+            logger.debug("Root folder not provided - using default");
             rootFolderName = "me/skydrive";
         }
         CloudFile rootFolder = new CloudFile("/", null, true, "/", rootFolderName, 0L);
-        if (clientId == null || clientSecret == null || refreshToken == null) {
+        if (clientId == null || clientSecret == null || (refreshToken == null && code == null)) {
             logger.warn("Account has not enough data to login: returning null");
             return null;
         }
         Session session = new Session(clientId, refreshToken, redirectURI, clientSecret, rootFolder);
-        if (refreshAccessToken(session) == null) {
+        if (refreshToken == null) {
+            if (getInitialTokens(session, code) == null) {
+                logger.warn("Unable to get access and refresh token from remote service: returning null");
+                return null;
+            } else {
+                logger.debug("Saving acquired refresh token to account properties");
+                account.getPropertyList().put("refresh_token", session.getRefreshToken());
+            }
+        } else if (refreshAccessToken(session) == null) {
             logger.warn("Unable to get access token from remote service: returning null");
             return null;
         }
@@ -99,6 +109,29 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
         return sessionMap.get(sessionId);
     }
 
+    private String getInitialTokens(Session session, String code) {
+        WebResource webResource = client
+                .resource("https://login.live.com/oauth20_token.srf")
+                .queryParam("client_id", session.getClientId())
+                .queryParam("client_secret", session.getClientSecret())
+                .queryParam("grant_type", "authorization_code")
+                .queryParam("redirect_uri", session.getRedirectURI())
+                .queryParam("code", code);
+
+
+        JSONObject json = getTokenRequestOutput(webResource);
+        if (json == null) {
+            return null;
+        }
+
+        session.setAccessToken(json.get("access_token").toString());
+        session.setRefreshToken(json.get("refresh_token").toString());
+        session.setTokenExpirationDate(new DateTime().plusHours(1));
+
+        logger.debug("Access token successfully gathered from remote service");
+        return session.getAccessToken();
+    }
+
     private String refreshAccessToken(Session session) {
         WebResource webResource = client
                 .resource("https://login.live.com/oauth20_token.srf")
@@ -108,6 +141,19 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
                 .queryParam("redirect_uri", session.getRedirectURI())
                 .queryParam("refresh_token", session.getRefreshToken());
 
+        JSONObject json = getTokenRequestOutput(webResource);
+        if (json == null) {
+            return null;
+        }
+
+        session.setAccessToken(json.get("access_token").toString());
+        session.setTokenExpirationDate(new DateTime().plusHours(1));
+
+        logger.debug("Access token successfully gathered from remote service");
+        return session.getAccessToken();
+    }
+
+    private JSONObject getTokenRequestOutput(WebResource webResource) {
         ClientResponse response = webResource
                 .accept(MediaType.APPLICATION_JSON)
                 .get(ClientResponse.class);
@@ -120,11 +166,6 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
 
         logger.trace("Response from remote service: {}", output);
 
-        JSONObject json = new JSONObject(output);
-        session.setAccessToken(json.get("access_token").toString());
-        session.setTokenExpirationDate(new DateTime().plusHours(1));
-
-        logger.debug("Access token successfully gathered from remote service");
-        return session.getAccessToken();
+        return new JSONObject(output);
     }
 }

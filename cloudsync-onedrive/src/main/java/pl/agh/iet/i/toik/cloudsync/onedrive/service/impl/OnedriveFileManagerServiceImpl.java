@@ -116,7 +116,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                     logger.info("{} {} successfully removed from OneDrive", fileType, file.getName());
                     return true;
                 } else {
-                    logger.info("Error while removing {} : {}. Remote service returned HTTP error code: {}", fileType, file.getName(), response.getStatus());
+                    logger.info("Error while removing {} : {}. Remote service returned HTTP error code: {}", fileType,
+                            file.getName(), response.getStatus());
                     return false;
                 }
             }
@@ -150,11 +151,11 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                         .accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 
                 if (response.getStatus() != 200) {
-                    logger.error("Remote service returned HTTP error code: {} while listing files in {}", response.getStatus(), directory.getName());
+                    logger.error("Remote service returned HTTP error code: {} while listing files in {}",
+                            response.getStatus(), directory.getName());
                     return new ArrayList<>();
                 }
 
-                //TODO add parsing progress if really needed
                 filesList = jsonResolver.resolveFileListDetails(response.getEntity(String.class), directory);
                 logger.info("Files list successfully loaded from directory {}", directory.getName());
                 setProgress(1.0f);
@@ -166,7 +167,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
     }
 
     @Override
-    public ProgressTask<CloudFile> upload(final String sessionId, final CloudFile directory, final String fileName, final InputStream fileInputStream, final Long fileSize) {
+    public ProgressTask<CloudFile> upload(final String sessionId, final CloudFile directory, final String fileName,
+                                          final InputStream fileInputStream, final Long fileSize) {
         ProgressCallable<CloudFile> callable = new ProgressCallable<CloudFile>() {
             @Override
             public CloudFile call() throws Exception {
@@ -178,7 +180,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                     return null;
                 }
 
-                URL url = new URL("https://apis.live.net/v5.0/" + directory.getId() + "/files/" + fileName + "?access_token=" + accessToken);
+                URL url = new URL("https://apis.live.net/v5.0/" + directory.getId() + "/files/" + fileName +
+                        "?access_token=" + accessToken);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
                 httpURLConnection.setDoOutput(true);
@@ -242,7 +245,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 .accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 
         if (response.getStatus() != 200) {
-            logger.error("Remote service returned HTTP error code: {} while obtaining file details {}", response.getStatus(), fileId);
+            logger.error("Remote service returned HTTP error code: {} while obtaining file details {}",
+                    response.getStatus(), fileId);
             return null;
         }
 

@@ -50,7 +50,7 @@ public class AddAccountWindowPresenterImpl extends
 	public void addAccount(String name, CloudInformation cloudInformation,
 			Map<String, Object> properties) {
 		properties.put("cloudInformation", cloudInformation);
-		Account account = new Account(cloudInformation.getId(), name, properties);
+		Account account = new Account(cloudInformation.getId()+ name, name, properties);
 		accountService.saveAccount(account);
 		logger.info("addAccount: " + account);
 		eventBus.publish(this, account);

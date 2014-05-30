@@ -39,23 +39,7 @@ public abstract class AbstractUIThread<T> extends Thread {
 			}
 		}
 		finish();
-		removeProgressBar();
-	}
-
-	private void removeProgressBar() {
-		ui.access(new Runnable() {
-
-			@Override
-			public void run() {			
-				try {
-					sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				progressBar.close();
-			}
-		});
-
+	
 	}
 
 	private void updateProgessBar(final float currentProgress) {
@@ -74,8 +58,9 @@ public abstract class AbstractUIThread<T> extends Thread {
 
 			@Override
 			public void run() {
-				try {
+				try {			
 					finished(cloudTask.get());
+					progressBar.close();
 				} catch (InterruptedException | ExecutionException e) {
 					logger.error(e.getMessage());
 				}

@@ -13,7 +13,7 @@ public class CloseableProgressBar extends ProgressBar {
 
 	public void close() {
 		((ComponentContainer)getParent()).removeComponent(this);
-		Notification.show("Task: "+getCaption()+" completed", Notification.Type.TRAY_NOTIFICATION);
+		Notification.show(getCaption()+" completed", Notification.Type.TRAY_NOTIFICATION);
 	}
 	
 }

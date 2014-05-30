@@ -10,9 +10,11 @@ import com.vaadin.ui.Table;
 
 public class FilesTable extends BeanItemTable<CloudFile> {
 	
+	private BackFile backFile;
 
 	public FilesTable() {
 		super(CloudFile.class);
+		backFile = new BackFile();
 		addGeneratedColumn("icon", new ColumnGenerator() {
 			
 			@Override
@@ -40,7 +42,7 @@ public class FilesTable extends BeanItemTable<CloudFile> {
 	@Override
 	public boolean removeAllItems() {
 		boolean result = super.removeAllItems();
-		addItem(new BackFile());
+		addItem(backFile);
 		return result;
 	}
 
@@ -69,11 +71,14 @@ public class FilesTable extends BeanItemTable<CloudFile> {
 	
 	
 	private class BackFile extends CloudFile {
-
+		
+		private CloudFile previous;
+		
 		public BackFile() {
 			super("..", null, true, null, "-1", -1l);
 			
-		}
+		}		
+		
 		
 	}
 

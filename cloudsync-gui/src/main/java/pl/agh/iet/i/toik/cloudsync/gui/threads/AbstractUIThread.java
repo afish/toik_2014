@@ -30,7 +30,7 @@ public abstract class AbstractUIThread<T> extends Thread {
 
 	@Override
 	public void run() {
-		while (progress < 1.0f) {
+		while (progress < 1.0f && !cloudTask.isDone()) {
 			progress += cloudTask.getProgress();
 			updateProgessBar(progress);
 			try {

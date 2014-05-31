@@ -231,7 +231,6 @@ public class GoogleDriveCloud implements Cloud {
 
 			    try {
 				    InputStreamContent inputStreamContent = new InputStreamContent(null, fileInputStream);
-				    fileInputStream.close();
 				    com.google.api.services.drive.model.File file = drive.files().insert(body, inputStreamContent).execute();
 				    this.setProgress(0.8f);
 				    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");

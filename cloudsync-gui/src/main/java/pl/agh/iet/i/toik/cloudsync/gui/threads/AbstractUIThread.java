@@ -47,7 +47,7 @@ public abstract class AbstractUIThread<T> extends Thread {
 			@Override
 			public void run() {
 				progressBar.setValue(new Float(currentProgress));
-				logger.info(getName()+":Update progress to: "+currentProgress);
+				logger.debug(getName()+":Update progress to: "+currentProgress);
 			}
 		});
 

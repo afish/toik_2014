@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.FileManagerUpperLayout;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.FileManagerUpperLayout.FileManagerUpperLayoutPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAccountsWindowEvent;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FileManagerMiddleLayoutView.FileManagerMiddleLayoutPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 
@@ -13,6 +14,8 @@ public class FileManagerUpperLayoutPresenterImpl extends AbstractPresenter<FileM
 		FileManagerUpperLayoutPresenter {
 
 	private FilesTabSheetView defaultFileTabSheetView;
+	private FilesTabSheetView currentTabSheet;
+	private FileManagerMiddleLayoutPresenter middleLayoutPresenter;
 
 	@Override
 	public void openAccountsWindow() {
@@ -23,6 +26,18 @@ public class FileManagerUpperLayoutPresenterImpl extends AbstractPresenter<FileM
 	@Override
 	public void setDefaultFilesTabSheetView(FilesTabSheetView tabSheetView) {
 		this.defaultFileTabSheetView = tabSheetView;
+		
+	}
+
+	@Override
+	public void deleteAction() {
+		middleLayoutPresenter.deleteAction();
+	}
+
+	@Override
+	public void setMiddleLayoutPresenter(
+			FileManagerMiddleLayoutPresenter fileManagerMiddleLayoutPresenterImpl) {
+		this.middleLayoutPresenter = fileManagerMiddleLayoutPresenterImpl;
 		
 	}
 

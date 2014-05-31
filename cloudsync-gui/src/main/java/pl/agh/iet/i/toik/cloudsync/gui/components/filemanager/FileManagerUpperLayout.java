@@ -12,6 +12,7 @@ import org.vaadin.spring.i18n.I18N;
 import pl.agh.iet.i.toik.cloudsync.gui.components.AbstractComponentView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.FileManagerUpperLayout.FileManagerUpperLayoutPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FileManagerMiddleLayoutView.FileManagerMiddleLayoutPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 
 import com.vaadin.server.ThemeResource;
@@ -36,6 +37,9 @@ public class FileManagerUpperLayout extends
 						
 			public void openAccountsWindow();
 			public void setDefaultFilesTabSheetView(FilesTabSheetView tabSheetView);
+			public void deleteAction();
+			public void setMiddleLayoutPresenter(
+					FileManagerMiddleLayoutPresenter fileManagerMiddleLayoutPresenterImpl);
 	}
 	
 	@Autowired
@@ -55,6 +59,15 @@ public class FileManagerUpperLayout extends
 			@Override
 			public void buttonClick(ClickEvent event) {
 				getPresenter().openAccountsWindow();
+				
+			}
+		});
+		
+		deleteButton.addClickListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getPresenter().deleteAction();
 				
 			}
 		});

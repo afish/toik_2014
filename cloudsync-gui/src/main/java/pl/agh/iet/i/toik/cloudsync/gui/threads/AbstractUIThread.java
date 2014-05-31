@@ -59,8 +59,14 @@ public abstract class AbstractUIThread<T> extends Thread {
 			@Override
 			public void run() {
 				try {			
-					finished(cloudTask.get());
-					progressBar.close();
+					T result = cloudTask.get();
+					if(result != null) {
+						finished(cloudTask.get());
+						progressBar.closeWithSuccess();
+					}
+					else
+						progressBar.closeWithFailure();
+					
 				} catch (InterruptedException | ExecutionException e) {
 					logger.error(e.getMessage());
 				}

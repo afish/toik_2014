@@ -155,4 +155,5 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 				Notification.Type.WARNING_MESSAGE);
 	}
 
+	
 }

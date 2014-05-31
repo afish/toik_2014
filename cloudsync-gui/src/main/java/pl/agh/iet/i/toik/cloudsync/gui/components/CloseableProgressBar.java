@@ -11,9 +11,17 @@ public class CloseableProgressBar extends ProgressBar {
 		setImmediate(true);
 	}
 
-	public void close() {
+	public void closeWithSuccess() {
+		closeMe("SUCCESS");
+	
+	}
+	
+	public void closeWithFailure() {
+		closeMe("FAILURE");
+	}
+	private void closeMe(String message) {
 		((ComponentContainer)getParent()).removeComponent(this);
-		Notification.show(getCaption()+" completed", Notification.Type.TRAY_NOTIFICATION);
+		Notification.show(getCaption()+" completed with: ",message, Notification.Type.TRAY_NOTIFICATION);
 	}
 	
 }

@@ -13,6 +13,8 @@ import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
 public interface FilesTabSheetView extends ComponentView<FilesTabSheetPresenter> {
 
 	public void addNewTab(CloudSession cloudSession, Account account);
+	public void unselect();
+	public FilesTabView getCurrentTab();
 	
 	public interface FilesTabSheetPresenter extends Presenter {
 		
@@ -27,5 +29,7 @@ public interface FilesTabSheetView extends ComponentView<FilesTabSheetPresenter>
 
 	}
 
-	public void unselect();
+
+
+
 }

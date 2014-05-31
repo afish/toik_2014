@@ -15,6 +15,8 @@ public interface FileManagerMiddleLayoutView extends ComponentView<FileManagerMi
 		
 		@EventBusListenerMethod
 		public void onFileSelected(org.vaadin.spring.events.Event<FileSelectedEvent> event);
+
+		public void deleteAction();
 	}
 	
 

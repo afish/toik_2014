@@ -5,6 +5,7 @@ import org.vaadin.spring.events.EventBusListenerMethod;
 import pl.agh.iet.i.toik.cloudsync.gui.components.CloseableProgressBar;
 import pl.agh.iet.i.toik.cloudsync.gui.components.ComponentView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.ChangePathEvent;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.DeleteFileEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FileManagerFooterLayoutView.FileManagerFooterLayoutPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.Presenter;
 
@@ -17,5 +18,8 @@ public interface FileManagerFooterLayoutView extends ComponentView<FileManagerFo
 		
 		@EventBusListenerMethod
 		public void onChangePath(org.vaadin.spring.events.Event<ChangePathEvent> event);
+		
+		@EventBusListenerMethod
+		public void onDeleteFile(org.vaadin.spring.events.Event<DeleteFileEvent> event);
 	}
 }

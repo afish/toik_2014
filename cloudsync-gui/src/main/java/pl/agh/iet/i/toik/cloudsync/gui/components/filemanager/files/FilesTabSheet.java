@@ -57,4 +57,9 @@ public class FilesTabSheet extends
 		content.addTab(new FilesTab(getPresenter(), account, cloudSession), account.getName());
 		
 	}
+
+	@Override
+	public FilesTabView getCurrentTab() {
+		return (FilesTabView) content.getSelectedTab();
+	}
 }

@@ -2,6 +2,7 @@ package pl.agh.iet.i.toik.cloudsync.logic.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import pl.agh.iet.i.toik.cloudsync.logic.PersistenceService;
@@ -12,13 +13,19 @@ import java.util.Map;
 
 @Service
 public class PersistenceServiceImpl implements PersistenceService {
-    private static final String DB_FILE_NAME = "database.db";
+
+    private String dbFileName = "database.db";
 	private static Logger logger = LoggerFactory.getLogger(PersistenceServiceImpl.class);
 
     private Map<String, Map<String, Integer>> sequences;
     private Map<String, Map<String, Serializable>> database;
 
     public PersistenceServiceImpl(){
+        loadDatabase();
+    }
+
+    public PersistenceServiceImpl(String dbFileName){
+        this.dbFileName = dbFileName;
         loadDatabase();
     }
 
@@ -92,29 +99,30 @@ public class PersistenceServiceImpl implements PersistenceService {
 
     private void saveDatabase(){
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DB_FILE_NAME));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(dbFileName));
             oos.writeObject(database);
             oos.writeObject(sequences);
         } catch (IOException e) {
-            logger.error("Unable to save to " + DB_FILE_NAME);
+            logger.error("Unable to save to " + dbFileName);
             e.printStackTrace();
         }
     }
 
     private void loadDatabase(){
         try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(DB_FILE_NAME));
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dbFileName));
             database = (Map<String, Map<String, Serializable>>) ois.readObject();
             sequences = (Map<String, Map<String, Integer>>) ois.readObject();
         } catch (IOException e) {
-        	e.printStackTrace();
-            logger.warn("Unable to load " + DB_FILE_NAME + ". Creating empty database.");
+            logger.warn("Unable to load " + dbFileName + ". Creating empty database.");
             database = new HashMap<String, Map<String, Serializable>>();
             sequences = new HashMap<String, Map<String, Integer>>();
+            saveDatabase();
         } catch (ClassNotFoundException e) {
-            logger.warn("Unable to deserialize " + DB_FILE_NAME + ". Creating empty database.");
+            logger.warn("Unable to deserialize " + dbFileName + ". Creating empty database.");
             database = new HashMap<String, Map<String, Serializable>>();
             sequences = new HashMap<String, Map<String, Integer>>();
+            saveDatabase();
         }
     }
 }

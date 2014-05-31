@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
-import pl.agh.iet.i.toik.cloudsync.logic.PersistenceService;
 
 /**
  * Service using for obtaining cloud service providers.
@@ -20,31 +19,17 @@ import pl.agh.iet.i.toik.cloudsync.logic.PersistenceService;
 public class CloudServiceImpl implements CloudService {
 	private static Logger logger = LoggerFactory.getLogger(CloudServiceImpl.class);
 
-    @Autowired
-    private PersistenceService persistenceService;
+    private List<CloudInformation> cloudsList;
 
-    public void setPersistenceService(PersistenceService persistenceService) {
-		this.persistenceService = persistenceService;
-	}
-
-	private List<CloudInformation> loadCloudsList(){
-        if(persistenceService.has("logic", "clouds_list")){
-            return (List) persistenceService.get("logic", "clouds_list");
-        }else{
-            return new ArrayList<>();
-        }
-    }
-
-    private void saveCloudsList(List<CloudInformation> cloudsList){
-        ArrayList<CloudInformation> cloudsArrayList = new ArrayList<>(cloudsList);
-        persistenceService.put("logic", "clouds_list", cloudsArrayList);
+    public CloudServiceImpl(){
+        cloudsList = new ArrayList<>();
     }
 
     @Override
     public List<CloudInformation> getAllClouds() {
         logger.info("Getting all clouds");
 
-        return loadCloudsList();
+        return cloudsList;
     }
 
 	@Override
@@ -56,12 +41,10 @@ public class CloudServiceImpl implements CloudService {
         logger.info("Registering cloud: " + cloud.getCloudInformation().getId() + ", name: "
 				+ cloud.getCloudInformation().getHumanReadableName());
 
-        List<CloudInformation> cloudsList = loadCloudsList();
         if(cloudsList.contains(cloud.getCloudInformation())){
             throw new IllegalArgumentException("Cloud with the same name id already exists. Cloud id: " + cloud.getCloudInformation().getId());
         }
         cloudsList.add(cloud.getCloudInformation());
-        saveCloudsList(cloudsList);
 	}
 
 	@Override
@@ -73,8 +56,6 @@ public class CloudServiceImpl implements CloudService {
         logger.info("Deregistering cloud: " + cloud.getCloudInformation().getId() + ", name: "
 				+ cloud.getCloudInformation().getHumanReadableName());
 
-        List<CloudInformation> cloudsList = loadCloudsList();
         cloudsList.remove(cloud.getCloudInformation());
-        saveCloudsList(cloudsList);
 	}
 }

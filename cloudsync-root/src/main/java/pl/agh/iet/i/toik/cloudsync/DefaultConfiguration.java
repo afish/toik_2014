@@ -28,15 +28,11 @@ public class DefaultConfiguration {
     @Autowired
     @Qualifier("onedriveCloud")
     private Cloud onedriveCloud;
-    
-    @Autowired
-    private PersistenceService persistenceService;
-    
+
     @Bean
     public CloudService cloudService() {
     	
     	 CloudServiceImpl cloudService = new CloudServiceImpl();
-    	 cloudService.setPersistenceService(persistenceService);
     	 cloudService.registerCloud(googleDriveCloud);
     	 cloudService.registerCloud(dropboxCloud);
     	 cloudService.registerCloud(onedriveCloud);

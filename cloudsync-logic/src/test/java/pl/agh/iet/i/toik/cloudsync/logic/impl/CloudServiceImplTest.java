@@ -21,7 +21,6 @@ public class CloudServiceImplTest {
 	@Before
 	public void setUp() throws Exception {
 		service = new CloudServiceImpl();
-		service.setPersistenceService(new FakePersistenceService());
 	}
 
 	@Test

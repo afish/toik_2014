@@ -126,15 +126,11 @@ public class FileManagerFooterLayoutPresenterImpl extends
 		FilesTabView sourceTabView = event.getPayload().getSourceTab();
 		FilesTabView destinationTabView = event.getPayload()
 				.getDestinationTab();
-		System.out.println(sourceTabView);
-		System.out.println(destinationTabView);
 		if (sourceTabView != null && sourceTabView.getSelection() != null
 				&& destinationTabView != null) {
 			Account account = sourceTabView.getAccount();
 			CloudFile sourceFile = sourceTabView.getSelection();
 			CloudFile destination = destinationTabView.getCurrentLocation();
-			System.out.println(sourceFile);
-			System.out.println(destination);
 			
 			CloseableProgressBar progressBar = createProgresBar(createCaption(
 					account, sourceFile, captions.get("copying.file"),

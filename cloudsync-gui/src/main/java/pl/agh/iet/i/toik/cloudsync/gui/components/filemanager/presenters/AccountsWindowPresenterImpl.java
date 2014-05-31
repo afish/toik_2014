@@ -1,6 +1,10 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.presenters;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.vaadin.spring.events.Event;
 import org.vaadin.spring.events.EventBusListenerMethod;
 
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.AddAccountEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAccountsWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.AccountsWindowView;
@@ -35,7 +40,14 @@ public class AccountsWindowPresenterImpl extends
 	
 	@Autowired
 	private LogicService logicService;
+	
+	private Map<Account, CloudInformation> accountCloudInformationMap;
 
+	
+	@PostConstruct
+	private void init(){
+		accountCloudInformationMap = new HashMap<Account, CloudInformation>();
+	}
 	
 	@Override
 	@EventBusListenerMethod
@@ -55,16 +67,18 @@ public class AccountsWindowPresenterImpl extends
 	
 	@EventBusListenerMethod
 	@Override
-	public void onNewAccountAdded(Event<Account> event) {
-		logger.info("onNewAccountAdded: " + event.getPayload());
-		getComponentView().addAccount(event.getPayload());
+	public void onNewAccountAdded(Event<AddAccountEvent> event) {
+		Account account = event.getPayload().getAccount();
+		logger.info("onNewAccountAdded: " + account);
+		accountCloudInformationMap.put(account, event.getPayload().getCloudInformation());
+		getComponentView().addAccount(account);
 		
 	}
 
 	@Override
 	public void login(Account account ) {
 		logger.info("login");
-		CloudInformation cloudInformation = (CloudInformation) account.getPropertyList().get("cloudInformation");
+		CloudInformation cloudInformation = accountCloudInformationMap.get(account);
 		CloudSession cloudSession = logicService.login(cloudInformation, account);
 		currentFilesTabSheetView.addNewTab(cloudSession, account);
 		

@@ -12,6 +12,7 @@ import org.vaadin.spring.events.EventBusListenerMethod;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.WindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts.AddAccountWindow.AddAccountWindowPresenter;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.AddAccountEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
@@ -49,11 +50,10 @@ public class AddAccountWindowPresenterImpl extends
 	@Override
 	public void addAccount(String name, CloudInformation cloudInformation,
 			Map<String, Object> properties) {
-		properties.put("cloudInformation", cloudInformation);
 		Account account = new Account(cloudInformation.getId()+ name, name, properties);
 		accountService.saveAccount(account);
 		logger.info("addAccount: " + account);
-		eventBus.publish(this, account);
+		eventBus.publish(this, new AddAccountEvent(account, cloudInformation));
 		
 	}
 

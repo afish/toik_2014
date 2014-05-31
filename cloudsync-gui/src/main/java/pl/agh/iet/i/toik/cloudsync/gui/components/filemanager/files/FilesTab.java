@@ -150,4 +150,9 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 		return account;
 	}
 
+	@Override
+	public CloudFile getCurrentLocation() {
+		return currentLocation;
+	}
+
 }

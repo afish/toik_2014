@@ -57,4 +57,13 @@ public class FileManagerMiddleLayout
 		return currentTabSheet;
 	}
 
+	@Override
+	public FilesTabSheetView getOppositeTabSheet(
+			FilesTabSheetView tabSheet) {
+		if(tabSheet == leftTabSheet)
+			return rightTabSheet;
+		else
+			return leftTabSheet;
+	}
+
 }

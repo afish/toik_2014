@@ -17,10 +17,15 @@ public interface FileManagerMiddleLayoutView extends ComponentView<FileManagerMi
 		public void onFileSelected(org.vaadin.spring.events.Event<FileSelectedEvent> event);
 
 		public void deleteAction();
+
+		public void copyAction();
+
+		public void moveAction();
 	}
 	
 
 	void setCurrentTabSheet(FilesTabSheetView tabSheetView);
 	FilesTabSheetView getCurrentTabSheet();
+	FilesTabSheetView getOppositeTabSheet(FilesTabSheetView currentTabSheet);
 	
 }

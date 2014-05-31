@@ -14,7 +14,6 @@ public class FileManagerUpperLayoutPresenterImpl extends AbstractPresenter<FileM
 		FileManagerUpperLayoutPresenter {
 
 	private FilesTabSheetView defaultFileTabSheetView;
-	private FilesTabSheetView currentTabSheet;
 	private FileManagerMiddleLayoutPresenter middleLayoutPresenter;
 
 	@Override
@@ -39,6 +38,16 @@ public class FileManagerUpperLayoutPresenterImpl extends AbstractPresenter<FileM
 			FileManagerMiddleLayoutPresenter fileManagerMiddleLayoutPresenterImpl) {
 		this.middleLayoutPresenter = fileManagerMiddleLayoutPresenterImpl;
 		
+	}
+
+	@Override
+	public void copyAction() {
+		middleLayoutPresenter.copyAction();
+	}
+
+	@Override
+	public void moveAction() {
+		middleLayoutPresenter.moveAction();
 	}
 
 	

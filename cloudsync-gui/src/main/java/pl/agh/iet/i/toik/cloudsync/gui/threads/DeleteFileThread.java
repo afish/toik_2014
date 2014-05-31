@@ -21,7 +21,7 @@ public class DeleteFileThread extends AbstractUIThread<Boolean> {
 	}
 
 	@Override
-	protected void finished(Boolean result) {
+	protected void onFinish(Boolean result) {
 		if(result.booleanValue())
 			sourceTab.deleteFile(fileToDelete);
 		else

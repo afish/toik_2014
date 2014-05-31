@@ -46,12 +46,13 @@ public class FilesTabSheet extends
 				
 			}
 		});
+		
 		content.setCloseHandler(new CloseHandler() {
 			
 			@Override
 			public void onTabClose(TabSheet tabsheet, Component tabContent) {
 				getPresenter().logout((FilesTabView)tabContent);
-				
+				tabsheet.removeComponent(tabContent);
 			}
 		});
 	}

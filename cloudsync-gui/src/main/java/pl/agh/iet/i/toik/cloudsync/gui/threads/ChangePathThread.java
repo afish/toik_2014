@@ -21,12 +21,13 @@ public class ChangePathThread extends AbstractUIThread<List<CloudFile>> {
 		super(ui, progressBar, cloudTask);
 		this.tab = tab;
 		this.destination = destination;
+		setName("Changing path thread");
 	}
 
 
 
 	@Override
-	protected void finished(List<CloudFile> result) {
+	protected void onFinish(List<CloudFile> result) {
 		tab.refresh(destination, result );
 	}
 

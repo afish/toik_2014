@@ -12,7 +12,7 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.ComponentView;
 
 public abstract class AbstractPresenter<VIEW extends ComponentView<? extends Presenter>>
 		implements Presenter {
-
+	
 	private VIEW view;
 	
 	@Autowired

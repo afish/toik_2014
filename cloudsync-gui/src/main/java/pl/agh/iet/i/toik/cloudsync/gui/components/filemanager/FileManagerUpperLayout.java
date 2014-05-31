@@ -40,6 +40,8 @@ public class FileManagerUpperLayout extends
 			public void deleteAction();
 			public void setMiddleLayoutPresenter(
 					FileManagerMiddleLayoutPresenter fileManagerMiddleLayoutPresenterImpl);
+			public void copyAction();
+			public void moveAction();
 	}
 	
 	@Autowired
@@ -69,6 +71,22 @@ public class FileManagerUpperLayout extends
 			public void buttonClick(ClickEvent event) {
 				getPresenter().deleteAction();
 				
+			}
+		});
+		
+		copyButton.addClickListener( new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getPresenter().copyAction();
+			}
+		});
+		
+		moveButton.addClickListener(new ClickListener() {
+			
+			@Override
+			public void buttonClick(ClickEvent event) {
+				getPresenter().moveAction();
 			}
 		});
 	}

@@ -24,4 +24,6 @@ public interface FilesTabView extends ComponentView<FilesTabSheetPresenter> {
 
 	public Account getAccount() ;
 
+	public CloudFile getCurrentLocation();
+
 }

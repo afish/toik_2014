@@ -9,8 +9,10 @@ import org.vaadin.spring.i18n.I18N;
 import com.vaadin.ui.Notification;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.FileManagerUpperLayout.FileManagerUpperLayoutPresenter;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.CopyFileEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.DeleteFileEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.FileSelectedEvent;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.MoveFileEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FileManagerMiddleLayoutView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FileManagerMiddleLayoutView.FileManagerMiddleLayoutPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
@@ -44,6 +46,22 @@ public class FileManagerMiddleLayoutPresenterImpl extends AbstractPresenter<File
 		FilesTabView sourceTab = getComponentView().getCurrentTabSheet().getCurrentTab();
 		eventBus.publish(this, new DeleteFileEvent(sourceTab));
 		
+	}
+
+	@Override
+	public void copyAction() {
+		FilesTabSheetView currentTabSheet = getComponentView().getCurrentTabSheet();
+		FilesTabView sourceTab = currentTabSheet.getCurrentTab();
+		FilesTabView destinationTab = getComponentView().getOppositeTabSheet(currentTabSheet).getCurrentTab();
+		eventBus.publish(this, new CopyFileEvent(sourceTab, destinationTab));
+	}
+
+	@Override
+	public void moveAction() {
+		FilesTabSheetView currentTabSheet = getComponentView().getCurrentTabSheet();
+		FilesTabView sourceTab = currentTabSheet.getCurrentTab();
+		FilesTabView destinationTab = getComponentView().getOppositeTabSheet(currentTabSheet).getCurrentTab();
+		eventBus.publish(this, new MoveFileEvent(sourceTab, destinationTab));
 	}
 	
 

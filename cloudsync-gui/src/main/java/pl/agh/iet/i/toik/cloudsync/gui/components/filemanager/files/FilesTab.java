@@ -133,6 +133,7 @@ public class FilesTab extends VerticalLayout implements FilesTabView {
 	@Override
 	public void addFile(CloudFile file) {
 		filesTable.addItem(file);
+		filesTable.select(file);
 
 	}
 

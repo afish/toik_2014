@@ -59,7 +59,8 @@ public class LogicServiceImpl implements LogicService {
                 return null;
             }
         }, copyTask, removeTask);
-
+        
+        executor.execute(copyTask);
         executor.execute(mergedTask);
 
         return mergedTask;

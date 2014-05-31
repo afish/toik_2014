@@ -126,11 +126,15 @@ public class FileManagerFooterLayoutPresenterImpl extends
 		FilesTabView sourceTabView = event.getPayload().getSourceTab();
 		FilesTabView destinationTabView = event.getPayload()
 				.getDestinationTab();
+		System.out.println(sourceTabView);
+		System.out.println(destinationTabView);
 		if (sourceTabView != null && sourceTabView.getSelection() != null
 				&& destinationTabView != null) {
 			Account account = sourceTabView.getAccount();
 			CloudFile sourceFile = sourceTabView.getSelection();
 			CloudFile destination = destinationTabView.getCurrentLocation();
+			System.out.println(sourceFile);
+			System.out.println(destination);
 			
 			CloseableProgressBar progressBar = createProgresBar(createCaption(
 					account, sourceFile, captions.get("copying.file"),
@@ -141,7 +145,7 @@ public class FileManagerFooterLayoutPresenterImpl extends
 					destinationTabView.getCloudSession(), destination,
 					sourceFile.getName());
 			logger.info("Started copying thread");
-			executor.equals(new CopyFileThread(UI.getCurrent(), progressBar,
+			executor.execute(new CopyFileThread(UI.getCurrent(), progressBar,
 					cloudTask, destinationTabView));
 		} else
 			showEmptySelectionNotification();
@@ -168,7 +172,7 @@ public class FileManagerFooterLayoutPresenterImpl extends
 					destinationTabView.getCloudSession(), destination,
 					sourceFile.getName());
 			logger.info("Started moving thread");
-			executor.equals(new MoveFileThread(UI.getCurrent(), progressBar,
+			executor.execute(new MoveFileThread(UI.getCurrent(), progressBar,
 					cloudTask, sourceTabView, sourceFile, destinationTabView));
 		} else
 			showEmptySelectionNotification();

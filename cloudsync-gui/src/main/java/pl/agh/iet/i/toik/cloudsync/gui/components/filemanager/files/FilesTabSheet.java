@@ -15,6 +15,8 @@ import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
 
 import com.vaadin.ui.Component;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.CloseHandler;
 
 @VaadinComponent
 @Scope("prototype")
@@ -29,6 +31,13 @@ public class FilesTabSheet extends
 	@Override
 	protected DynamicTabSheet createContent() {
 		content = new DynamicTabSheet();
+		setListeners();
+		content.setSizeFull();
+		content.setImmediate(true);
+		return content;
+	}
+
+	private void setListeners() {
 		content.setAddButtonClickListener(new AddButtonClickListener() {
 			
 			@Override
@@ -37,9 +46,14 @@ public class FilesTabSheet extends
 				
 			}
 		});
-		content.setSizeFull();
-		content.setImmediate(true);
-		return content;
+		content.setCloseHandler(new CloseHandler() {
+			
+			@Override
+			public void onTabClose(TabSheet tabsheet, Component tabContent) {
+				getPresenter().logout((FilesTabView)tabContent);
+				
+			}
+		});
 	}
 
 	@Override

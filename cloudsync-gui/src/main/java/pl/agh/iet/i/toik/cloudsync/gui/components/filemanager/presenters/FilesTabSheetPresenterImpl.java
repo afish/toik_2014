@@ -51,6 +51,11 @@ public class FilesTabSheetPresenterImpl extends AbstractPresenter<FilesTabSheetV
 		
 	}
 
+	@Override
+	public void logout(FilesTabView tabContent) {
+		logicService.logout(tabContent.getCloudSession());
+	}
+
 
 
 

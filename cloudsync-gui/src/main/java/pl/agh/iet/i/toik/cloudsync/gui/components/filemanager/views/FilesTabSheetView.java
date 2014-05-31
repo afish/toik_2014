@@ -27,6 +27,8 @@ public interface FilesTabSheetView extends ComponentView<FilesTabSheetPresenter>
 
 		public void changePath(CloudFile destinantion,  FilesTabView filesTabView);
 
+		public void logout(FilesTabView tabContent);
+
 	}
 
 

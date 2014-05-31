@@ -5,6 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.*;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.util.IOUtils;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.ParentList;
 import com.google.api.services.drive.model.ParentReference;
@@ -154,6 +155,7 @@ public class GoogleDriveCloud implements Cloud {
                             request.getPageToken().length() > 0);
 
                 } catch (IOException e) {
+	                this.setProgress(1.0f);
                     logger.error("An error occurred: ", e.getMessage());
                     return null;
                 }
@@ -172,7 +174,7 @@ public class GoogleDriveCloud implements Cloud {
     		 @Override
              public Boolean call() throws Exception {
 			    this.setProgress(0.0f);
-			    logger.debug("Download file for: "+sessionId);
+			    logger.info("Download file for: "+sessionId);
 			    Account account = SESSION.get(sessionId);
 				if(account == null){
 				    logger.warn("Session id doesn't exists");
@@ -186,10 +188,13 @@ public class GoogleDriveCloud implements Cloud {
 					    HttpResponse resp = drive.getRequestFactory()
 							    .buildGetRequest(new GenericUrl(file.getDownloadUrl())).execute();
 					    copyStream(resp.getContent(), outputStream);
+					    outputStream.close();
 				    }
 					this.setProgress(1.0f);
 				    return true;
 			    } catch (IOException e) {
+				    this.setProgress(1.0f);
+				    e.printStackTrace();
 				    logger.error("Error while downloading file: " +e.getMessage());
 				    return false;
 			    }
@@ -205,7 +210,7 @@ public class GoogleDriveCloud implements Cloud {
     		@Override
     		public CloudFile call() throws Exception {
 			    this.setProgress(0.0f);
-			    logger.debug("Upload file for: "+sessionId);
+			    logger.info("Upload file for: "+sessionId);
 			    Account account = SESSION.get(sessionId);
 			    if(account == null){
 				    logger.warn("Session id doesn't exists");
@@ -223,9 +228,9 @@ public class GoogleDriveCloud implements Cloud {
 					parentId = "root";
 				}
 			    body.setParents(Arrays.asList(new ParentReference().setId(parentId)));
-		
-			    InputStreamContent inputStreamContent = new InputStreamContent(null, fileInputStream);
+
 			    try {
+				    InputStreamContent inputStreamContent = new InputStreamContent(null, fileInputStream);
 				    com.google.api.services.drive.model.File file = drive.files().insert(body, inputStreamContent).execute();
 				    this.setProgress(0.8f);
 				    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
@@ -244,6 +249,8 @@ public class GoogleDriveCloud implements Cloud {
 				    this.setProgress(1.0f);
 					return cloudFile;
 			    } catch (IOException e) {
+				    this.setProgress(1.0f);
+				    e.printStackTrace();
 				    logger.error("Error while uploading file: " + e.getMessage());
 				    return null;
 			    }
@@ -258,7 +265,7 @@ public class GoogleDriveCloud implements Cloud {
 			@Override
 			public Boolean call() throws Exception {
 				this.setProgress(0.0f);
-				logger.debug("remove file for: "+sessionId);
+				logger.info("remove file for: "+sessionId);
 				Account account = SESSION.get(sessionId);
 				if(account == null){
 					logger.warn("Session id doesn't exists");
@@ -271,6 +278,7 @@ public class GoogleDriveCloud implements Cloud {
 				    this.setProgress(1.0f);
 				    return true;
 			    } catch (IOException e) {
+					this.setProgress(1.0f);
 				    logger.error("Error while removing file: " +e.getMessage());
 				    return false;
 			    }
@@ -289,11 +297,7 @@ public class GoogleDriveCloud implements Cloud {
 	}
 
 	private void copyStream(InputStream input, OutputStream output) throws IOException {
-		byte[] buffer = new byte[1024];
-		int bytesRead;
-		while ((bytesRead = input.read(buffer)) != -1) {
-			output.write(buffer, 0, bytesRead);
-		}
+		IOUtils.copy(input, output);
 	}
 
 }

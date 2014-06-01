@@ -50,6 +50,9 @@ public class OnedriveCloud implements Cloud {
     @Override
     public CloudTask<CloudFile> upload(String sessionId, CloudFile directory, String fileName,
                                        InputStream fileInputStream, Long fileSize) {
+        if (directory == null) {
+            directory = onedriveAccountService.getSession(sessionId).getRootFolder();
+        }
         return onedriveFileManagerService.upload(sessionId, directory, fileName, fileInputStream, fileSize);
     }
 

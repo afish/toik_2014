@@ -24,7 +24,7 @@ public class AuthService {
 	private static Logger logger = LoggerFactory.getLogger(AuthService.class);
 	 
 	private static final String SESSION_ID = "session-id";
-	private static final String CODE = "code";
+	private static final String CODE = "cloud.dropbox.code";
 	
 	private Map<String, Session> sessionMap;
 

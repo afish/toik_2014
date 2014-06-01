@@ -74,7 +74,7 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
 
                 try {
                     BufferedInputStream is = new BufferedInputStream(response.getEntityInputStream());
-                    while ((readBytes = is.read(buffer, 0, BUFFER_SIZE)) > 0) {
+                    while ((readBytes = is.read(buffer, 0, BUFFER_SIZE)) >= 0) {
                         outputStream.write(buffer, 0, readBytes);
                         totalDownloadedBytes += readBytes;
                         setProgress((float) totalDownloadedBytes / maxSize);
@@ -82,6 +82,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 } catch (IOException e) {
                     logger.error("Error occurred during downloading file from remove service", e);
                     return false;
+                } finally {
+                    outputStream.close();
                 }
                 logger.info("Download file {} completed, received {}B", file, totalDownloadedBytes);
                 return true;
@@ -168,7 +170,7 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
 
     @Override
     public ProgressTask<CloudFile> upload(final String sessionId, final CloudFile directory, final String fileName,
-                                          final InputStream fileInputStream, final Long fileSize) {
+                                          final InputStream inputStream, final Long fileSize) {
         ProgressCallable<CloudFile> callable = new ProgressCallable<CloudFile>() {
             @Override
             public CloudFile call() throws Exception {
@@ -194,7 +196,7 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 logger.debug("Uploading file \"{}\" with size={}B", fileName, fileSize);
                 try {
                     OutputStream out = httpURLConnection.getOutputStream();
-                    while ((readBytes = fileInputStream.read(buffer, 0, BUFFER_SIZE)) > 0) {
+                    while ((readBytes = inputStream.read(buffer, 0, BUFFER_SIZE)) >= 0) {
                         out.write(buffer, 0, readBytes);
                         totalUploadedBytes += readBytes;
                         setProgress((float) totalUploadedBytes / fileSize);
@@ -203,6 +205,8 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 } catch (IOException e) {
                     logger.error("Error occurred during uploading file to server", e);
                     return null;
+                } finally {
+                    inputStream.close();
                 }
 
                 int responseCode = httpURLConnection.getResponseCode();

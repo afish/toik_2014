@@ -80,7 +80,7 @@ public class GoogleDriveCloud implements Cloud {
                 GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
                 account.getPropertyList().put("cloud.google.token", credential.getAccessToken());
                 account.getPropertyList().put("cloud.google.token.refresh", credential.getAccessToken());
-                String sessionID = UUID.randomUUID().toString();
+	            String sessionID = UUID.randomUUID().toString();
                 SESSION.put(sessionID, account);
 	            logger.debug("Session ID for "+account.getName()+" is "+sessionID);
                 return sessionID;
@@ -135,6 +135,9 @@ public class GoogleDriveCloud implements Cloud {
                         for(ChildReference child : children.getItems()) {
                             com.google.api.services.drive.model.File file = drive.files().get(child.getId()).execute();
                             boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
+	                        if(file.getMimeType().startsWith("application/vnd.google-apps.") && !isDir) {
+		                        continue;
+	                        }
 	                        ParentList parents = drive.parents().list(file.getId()).execute();
 	                        String fullPath = "/";
 	                        for (ParentReference parent : parents.getItems()) {
@@ -232,7 +235,7 @@ public class GoogleDriveCloud implements Cloud {
 			    try {
 				    InputStreamContent inputStreamContent = new InputStreamContent(null, fileInputStream);
 				    com.google.api.services.drive.model.File file = drive.files().insert(body, inputStreamContent).execute();
-				    this.setProgress(0.8f);
+	                this.setProgress(0.8f);
 				    boolean isDir = file.getMimeType().equals("application/vnd.google-apps.folder");
 				    ParentList parents = drive.parents().list(file.getId()).execute();
 				    String fullPath = "/";

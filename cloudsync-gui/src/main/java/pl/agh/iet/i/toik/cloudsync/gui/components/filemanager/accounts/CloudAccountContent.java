@@ -76,6 +76,7 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 		public Map<String, Object> getAccountProperties() {
 			Map<String, Object> props = new HashMap<String,Object>();
 			props.put("cloud.google.code", tokenField.getValue());
+			props.put("cloud.type", CloudType.GOOGLEDRIVE);
 			return props;
 		}
 
@@ -99,6 +100,7 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 		public Map<String, Object> getAccountProperties() {
 			Map<String, Object> props = new HashMap<String,Object>();
 			props.put("cloud.dropbox.code", tokenField.getValue());
+			props.put("cloud.type", CloudType.DROPBOX);
 			return props;
 		}
 
@@ -144,6 +146,7 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 			props.put("client_id", clientIdField.getValue());
 			props.put("client_secret", clientSecretField.getValue());
 			props.put("code", clientCodeField.getValue());
+			props.put("cloud.type", CloudType.ONEDRIVE);
 			return props;
 		}
 

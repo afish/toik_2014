@@ -5,9 +5,13 @@ import java.util.Map;
 
 import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -33,10 +37,12 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 			case DROPBOX:
 				return new DropboxCloudAccountContent();
 			case ONEDRIVE:
+				return new MicrosoftCloudAccountContent();
 			case GOOGLEDRIVE:
 				return new GoogleCloudAccountContent();
+			default:
+				return null;
 		}
-		return new GoogleCloudAccountContent();
 	}
 
 	private String getCloudLink(CloudType cloudType) {
@@ -46,10 +52,10 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 		case DROPBOX:
 			return "https://www.dropbox.com/1/oauth2/authorize?locale=pl_PL&client_id=hn2bx52zyvavui7&response_type=code";
 		case ONEDRIVE:
-			break;
-
+			return "https://login.live.com/oauth20_authorize.srf?client_id=%s&scope=wl.offline_access+wl.skydrive_update&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf";
+		default:
+			return "";
 		}
-		return "";
 	}
 
 	private class GoogleCloudAccountContent extends VerticalLayout implements AccountPropertiesProvider {
@@ -98,6 +104,52 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 
 	}
 
+	private class MicrosoftCloudAccountContent extends VerticalLayout implements AccountPropertiesProvider {
+
+		private Link link;
+		private TextField clientIdField;
+		private TextField clientSecretField;
+		private TextField clientCodeField;
+
+		private final String htmlFormat = getCloudLink(CloudType.ONEDRIVE);
+		
+		public MicrosoftCloudAccountContent() {
+			setSpacing(true);
+			link = new Link();
+			link.setCaption("Get token");
+			link.setTargetName("_blank");
+			
+			clientIdField = new TextField("Client ID");
+			clientSecretField = new TextField("Client secret");
+			clientCodeField = new TextField("Code");
+			addComponent(link);
+			addComponent(clientIdField);
+			addComponent(clientSecretField);
+			addComponent(clientCodeField);
+			
+			clientIdField.addTextChangeListener(new TextChangeListener() {
+				
+				@Override
+				public void textChange(TextChangeEvent event) {
+					String linkHtml = String.format(htmlFormat, event.getText());
+					link.setResource(new ExternalResource(linkHtml));
+					
+				}
+			});
+			
+		}
+		@Override
+		public Map<String, Object> getAccountProperties() {
+			Map<String, Object> props = new HashMap<String,Object>();
+			props.put("client_id", clientIdField.getValue());
+			props.put("client_secret", clientSecretField.getValue());
+			props.put("code", clientCodeField.getValue());
+			props.put("redirect_uri", "http://onedrive.toik.pl/");
+			return props;
+		}
+
+	}
+	
 	@Override
 	public Map<String, Object> getAccountProperties() {
 		return provider.getAccountProperties();

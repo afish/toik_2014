@@ -144,7 +144,6 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 			props.put("client_id", clientIdField.getValue());
 			props.put("client_secret", clientSecretField.getValue());
 			props.put("code", clientCodeField.getValue());
-			props.put("redirect_uri", "http://onedrive.toik.pl/");
 			return props;
 		}
 

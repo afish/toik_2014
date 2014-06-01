@@ -1,12 +1,12 @@
 package pl.agh.iet.i.toik.cloudsync.gui;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.vaadin.spring.VaadinUI;
 import org.vaadin.spring.navigator.SpringViewProvider;
 
 import pl.agh.iet.i.toik.cloudsync.gui.views.ErrorView;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
@@ -21,6 +21,7 @@ import com.vaadin.ui.VerticalLayout;
 @Title("Cloud synchronization")
 @Widgetset("pl.agh.iet.i.toik.cloudsync.gui.AppWidgetSet")
 @Push
+@PreserveOnRefresh
 public class MainUI extends UI {
 
 	@Autowired

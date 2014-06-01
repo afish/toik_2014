@@ -23,7 +23,9 @@ import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.AccountService;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 import pl.agh.iet.i.toik.cloudsync.logic.LogicService;
 
 @Component
@@ -41,14 +43,9 @@ public class AccountsWindowPresenterImpl extends
 	@Autowired
 	private LogicService logicService;
 	
-	private Map<Account, CloudInformation> accountCloudInformationMap;
+	@Autowired
+	private CloudService cloudService;
 
-	
-	@PostConstruct
-	private void init(){
-		accountCloudInformationMap = new HashMap<Account, CloudInformation>();
-	}
-	
 	@Override
 	@EventBusListenerMethod
 	public void onOpenWindow(Event<OpenAccountsWindowEvent> event) {
@@ -70,7 +67,6 @@ public class AccountsWindowPresenterImpl extends
 	public void onNewAccountAdded(Event<AddAccountEvent> event) {
 		Account account = event.getPayload().getAccount();
 		logger.info("onNewAccountAdded: " + account);
-		accountCloudInformationMap.put(account, event.getPayload().getCloudInformation());
 		getComponentView().addAccount(account);
 		
 	}
@@ -78,7 +74,7 @@ public class AccountsWindowPresenterImpl extends
 	@Override
 	public void login(Account account ) {
 		logger.info("login");
-		CloudInformation cloudInformation = accountCloudInformationMap.get(account);
+		CloudInformation cloudInformation = cloudService.getCloudByType((CloudType) account.getPropertyList().get("cloud.type"));
 		CloudSession cloudSession = logicService.login(cloudInformation, account);
 		currentFilesTabSheetView.addNewTab(cloudSession, account);
 		

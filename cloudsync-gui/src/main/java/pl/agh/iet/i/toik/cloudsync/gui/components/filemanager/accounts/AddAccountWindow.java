@@ -44,7 +44,7 @@ public class AddAccountWindow extends
 
 	public interface AddAccountWindowPresenter extends Presenter {
 
-		public void addAccount(String name, CloudInformation cloudInformation,
+		public void addAccount(String name,
 				Map<String, Object> properties);
 
 		@EventBusListenerMethod
@@ -66,7 +66,6 @@ public class AddAccountWindow extends
 			@Override
 			public void buttonClick(ClickEvent event) {
 				getPresenter().addAccount(accountNameField.getValue(),
-						(CloudInformation) cloudTypeComboBox.getValue(),
 						cloudContent.getAccountProperties());
 				close();
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
+import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 
 /**
  * Service using for obtaining cloud service providers.
@@ -23,6 +24,26 @@ public class CloudServiceImpl implements CloudService {
 
     public CloudServiceImpl(){
         cloudsList = new ArrayList<>();
+    }
+
+    @Override
+    public CloudInformation getCloudByType(CloudType cloudType){
+        for (CloudInformation ci : getAllClouds()){
+            if (ci.getCloudType().equals(cloudType)){
+                return ci;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public CloudInformation getCloudById(String cloudId){
+        for (CloudInformation ci : getAllClouds()){
+            if (ci.getId().equals(cloudId)){
+                return ci;
+            }
+        }
+        return null;
     }
 
     @Override

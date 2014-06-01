@@ -1,10 +1,6 @@
 package pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.presenters;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +12,14 @@ import org.vaadin.spring.events.EventBusListenerMethod;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.AddAccountEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAccountsWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
+import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenLoginWindowEvent;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.AccountsWindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.AccountsWindowView.AccountsWindowPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.views.FilesTabSheetView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.presenters.AbstractPresenter;
 import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.AccountService;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudSession;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 import pl.agh.iet.i.toik.cloudsync.logic.LogicService;
 
 @Component
@@ -74,9 +68,7 @@ public class AccountsWindowPresenterImpl extends
 	@Override
 	public void login(Account account ) {
 		logger.info("login");
-		CloudInformation cloudInformation = cloudService.getCloudByType((CloudType) account.getPropertyList().get("cloud.type"));
-		CloudSession cloudSession = logicService.login(cloudInformation, account);
-		currentFilesTabSheetView.addNewTab(cloudSession, account);
+		eventBus.publish(this, new OpenLoginWindowEvent(account, currentFilesTabSheetView));
 		
 	}
 

@@ -108,8 +108,7 @@ public class AccountsWindow extends AbstractWindowView<AccountsWindowPresenter>
 	protected Component createWindowContent() {
 		HorizontalLayout mainLayout = new HorizontalLayout();
 		mainLayout.setSpacing(true);
-		mainLayout.addComponent(accountTable = new BeanItemTable<Account>(
-				Account.class));
+		mainLayout.addComponent(accountTable = new AccountsTable());
 		mainLayout.addComponent(createButtonLayout());
 		mainLayout.setSizeFull();
 		return mainLayout;

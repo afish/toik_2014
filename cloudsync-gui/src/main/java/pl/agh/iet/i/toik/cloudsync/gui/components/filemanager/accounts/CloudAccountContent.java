@@ -5,6 +5,8 @@ import java.util.Map;
 
 import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
 
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -19,16 +21,20 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 
 	
 	private AccountPropertiesProvider provider;
+	private boolean tokenOnly;
 
-	public CloudAccountContent(CloudType cloudType) {
+	public CloudAccountContent(CloudType cloudType, boolean tokenOnly) {
 		this.provider = getProvider(cloudType);
+		this.provider.setTokenOnly(tokenOnly);
 		addComponent(provider);
 		setSpacing(true);
+		this.tokenOnly = tokenOnly;
 	}
 	
 	public void setCloudType(CloudType cloudType){
 		removeComponent(provider);
 		provider = getProvider(cloudType);
+		provider.setTokenOnly(tokenOnly);
 		addComponent(provider);
 	}
 	
@@ -60,6 +66,7 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 
 	private class GoogleCloudAccountContent extends VerticalLayout implements AccountPropertiesProvider {
 
+		private static final String TOKEN_PROPERTY = "cloud.google.code";
 		private Label linkLabel;
 		private TextField tokenField;
 
@@ -75,15 +82,33 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 		@Override
 		public Map<String, Object> getAccountProperties() {
 			Map<String, Object> props = new HashMap<String,Object>();
-			props.put("cloud.google.code", tokenField.getValue());
+			props.put(TOKEN_PROPERTY, tokenField.getValue());
 			props.put("cloud.type", CloudType.GOOGLEDRIVE);
 			return props;
+		}
+		@Override
+		public String getTokenPropertyId() {
+			return TOKEN_PROPERTY;
+		}
+		@Override
+		public String getToken() {
+			return tokenField.getValue();
+		}
+		@Override
+		public void setTokenOnly(boolean tokenOnly) {
+			tokenField.setVisible(tokenOnly);
+			linkLabel.setVisible(tokenOnly);
+		}
+		@Override
+		public void setAccountProperties(Map<String, Object> properties) {
+			
 		}
 
 	}
 	
 	private class DropboxCloudAccountContent extends VerticalLayout implements AccountPropertiesProvider {
 
+		private static final String TOKEN_PROPERTY = "cloud.dropbox.code";
 		private Label linkLabel;
 		private TextField tokenField;
 
@@ -99,15 +124,35 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 		@Override
 		public Map<String, Object> getAccountProperties() {
 			Map<String, Object> props = new HashMap<String,Object>();
-			props.put("cloud.dropbox.code", tokenField.getValue());
+			props.put(TOKEN_PROPERTY, tokenField.getValue());
 			props.put("cloud.type", CloudType.DROPBOX);
 			return props;
+		}
+		@Override
+		public String getTokenPropertyId() {
+			return TOKEN_PROPERTY;
+		}
+		@Override
+		public String getToken() {
+			return tokenField.getValue();
+		}
+		@Override
+		public void setTokenOnly(boolean tokenOnly) {
+			tokenField.setVisible(tokenOnly);
+			linkLabel.setVisible(tokenOnly);
+		}
+		@Override
+		public void setAccountProperties(Map<String, Object> properties) {
+			
 		}
 
 	}
 
 	private class MicrosoftCloudAccountContent extends VerticalLayout implements AccountPropertiesProvider {
 
+		private static final String CLIENT_SECRET_PROPERTY = "client_secret";
+		private static final String CLIENT_ID_PROPERTY = "client_id";
+		private static final String TOKEN_PROPERTY = "code";
 		private Link link;
 		private TextField clientIdField;
 		private TextField clientSecretField;
@@ -124,30 +169,58 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 			clientIdField = new TextField("Client ID");
 			clientSecretField = new TextField("Client secret");
 			clientCodeField = new TextField("Code");
+			
+			clientIdField.setImmediate(true);
+			clientSecretField.setImmediate(true);
+			clientCodeField.setImmediate(true);
+			
 			addComponent(link);
 			addComponent(clientIdField);
 			addComponent(clientSecretField);
 			addComponent(clientCodeField);
 			
-			clientIdField.addTextChangeListener(new TextChangeListener() {
+			clientIdField.addValueChangeListener(new ValueChangeListener() {
 				
 				@Override
-				public void textChange(TextChangeEvent event) {
-					String linkHtml = String.format(htmlFormat, event.getText());
+				public void valueChange(ValueChangeEvent event) {
+					String linkHtml = String.format(htmlFormat, event.getProperty().getValue());
 					link.setResource(new ExternalResource(linkHtml));
 					
 				}
 			});
+				
 			
 		}
 		@Override
 		public Map<String, Object> getAccountProperties() {
 			Map<String, Object> props = new HashMap<String,Object>();
-			props.put("client_id", clientIdField.getValue());
-			props.put("client_secret", clientSecretField.getValue());
-			props.put("code", clientCodeField.getValue());
+			props.put(CLIENT_ID_PROPERTY, clientIdField.getValue());
+			props.put(CLIENT_SECRET_PROPERTY, clientSecretField.getValue());
+			props.put(TOKEN_PROPERTY, clientCodeField.getValue());
 			props.put("cloud.type", CloudType.ONEDRIVE);
 			return props;
+		}
+		@Override
+		public String getTokenPropertyId() {
+			return TOKEN_PROPERTY;
+		}
+		@Override
+		public String getToken() {
+			return clientCodeField.getValue();
+		}
+		@Override
+		public void setTokenOnly(boolean tokenOnly) {
+			clientIdField.setVisible(!tokenOnly);
+			clientSecretField.setVisible(!tokenOnly);
+			clientCodeField.setVisible(tokenOnly);
+			link.setVisible(tokenOnly);
+			
+		}
+		@Override
+		public void setAccountProperties(Map<String, Object> properties) {
+			clientIdField.setValue((String) properties.get(CLIENT_ID_PROPERTY));
+			clientSecretField.setValue((String) properties.get(CLIENT_SECRET_PROPERTY));
+
 		}
 
 	}
@@ -155,5 +228,27 @@ public class CloudAccountContent extends HorizontalLayout  implements AccountPro
 	@Override
 	public Map<String, Object> getAccountProperties() {
 		return provider.getAccountProperties();
+	}
+
+	@Override
+	public String getTokenPropertyId() {
+		 return provider.getTokenPropertyId();
+	}
+
+	@Override
+	public String getToken() {
+		return provider.getToken();
+	}
+
+	@Override
+	public void setTokenOnly(boolean tokenOnly) {
+		provider.setTokenOnly(tokenOnly);
+		
+	}
+
+	@Override
+	public void setAccountProperties(Map<String, Object> properties) {
+		provider.setAccountProperties(properties);
+		
 	}
 }

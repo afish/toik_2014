@@ -11,6 +11,7 @@ import org.vaadin.spring.events.EventBusListenerMethod;
 import org.vaadin.spring.i18n.I18N;
 
 import pl.agh.iet.i.toik.cloudsync.gui.components.AbstractWindowView;
+import pl.agh.iet.i.toik.cloudsync.gui.components.WindowFooterLayout;
 import pl.agh.iet.i.toik.cloudsync.gui.components.WindowView;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.accounts.AddAccountWindow.AddAccountWindowPresenter;
 import pl.agh.iet.i.toik.cloudsync.gui.components.filemanager.events.OpenAddWindowEvent;
@@ -19,13 +20,10 @@ import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -36,10 +34,12 @@ public class AddAccountWindow extends
 
 	@Autowired
 	private I18N captions;
+	
+	@Autowired
+	private WindowFooterLayout windowFooterLayout;
+	
 	private TextField accountNameField;
 	private ComboBox cloudTypeComboBox;
-	private Button cancelButton;
-	private Button addButton;
 	private CloudAccountContent cloudContent;
 
 	public interface AddAccountWindowPresenter extends Presenter {
@@ -61,7 +61,7 @@ public class AddAccountWindow extends
 	}
 
 	private void setListeners() {
-		addButton.addClickListener(new ClickListener() {
+		windowFooterLayout.getConfirmButton().addClickListener(new ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -72,7 +72,7 @@ public class AddAccountWindow extends
 			}
 		});
 
-		cancelButton.addClickListener(new ClickListener() {
+		windowFooterLayout.getCancelButton().addClickListener(new ClickListener() {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -101,28 +101,14 @@ public class AddAccountWindow extends
 				.addComponent(cloudTypeComboBox = createCloudTypeComboBox());
 		contentLayout.addComponent(cloudContent = new CloudAccountContent(
 				(((CloudInformation) cloudTypeComboBox.getValue())
-						.getCloudType())));
+						.getCloudType()),false));
 		contentLayout.addComponent(accountNameField = new TextField(captions
 				.get("account.name.field")));
-		contentLayout.addComponent(createFooterLayout());
+		contentLayout.addComponent(windowFooterLayout);
+		windowFooterLayout.getConfirmButton().setCaption(captions.get("add.button"));
 		return contentLayout;
 	}
 
-	private Component createFooterLayout() {
-		HorizontalLayout footerLayout = new HorizontalLayout();
-		footerLayout.setSpacing(true);
-		footerLayout.setSizeFull();
-		footerLayout.addComponent(addButton = new Button(captions
-				.get("add.button")));
-		footerLayout.addComponent(cancelButton = new Button(captions
-				.get("cancel.button")));
-		cancelButton.setSizeUndefined();
-		addButton.setSizeUndefined();
-		footerLayout
-				.setComponentAlignment(cancelButton, Alignment.BOTTOM_RIGHT);
-		footerLayout.setComponentAlignment(addButton, Alignment.BOTTOM_LEFT);
-		return footerLayout;
-	}
 
 	private ComboBox createCloudTypeComboBox() {
 		ComboBox cloudTypeComboBox = new ComboBox(

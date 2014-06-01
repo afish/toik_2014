@@ -35,6 +35,7 @@ public abstract class AbstractUIThread<T> extends Thread {
 			try {
 				sleep(1000);
 			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
 			}
 		}
 		finish();
@@ -47,7 +48,7 @@ public abstract class AbstractUIThread<T> extends Thread {
 			@Override
 			public void run() {
 				progressBar.setValue(new Float(currentProgress));
-				logger.debug(getName()+":Update progress to: "+currentProgress);
+				logger.info(getName()+":Update progress to: "+currentProgress);
 			}
 		});
 

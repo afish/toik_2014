@@ -69,8 +69,9 @@ public class FilesTabSheet extends
 
 	@Override
 	public void addNewTab(CloudSession cloudSession, Account account) {
-		content.addTab(new FilesTab(getPresenter(), account, cloudSession), account.getName());
-		
+		FilesTab tab;
+		content.addTab(tab = new FilesTab(getPresenter(), account, cloudSession), account.getName());
+		content.setSelectedTab(tab);
 	}
 
 	@Override

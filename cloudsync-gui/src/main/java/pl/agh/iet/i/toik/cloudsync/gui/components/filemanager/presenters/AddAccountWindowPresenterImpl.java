@@ -19,8 +19,6 @@ import pl.agh.iet.i.toik.cloudsync.logic.Account;
 import pl.agh.iet.i.toik.cloudsync.logic.AccountService;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudService;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudType;
-import pl.agh.iet.i.toik.cloudsync.logic.PersistenceService;
 
 @Component
 public class AddAccountWindowPresenterImpl extends
@@ -50,8 +48,7 @@ public class AddAccountWindowPresenterImpl extends
 
 	@Override
 	public void addAccount(String name, Map<String, Object> properties) {
-		CloudInformation cloudInformation = cloudService.getCloudByType((CloudType) properties.get("cloud.type"));
-		Account account = accountService.createAccount(cloudInformation.getId()+ name);
+		Account account = accountService.createAccount(name);
 		account.getPropertyList().putAll(properties);
 		accountService.saveAccount(account);
 		logger.info("addAccount: " + account);

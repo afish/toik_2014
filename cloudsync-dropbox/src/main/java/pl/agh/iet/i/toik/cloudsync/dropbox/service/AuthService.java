@@ -24,7 +24,7 @@ public class AuthService {
 	private static Logger logger = LoggerFactory.getLogger(AuthService.class);
 	 
 	private static final String SESSION_ID = "session-id";
-	private static final String CODE = "code";
+	private static final String CODE = "cloud.dropbox.code";
 	
 	private Map<String, Session> sessionMap;
 
@@ -35,9 +35,8 @@ public class AuthService {
 	public String login(DropboxConfiguration dropboxConfiguration, Account account) {
 		DbxRequestConfig dbxRequestConfig = dropboxConfiguration.getConfig();
 		Map<String, Object> properties = account.getPropertyList();
-		//TODO: set code somewhere
 		String code = (String) properties.get(CODE);
-		String sessionId = (String) properties.get(SESSION_ID);
+        String sessionId = (String) properties.get(SESSION_ID);
 		try {
 			sessionId = account == null || sessionId == null ? authenticate(dropboxConfiguration, code) : sessionId;
 			if(sessionId != null) {

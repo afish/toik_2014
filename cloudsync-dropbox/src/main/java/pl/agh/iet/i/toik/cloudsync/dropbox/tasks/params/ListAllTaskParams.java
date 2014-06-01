@@ -7,7 +7,10 @@ public class ListAllTaskParams {
 	private CloudFile directory;
 
 	public ListAllTaskParams(CloudFile directory) {
-		this.directory = directory;
+		if(directory != null)
+            this.directory = directory;
+        else
+            this.directory = new CloudFile("/", null, true, "/", "", -1L);
 	}
 
 	public CloudFile getDirectory() {

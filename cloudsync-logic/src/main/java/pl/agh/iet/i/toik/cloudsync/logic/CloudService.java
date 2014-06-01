@@ -10,6 +10,13 @@ public interface CloudService {
 
     /** Returns a list of public information of all registered clouds. */
     public abstract List<CloudInformation> getAllClouds();
+
+    /** Returns the CloudInformation for specified cloud type. */
+    public abstract CloudInformation getCloudByType(CloudType type);
+
+    /** Returns the CloudInformation for specified cloud id. */
+    public abstract CloudInformation getCloudById(String id);
+
 	/**
 	 * Adds the given cloud to this repository.
 	 * 

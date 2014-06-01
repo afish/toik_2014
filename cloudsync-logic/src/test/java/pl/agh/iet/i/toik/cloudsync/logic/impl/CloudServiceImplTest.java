@@ -8,11 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.agh.iet.i.toik.cloudsync.logic.Account;
-import pl.agh.iet.i.toik.cloudsync.logic.Cloud;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudInformation;
-import pl.agh.iet.i.toik.cloudsync.logic.CloudTask;
+import pl.agh.iet.i.toik.cloudsync.logic.*;
 
 public class CloudServiceImplTest {
 
@@ -56,7 +52,7 @@ public class CloudServiceImplTest {
 
 			@Override
 			public CloudInformation getCloudInformation() {
-				return new CloudInformation("cl_id", "Test cloud", this, null);
+				return new CloudInformation("cl_id", "Test cloud", this, CloudType.DROPBOX);
 			}
 
 			@Override
@@ -68,7 +64,9 @@ public class CloudServiceImplTest {
 
 		service.registerCloud(cloud);
 		Assert.assertEquals(1, service.getAllClouds().size());
-		service.deregisterCloud(cloud);
+        Assert.assertEquals(true, cloud.getCloudInformation().equals(service.getCloudByType(CloudType.DROPBOX)));
+        Assert.assertEquals(true, cloud.getCloudInformation().equals(service.getCloudById("cl_id")));
+        service.deregisterCloud(cloud);
 		Assert.assertEquals(0, service.getAllClouds().size());
 	}
 }

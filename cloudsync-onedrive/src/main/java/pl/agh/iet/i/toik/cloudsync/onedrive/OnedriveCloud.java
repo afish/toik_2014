@@ -36,6 +36,9 @@ public class OnedriveCloud implements Cloud {
 
     @Override
     public CloudTask<List<CloudFile>> listAllFiles(String sessionId, CloudFile directory) {
+        if (directory == null) {
+            directory = onedriveAccountService.getSession(sessionId).getRootFolder();
+        }
         return onedriveFileManagerService.listFiles(sessionId, directory);
     }
 

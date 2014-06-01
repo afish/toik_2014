@@ -50,7 +50,8 @@ public class AddAccountWindowPresenterImpl extends
 	@Override
 	public void addAccount(String name, CloudInformation cloudInformation,
 			Map<String, Object> properties) {
-		Account account = new Account(cloudInformation.getId()+ name, name, properties);
+		Account account = accountService.createAccount(cloudInformation.getId()+ name);
+		account.getPropertyList().putAll(properties);
 		accountService.saveAccount(account);
 		logger.info("addAccount: " + account);
 		eventBus.publish(this, new AddAccountEvent(account, cloudInformation));

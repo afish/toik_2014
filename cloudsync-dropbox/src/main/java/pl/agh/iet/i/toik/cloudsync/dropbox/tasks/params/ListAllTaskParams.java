@@ -1,5 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.dropbox.tasks.params;
 
+import java.util.Date;
+
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 
 public class ListAllTaskParams {
@@ -7,10 +9,7 @@ public class ListAllTaskParams {
 	private CloudFile directory;
 
 	public ListAllTaskParams(CloudFile directory) {
-		if(directory != null)
-            this.directory = directory;
-        else
-            this.directory = new CloudFile("/", null, true, "/", "", -1L);
+		this.directory = directory != null ? directory : new CloudFile("/", new Date(), true, "/", "", -1L);
 	}
 
 	public CloudFile getDirectory() {

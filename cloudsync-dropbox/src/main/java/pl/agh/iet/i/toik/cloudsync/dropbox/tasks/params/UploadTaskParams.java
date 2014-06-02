@@ -1,6 +1,7 @@
 package pl.agh.iet.i.toik.cloudsync.dropbox.tasks.params;
 
 import java.io.InputStream;
+import java.util.Date;
 
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 
@@ -12,7 +13,7 @@ public class UploadTaskParams {
 	private Long fileSize;
 
 	public UploadTaskParams(CloudFile directory, String fileName, InputStream fileInputStream, Long fileSize) {
-		this.directory = directory;
+		this.directory = directory != null ? directory : new CloudFile("/", new Date(), true, "/", "", -1L);
 		this.fileName = fileName;
 		this.fileInputStream = fileInputStream;
 		this.fileSize = fileSize;

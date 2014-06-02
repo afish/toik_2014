@@ -1,10 +1,9 @@
 package pl.agh.iet.i.toik.cloudsync.dropbox.tasks.factories;
 
-import java.util.concurrent.Callable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.DropboxCallable;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.RemoveTask;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.params.RemoveTaskParams;
 import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
@@ -18,19 +17,21 @@ public class RemoveTaskFactory {
 	
 	public RemoveTask create(DbxClient dbxClient, CloudFile file) {
 		RemoveTaskParams removeTaskParams = new RemoveTaskParams(file);
-		Callable<Boolean> callable = this.getCallable(dbxClient, removeTaskParams);
+		DropboxCallable<Boolean> callable = this.getCallable(dbxClient, removeTaskParams);
 		RemoveTask removeTask = new RemoveTask(callable);
 		return removeTask;
 	}
 
-	private Callable<Boolean> getCallable(final DbxClient client, final RemoveTaskParams removeTaskParams) {
+	private DropboxCallable<Boolean> getCallable(final DbxClient client, final RemoveTaskParams removeTaskParams) {
 		final String file = removeTaskParams.getFile().getFullPath();
 
-		return new Callable<Boolean>() {
+		return new DropboxCallable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
 				try {
+					this.setProgress(0.1f);
 					client.delete(file);
+					this.setProgress(1.0f);
 					return true;
 				} catch (DbxException e) {
 					 logger.error("Problem with removing", e.getMessage());

@@ -14,7 +14,9 @@ import pl.agh.iet.i.toik.cloudsync.logic.CloudFile;
 
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
+import com.dropbox.core.DbxStreamWriter;
 import com.dropbox.core.DbxWriteMode;
+import com.dropbox.core.NoThrowOutputStream;
 
 public class UploadTaskFactory {
 
@@ -40,7 +42,23 @@ public class UploadTaskFactory {
 					this.setProgress(0.1f);
 					DbxEntry.File uploadedFile = null;
 					logger.info("Dropbox - Uploading started for targetpath " + targetPath + ", filesize: " + fileSize);
-					uploadedFile = client.uploadFile(targetPath, DbxWriteMode.add(), fileSize, fileInputStream);
+					uploadedFile = client.uploadFile(targetPath, DbxWriteMode.add(), fileSize, new DbxStreamWriter<IOException>() {
+						@Override
+						public void write(NoThrowOutputStream out) throws IOException {
+							int BUFFER_SIZE = 1024;
+							byte[] buffer = new byte[BUFFER_SIZE];
+							int bytes, totalBytes = 0;
+							do {
+								bytes = fileInputStream.read(buffer, 0, BUFFER_SIZE);
+								if (bytes >= 0) {
+									out.write(buffer, 0, bytes);
+								}
+								totalBytes += bytes;
+							} while (bytes == BUFFER_SIZE);
+							out.flush();
+							logger.info("dropbox uploaded " + totalBytes + " bytes of said " + fileSize + " bytes");
+						}
+					});
 					this.setProgress(1.0f);
 					logger.info("Dropbox - upload finished");
 					// TODO: return better values

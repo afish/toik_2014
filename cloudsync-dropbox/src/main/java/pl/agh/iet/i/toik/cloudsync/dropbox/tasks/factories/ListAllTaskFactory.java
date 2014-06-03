@@ -60,7 +60,8 @@ public class ListAllTaskFactory {
 			String fullPath = child.path;
 			if(fullPath.endsWith(name + "/" + name)) {
 				//TODO: improve it
-				String newPath = fullPath.replaceFirst(name + "/", "");
+				String replace = name + "/";
+				String newPath = fullPath.replaceAll(replace, "");
 				fullPath = newPath;
 			}
 			// TODO: id

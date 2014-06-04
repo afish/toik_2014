@@ -11,6 +11,7 @@ import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.DropboxCallable;
 import pl.agh.iet.i.toik.cloudsync.dropbox.tasks.params.DownloadTaskParams;
 
 import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxEntry.File;
 import com.dropbox.core.DbxException;
 
 public class DownloadTaskFactory {
@@ -34,7 +35,9 @@ public class DownloadTaskFactory {
 				try {
 					logger.info("Dropbox - downloading started");
 					this.setProgress(0.1f);
-					client.getFile(file, null, outputStream);
+					File dbxFile = client.getMetadata(file).asFile();
+					if(dbxFile.numBytes > 0)
+						client.getFile(file, null, outputStream);
 					logger.info("Dropbox - downloading finished");
 					this.setProgress(1.0f);
 					return true;
@@ -42,6 +45,8 @@ public class DownloadTaskFactory {
 					logger.error("Problem with downloading", e.getMessage());
 				} catch (IOException e) {
 					logger.error("Problem with downloading", e.getMessage());
+				} finally {
+					outputStream.close();
 				}
 				return false;
 			}

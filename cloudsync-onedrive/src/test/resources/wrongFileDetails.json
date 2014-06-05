@@ -1,0 +1,23 @@
+{
+    "from": {
+        "name": "TOIK Onedrive",
+        "id": "fa6a470fcef1fb9a"
+    },
+    "name": "test.txt",
+    "description": "",
+    "parent_id": "folder.fa6a470fcef1fb9a",
+    "size": 12,
+    "upload_location": "https://apis.live.net/v5.0/file.fa6a470fcef1fb9a.FA6A470FCEF1FB9A!134/content/",
+    "comments_count": 0,
+    "comments_enabled": false,
+    "is_embeddable": true,
+    "source": "https://lpxokg.by3301.livefilestore.com/y2mfMXyamnd7JayIvJBf5fA4LSXfuhsBDjGOJs8KBV2UplJOGsYW4wUcUkArZW1Uti0WxgMPCtcgxQpR7YQnNccvOMaA2gofNhG8vQOr_nGcns/test.txt?psid=1",
+    "link": "https://onedrive.live.com/redir.aspx?cid=fa6a470fcef1fb9a&page=view&resid=FA6A470FCEF1FB9A!134&parId=FA6A470FCEF1FB9A!103",
+    "type": "file",
+    "shared_with": {
+        "access": "Just me"
+    },
+    "created_time": "2014-06-03T20:17:00+0000",
+    "updated_time": "2014-06-03T20:17:00+0000",
+    "client_updated_time": "2014-06-03T20:17:00+0000"
+}

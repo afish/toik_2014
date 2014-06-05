@@ -72,8 +72,7 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 int maxSize = response.getLength();
                 logger.debug("Downloading file \"{}\" with size={}B, {}", file.getName(), maxSize, file);
 
-                try {
-                    BufferedInputStream is = new BufferedInputStream(response.getEntityInputStream());
+                try (BufferedInputStream is = new BufferedInputStream(response.getEntityInputStream())) {
                     while ((readBytes = is.read(buffer, 0, BUFFER_SIZE)) >= 0) {
                         outputStream.write(buffer, 0, readBytes);
                         totalDownloadedBytes += readBytes;
@@ -82,8 +81,6 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 } catch (IOException e) {
                     logger.error("Error occurred during downloading file from remove service", e);
                     return false;
-                } finally {
-                    outputStream.close();
                 }
                 logger.info("Download file {} completed, received {}B", file, totalDownloadedBytes);
                 return true;
@@ -194,8 +191,7 @@ public class OnedriveFileManagerServiceImpl implements OnedriveFileManagerServic
                 int totalUploadedBytes = 0;
                 httpURLConnection.setChunkedStreamingMode(BUFFER_SIZE);
                 logger.debug("Uploading file \"{}\" with size={}B", fileName, fileSize);
-                try {
-                    OutputStream out = httpURLConnection.getOutputStream();
+                try (OutputStream out = httpURLConnection.getOutputStream()) {
                     while ((readBytes = inputStream.read(buffer, 0, BUFFER_SIZE)) >= 0) {
                         out.write(buffer, 0, readBytes);
                         totalUploadedBytes += readBytes;

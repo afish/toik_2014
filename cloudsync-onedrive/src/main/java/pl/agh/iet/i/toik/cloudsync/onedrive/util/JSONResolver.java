@@ -15,8 +15,8 @@ import java.util.List;
 
 
 public class JSONResolver {
-    private static final String separator = "/";
-    private static final String dateTimeFormat = "YY-MM-dd'T'HH:mm:ssZ";
+    public static final String separator = "/";
+    public static final String dateTimeFormat = "YY-MM-dd'T'HH:mm:ssZ";
 
     private static final String filesArrayJSONAttribute = "data";
 
@@ -85,12 +85,7 @@ public class JSONResolver {
     }
 
     private Long getFileSize(JSONObject jsonFileDetails) {
-        try {
-            return Long.parseLong(jsonFileDetails.getString(fileSizeJSONAttribute));
-        } catch (NumberFormatException e) {
-            logger.error("Error while getting file size - {}", e.getMessage());
-            return null;
-        }
+        return jsonFileDetails.getLong(fileSizeJSONAttribute);
     }
 
     //Temporary path solution

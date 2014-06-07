@@ -30,13 +30,11 @@ public class OnedriveFileManagerServiceImplTest {
     private OnedriveFileManagerService service;
 
     private JSONResolver mockJSONREResolver;
-    private WebResource mockWebResource;
     private ClientResponse mockClientResponse;
     private OnedriveAccountService mockOnedriveAccountService;
 
     private String sessionId = "session_id";
     private String jsonResponse = "json_response";
-    private String accessToken = "access_token";
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +44,7 @@ public class OnedriveFileManagerServiceImplTest {
         mockJSONREResolver = mock(JSONResolver.class);
         Client mockClient = mock(Client.class);
         mockOnedriveAccountService = mock(OnedriveAccountService.class);
-        mockWebResource = mock(WebResource.class);
+        WebResource mockWebResource = mock(WebResource.class);
         mockClientResponse = mock(ClientResponse.class);
 
         ReflectionTestUtils.setField(service, "jsonResolver", mockJSONREResolver);
@@ -55,6 +53,7 @@ public class OnedriveFileManagerServiceImplTest {
 
         when(mockClient.resource(anyString())).thenReturn(mockWebResource);
         when(mockWebResource.queryParam(anyString(), anyString())).thenReturn(mockWebResource);
+        String accessToken = "access_token";
         when(mockOnedriveAccountService.getAccessToken(sessionId)).thenReturn(accessToken);
 
         //getting response

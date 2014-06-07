@@ -4,6 +4,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.joda.time.DateTime;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,9 +125,14 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
             return null;
         }
 
-        session.setAccessToken(json.get("access_token").toString());
-        session.setRefreshToken(json.get("refresh_token").toString());
-        session.setTokenExpirationDate(new DateTime().plusHours(1));
+        try {
+            session.setAccessToken(json.get("access_token").toString());
+            session.setRefreshToken(json.get("refresh_token").toString());
+            session.setTokenExpirationDate(new DateTime().plusHours(1));
+        } catch (JSONException e) {
+            logger.error("Error while processing response from server - {}", e.getMessage());
+            return null;
+        }
 
         logger.debug("Access token successfully gathered from remote service");
         return session.getAccessToken();
@@ -146,8 +152,13 @@ public class OnedriveAccountServiceImpl implements OnedriveAccountService {
             return null;
         }
 
-        session.setAccessToken(json.get("access_token").toString());
-        session.setTokenExpirationDate(new DateTime().plusHours(1));
+        try {
+            session.setAccessToken(json.get("access_token").toString());
+            session.setTokenExpirationDate(new DateTime().plusHours(1));
+        } catch (JSONException e) {
+            logger.error("Error while processing response from server - {}", e.getMessage());
+            return null;
+        }
 
         logger.debug("Access token successfully gathered from remote service");
         return session.getAccessToken();

@@ -32,7 +32,7 @@ public class JSONResolverTest {
 
     @Test
     public void testListingFilesFromProperFiles() throws Exception {
-        String responseContent = loadJSONResponseFromFile("properFilesList.json");
+        String responseContent = loadJSONResponseFromFile("file_service/properFilesList.json");
 
         List<CloudFile> result = jsonResolver.resolveFileListDetails(responseContent, mockParent);
 
@@ -57,7 +57,7 @@ public class JSONResolverTest {
 
     @Test
     public void testListingFilesFromWrongFile() throws Exception {
-        String responseContent = loadJSONResponseFromFile("wrongFilesList.json");
+        String responseContent = loadJSONResponseFromFile("file_service/wrongFilesList.json");
 
         List<CloudFile> result = jsonResolver.resolveFileListDetails(responseContent, mockParent);
 
@@ -68,14 +68,14 @@ public class JSONResolverTest {
 
     @Test
     public void testEmptyFilesList() throws Exception {
-        String responseContent = loadJSONResponseFromFile("emptyFilesList.json");
+        String responseContent = loadJSONResponseFromFile("file_service/emptyFilesList.json");
 
         assertTrue(jsonResolver.resolveFileListDetails(responseContent, mockParent).isEmpty());
     }
 
     @Test
     public void testProperFileDetails() throws Exception {
-        String responseContent = loadJSONResponseFromFile("properFileDetails.json");
+        String responseContent = loadJSONResponseFromFile("file_service/properFileDetails.json");
 
         CloudFile result = jsonResolver.resolveUploadedFileDetails(responseContent, mockParent);
 
@@ -89,14 +89,14 @@ public class JSONResolverTest {
 
     @Test
     public void testWrongFileDetails() throws Exception {
-        String responseContent = loadJSONResponseFromFile("wrongFileDetails.json");
+        String responseContent = loadJSONResponseFromFile("file_service/wrongFileDetails.json");
 
         assertNull(jsonResolver.resolveUploadedFileDetails(responseContent, mockParent));
     }
 
     @Test
     public void testProperlyUploadedFile() throws Exception {
-        String responseContent = loadJSONResponseFromFile("properlyUploadedFile.json");
+        String responseContent = loadJSONResponseFromFile("file_service/properlyUploadedFile.json");
 
         String response = jsonResolver.resolveUploadedFileId(responseContent);
 
@@ -106,7 +106,7 @@ public class JSONResolverTest {
 
     @Test
     public void testWronglyUploadedFile() throws Exception {
-        String responseContent = loadJSONResponseFromFile("wronglyUploadedFile.json");
+        String responseContent = loadJSONResponseFromFile("file_service/wronglyUploadedFile.json");
 
         assertNull(jsonResolver.resolveUploadedFileId(responseContent));
     }
